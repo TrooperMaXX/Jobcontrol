@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- NAvigations Colors  -->
+    <color name="counter_text_bg">#FF0000</color>
+    <color name="list_background_pressed">#808080</color>
+    <color name="list_background">#727272</color>
+    <color name="list_divider">#F000FF</color>
+    <color name="list_item_title">#FFFF0F</color>
+    <color name="counter_text_color">#123456</color>
+
+    <!-- list Colors  -->
+    <color name="kein_termin">#FFFFFF</color>
+    <color name="termin">#808080</color>
+    <color name="termin_heute">#FF0000</color>
+
+</resources>

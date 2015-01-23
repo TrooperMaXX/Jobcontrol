@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Jobcontrol</string>
+
+    <!-- Launch_Screen -->
+    <string name="login_text">Jobcontrol</string>
+    <string name="action_info">Info</string>
+    <string name="login_name">Login-Name</string>
+    <string name="login_pass">Passwort!</string>
+    <string name="login_button">Login!</string>
+    <string name="title_activity_menu">menu</string>
+
+    <!-- Menü_Beschriftung -->
+    <string name="title_section1">Meine Tickets</string>
+    <string name="title_section2">Kalender</string>
+    <string name="title_section3">Neues Ticket</string>
+
+    <!-- Action_Bar -->
+    <string name="navigation_drawer_open">Menü öffnen</string>
+    <string name="navigation_drawer_close">Menü schließen</string>
+    <string name="action_example">Test</string>
+    <string name="action_search">Suche</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_logout">Ausloggen</string>
+
+    <!-- Kalender -->
+    <string name="test_text">TEST</string>
+    <string name="test_feld">TEST</string>
+    <string name="kalender">Kalender</string>
+    <string name="new_tickets">Neues Ticket erstellen</string>
+    <string name="my_tickets">Meine Tickets</string>
+
+    <!-- Nav Drawer Menu Items -->
+    <string-array name="nav_drawer_items">
+        <item>Meine Tickets</item>
+        <item>Kalender</item>
+        <item>Neues Ticket</item>
+    </string-array>
+
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <!-- TODO: die richtigen icons hinzufügen -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_action_info</item>
+        <item>@drawable/ic_action_search</item>
+        <item>@drawable/ic_action_settings</item>
+    </array>
+
+
+    <string-array name="status_array">
+        <item>Unbearbeitet</item>   <!-- 0  -->
+        <item>Fahrt</item>          <!-- 1  -->
+        <item>In Arbeit</item>      <!-- 2  -->
+        <item>offen</item>          <!-- 3  -->
+        <item>Abgeschlossen</item>  <!-- 4  -->
+        <item>Erledigt</item>       <!-- 5  -->
+        <item>wartet</item>         <!-- 6  -->
+        <item>Ware bestellt</item>  <!-- 7  -->
+        <item>Ware da</item>        <!-- 8  -->
+        <item>Ware benötigt</item>  <!-- 9  -->
+        <item>installiert</item>    <!-- 10 -->
+        <item>gelöscht</item>       <!-- 11 -->
+    </string-array>
+
+
+
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="title_activity_slidermenu">Menü</string>
+    <string name="action_settings">Settings</string>
+    <string name="loading">loading...</string>
+    <string name="keeplogin">Angemeldet bleiben?</string>
+    <string name="title_activity_ticket_details">TicketDetails</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Content Ticket_Details -->
+    <string name="firma">Firma</string>
+    <string name="adresse">Adresse</string>
+    <string name="standort">Standort</string>
+    <string name="gerät">Gerät</string>
+    <string name="seriennummer">Seriennummer</string>
+    <string name="störung">Störung</string>
+    <string name="ansprechpartner">Ansprechpartner</string>
+    <string name="telefonnummer">Telefonnummer</string>
+    <string name="termin">Termin</string>
+    <string name="annahme">Annahme durch</string>
+    <string name="button_map">Maps</string>
+    <string name="button_save">Speichern</string>
+    <string name="auftragsnr">AuftrgasNr</string>
+    <string name="wvnr">Wartungs Vertrags Typ</string>
+
+</resources>

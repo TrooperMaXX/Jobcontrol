@@ -1,0 +1,398 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/layout"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dip"
+        android:scrollbarStyle="outsideInset"
+        android:fillViewport="true">
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="de.hoell.jobcontrol.ticketlist.DetailsFragment"
+    android:id="@+id/DetailsTabelle">
+    <TableRow android:id="@+id/Status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+         <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/status_spinner"
+            android:spinnerMode="dropdown"
+            android:entries="@array/status_array"
+            android:longClickable="false"
+            android:gravity="center"
+             android:textAlignment="center"
+             android:layout_span="4"
+             android:layout_weight="1" />
+    </TableRow>
+    <TableRow android:id="@+id/Firma"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/firma"
+            android:id="@+id/textViewFirma"
+            android:textStyle="normal|bold"
+           />
+
+    </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentFirma"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Adresse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentAdresse"
+
+                android:clickable="true"
+                android:enabled="false"
+                android:autoLink="map"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Standort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/standort"
+            android:id="@+id/textViewStandort"
+            android:textStyle="normal|bold"
+           />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentStandort"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Gerät"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gerät"
+            android:id="@+id/textViewModell"
+            android:textStyle="normal|bold"
+            />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentModell"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Seriennummer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/seriennummer"
+            android:id="@+id/textViewSeriennummer"
+            android:textStyle="normal|bold"
+          />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentSerienummer"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Stoerung"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/störung"
+            android:id="@+id/textViewStoerung"
+            android:textStyle="normal|bold"
+           />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentStoerung"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Ansprechpartner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ansprechpartner"
+            android:id="@+id/textViewAnsprechpartner"
+            android:textStyle="normal|bold"
+            />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentAnsprechpartner"
+
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow android:id="@+id/Telefonnummer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/telefonnummer"
+            android:id="@+id/textViewTelefonnummer"
+            android:textStyle="normal|bold"
+           />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentTelefonnummer"
+
+                android:clickable="true"
+                android:enabled="false"
+                android:autoLink="phone"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow
+        android:id="@+id/Termin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/termin"
+            android:id="@+id/textViewTermin"
+            android:textStyle="normal|bold"
+            />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentTermin"
+
+                android:clickable="true"
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/Auftragsnr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/auftragsnr"
+                android:id="@+id/textViewAuftragsnr"
+                android:textStyle="normal|bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentAuftragsnr"
+                android:clickable="true"
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/wnnr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/wvnr"
+                android:id="@+id/textViewWvnr"
+                android:textStyle="normal|bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentWvnr"
+                android:clickable="true"
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+
+
+
+        <TableRow
+        android:id="@+id/Annahme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/annahme"
+            android:id="@+id/textViewAnnahme"
+            android:textStyle="normal|bold"
+           />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentAnnahme"
+
+                android:clickable="true"
+                android:enabled="false"
+                android:layout_column="0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button_maps"
+
+                    android:text="@string/button_map" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_save"
+                    android:id="@+id/button_save"
+                    />
+            </LinearLayout>
+
+        </TableRow>
+
+    </TableLayout>
+    </ScrollView>
+    </LinearLayout>
+

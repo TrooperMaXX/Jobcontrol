@@ -65,7 +65,7 @@
                 // adding nav drawer items to array
                 // MyTickets
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-                // Kalender
+                // Offlinemodus
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
                 // NewTickets
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
@@ -191,7 +191,7 @@
             /**
              * Diplaying fragment view for selected nav drawer list item
              * */
-            private void displayView(int position) {
+            public void displayView(int position) {
                 // update the main content by replacing fragments
                 Fragment fragment = null;
                 switch (position) {

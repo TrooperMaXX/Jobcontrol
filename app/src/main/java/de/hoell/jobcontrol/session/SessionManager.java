@@ -38,7 +38,7 @@ public class SessionManager {
         private static final String IS_USER_LOGIN = "IsUserLoggedIn";
 
         // All Shared Preferences Keys
-        private static final String IS_OFFLINE = "IsOfflineOn";
+        private static final String IS_OFFLINEMODE = "IsOfflineOn";
 
         // User name (make variable public to access from outside)
         public static final String KEY_USER = "user";
@@ -46,9 +46,8 @@ public class SessionManager {
         // Email address (make variable public to access from outside)
         public static final String KEY_PWD = "pwd";
 
-        // Email address (make variable public to access from outside)TODO:...
-
-       // public static final Array KEY_Tickets= {"1", "2"};
+        // Email address (make variable public to access from outside)
+        public static final String KEY_JSON = "json";
 
         // Constructor
         public SessionManager(Context context){
@@ -70,9 +69,22 @@ public class SessionManager {
             // Storing pwd in pref
             editor.putString(KEY_PWD, pwd);
 
+
             // commit changes
             editor.commit();
             System.out.println("Daten gespeichert:"+user + pwd);
+        }
+
+        public void saveJSON(String jsonstring){
+            // Storing login value as TRUE
+            editor.putBoolean(IS_OFFLINEMODE, true);
+
+            // Storing jsonstring in pref
+            editor.putString(KEY_JSON, jsonstring);
+
+            // commit changes
+            editor.commit();
+            System.out.println("Daten gespeichert:"+jsonstring);
         }
 
         /**
@@ -147,6 +159,15 @@ public class SessionManager {
         return user;
     }
 
+    public String getJstring(){
+
+        // Get user name
+        String jstring = pref.getString(KEY_JSON, null);
+
+        // return user
+        return jstring;
+    }
+
         /**
          * Clear session details
          * */
@@ -162,6 +183,11 @@ public class SessionManager {
         // Check for login
         public boolean isUserLoggedIn(){
             return pref.getBoolean(IS_USER_LOGIN, false);
+        }
+
+        // Check for offlinedata
+        public boolean isJSONsaved(){
+            return pref.getBoolean(IS_OFFLINEMODE, false);
         }
 }
 

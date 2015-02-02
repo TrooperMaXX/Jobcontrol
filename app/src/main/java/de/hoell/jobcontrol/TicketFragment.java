@@ -1,16 +1,13 @@
 package de.hoell.jobcontrol;
 
 import android.app.Activity;
+import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.ListFragment;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,17 +16,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
-
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
 import de.hoell.jobcontrol.ticketlist.Tickets;
 
@@ -100,59 +92,7 @@ public class TicketFragment extends ListFragment {
             Status= getStatus(Statusnum);
             DropPos= getDropPos(Statusnum);
             intent.putExtra("value_statusnum", StringStatusnum);
-            /**
-                switch (Statusnum){
 
-                    case 10:
-                        Status = "Unbearbeitet";
-                        DropPos = 0;
-                        break;
-                    case 11:
-                        Status = "Fahrt";
-                        DropPos = 1;
-                        break;
-                    case 12:
-                        Status = "In arbeit";
-                        DropPos = 2;
-                        break;
-                    case 13:
-                        Status = "offen";
-                        DropPos = 3;
-                        break;
-                    case 14:
-                        Status = "Abgeschlossen";
-                        DropPos = 4;
-                        break;
-                    case 15:
-                        Status = "Erledigt";
-                        DropPos = 5;
-                        break;
-                    case 16:
-                        Status = "wartet";
-                        DropPos = 6;
-                        break;
-                    case 17:
-                        Status = "Ware bestellt";
-                        DropPos = 7;
-                        break;
-                    case 18:
-                        Status = "Ware da";
-                        DropPos = 8;
-                        break;
-                    case 19:
-                        Status = "Ware benötigt";
-                        DropPos = 9;
-                        break;
-                    case 20:
-                        Status = "installiert";
-                        DropPos = 10;
-                        break;
-                    case 39:
-                        Status = "gelöscht";
-                        DropPos = 11;
-                        break;
-
-                }**/
 
 
             intent.putExtra("value_status", Status);
@@ -361,11 +301,19 @@ public class TicketFragment extends ListFragment {
 
             Functions Function = new Functions();
             JSONObject json = Function.MyTickets(user);
+            System.out.println("is JSON null?" +json);
+            SessionManager session = new SessionManager(mContext);
+
+
             //Function.isTerminheute();
             // check for login response
             // check log cat fro response
             if (json!=null){
-            Log.d("Create Response", json.toString()); }
+                String jstring = json.toString();
+                System.out.println("is JSONstring null?" +jstring);
+                session.saveJSON(jstring);
+                Log.d("Create Response", json.toString());
+            }
             return json;
 
         }
@@ -382,6 +330,7 @@ public class TicketFragment extends ListFragment {
                         Ticketliste = json.getJSONArray("tickets");
                         for (int i = 0; i < Ticketliste.length(); i++) {
                             JSONObject c = Ticketliste.getJSONObject(i);
+
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
                             //TODO: MACH DAS HIER SCHÖNER.....
@@ -488,7 +437,11 @@ public class TicketFragment extends ListFragment {
                  }/**/
                 setListAdapter(new ArrayAdapter<Tickets>(getActivity(),
                         android.R.layout.simple_list_item_1, android.R.id.text1, ticketsList));
-            }else{ Toast.makeText(mContext, "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
+            }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
+
+                //TODO: automatisch offlinemodus starten
+
+            }
         }
     }
 

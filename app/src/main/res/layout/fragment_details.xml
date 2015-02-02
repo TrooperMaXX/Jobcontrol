@@ -57,7 +57,8 @@
                 android:id="@+id/textViewContentFirma"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Adresse"
@@ -73,7 +74,8 @@
                 android:clickable="true"
                 android:enabled="false"
                 android:autoLink="map"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Standort"
@@ -101,7 +103,8 @@
                 android:id="@+id/textViewContentStandort"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Gerät"
@@ -129,7 +132,8 @@
                 android:id="@+id/textViewContentModell"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Seriennummer"
@@ -157,7 +161,8 @@
                 android:id="@+id/textViewContentSerienummer"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Stoerung"
@@ -185,7 +190,8 @@
                 android:id="@+id/textViewContentStoerung"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Ansprechpartner"
@@ -213,7 +219,8 @@
                 android:id="@+id/textViewContentAnsprechpartner"
 
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow android:id="@+id/Telefonnummer"
@@ -243,7 +250,8 @@
                 android:clickable="true"
                 android:enabled="false"
                 android:autoLink="phone"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow
@@ -273,7 +281,8 @@
 
                 android:clickable="true"
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow
@@ -300,7 +309,8 @@
                 android:id="@+id/textViewContentAuftragsnr"
                 android:clickable="true"
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
 
@@ -328,7 +338,8 @@
                 android:id="@+id/textViewContentWvnr"
                 android:clickable="true"
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
 
@@ -361,7 +372,8 @@
 
                 android:clickable="true"
                 android:enabled="false"
-                android:layout_column="0" />
+                android:layout_column="0"
+                android:textColor="#383838" />
         </TableRow>
 
         <TableRow

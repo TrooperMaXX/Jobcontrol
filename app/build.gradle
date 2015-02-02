@@ -15,7 +15,7 @@ android {
         applicationId 'de.hoell.jobcontrol'
         minSdkVersion 14
         targetSdkVersion 19
-        versionName '0.9.1 BETA'
+        versionName '0.9.5 BETA'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -23,6 +23,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             versionNameSuffix 'test123'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
     productFlavors {

@@ -89,7 +89,7 @@
     <string name="annahme">Annahme durch</string>
     <string name="button_map">Maps</string>
     <string name="button_save">Speichern</string>
-    <string name="auftragsnr">AuftrgasNr</string>
+    <string name="auftragsnr">AuftragsNr</string>
     <string name="wvnr">Wartungs Vertrags Typ</string>
 
 </resources>

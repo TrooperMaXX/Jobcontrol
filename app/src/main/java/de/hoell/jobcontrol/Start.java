@@ -49,6 +49,17 @@ public class Start extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        Functions Function = new Functions();
+
+        if( Function.isNetworkOnline(Start.this)){
+
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();
+
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         session = new SessionManager(this);
@@ -117,7 +128,9 @@ public class Start extends Activity {
         @Override
         protected void onPostExecute(JSONObject json) {
             pDialog.dismiss();
+            if (json!=null){
             try {
+
                 int success = json.getInt(TAG_SUCCESS);
 
                 if (success == 1) {
@@ -145,6 +158,7 @@ public class Start extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
         }
     }
 

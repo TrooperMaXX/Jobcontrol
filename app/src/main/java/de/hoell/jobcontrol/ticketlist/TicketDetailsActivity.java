@@ -36,6 +36,9 @@ private static final String TAG_SUCCESS = "success";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         super.onCreate(savedInstanceState);
@@ -117,8 +120,9 @@ private static final String TAG_SUCCESS = "success";
         Button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Functions Function = new Functions();
 
-               if( isNetworkOnline()){
+               if( Function.isNetworkOnline(TicketDetailsActivity.this)){
                 new JSONSaveDetails().execute();
                }
                else {
@@ -276,7 +280,7 @@ private static final String TAG_SUCCESS = "success";
     }
 
 
-    public boolean isNetworkOnline() {
+   /* public boolean isNetworkOnline() {
         boolean status=false;
         try{
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -294,6 +298,6 @@ private static final String TAG_SUCCESS = "success";
         }
         return status;
 
-    }
+    }*/
 
 }

@@ -3,6 +3,8 @@ package de.hoell.jobcontrol.session;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import java.lang.reflect.Array;
 import java.util.HashMap;
 
 
@@ -35,11 +37,18 @@ public class SessionManager {
         // All Shared Preferences Keys
         private static final String IS_USER_LOGIN = "IsUserLoggedIn";
 
+        // All Shared Preferences Keys
+        private static final String IS_OFFLINE = "IsOfflineOn";
+
         // User name (make variable public to access from outside)
         public static final String KEY_USER = "user";
 
         // Email address (make variable public to access from outside)
         public static final String KEY_PWD = "pwd";
+
+        // Email address (make variable public to access from outside)TODO:...
+
+       // public static final Array KEY_Tickets= {"1", "2"};
 
         // Constructor
         public SessionManager(Context context){
@@ -92,8 +101,22 @@ public class SessionManager {
             return false;
         }
     */
+/*/Create login session
+        public void saveTickets(Array Tickets){
+            // Storing login value as TRUE
+            editor.putBoolean(IS_OFFLINE, true);
 
+            // Storing user in pref
+            editor.putString(KEY_USER, user);
 
+            // Storing pwd in pref
+            editor.putString(KEY_PWD, pwd);
+
+            // commit changes
+            editor.commit();
+            System.out.println("Daten gespeichert:"+user + pwd);
+        }
+*/
         /**
          * Get stored session data
          * */

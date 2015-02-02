@@ -199,7 +199,7 @@
                         fragment = new TicketFragment();
                         break;
                     case 1:
-                        fragment = new Kalender();
+                        fragment = new OfflineFragment();
                         break;
                     case 2:
                         fragment = new NewTickets();

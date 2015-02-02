@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,7 @@ public class TicketFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new JSONMyTickets().execute();
+        new JSONMyTickets(getActivity().getApplicationContext()).execute();
     }
 
 
@@ -342,11 +343,18 @@ public class TicketFragment extends ListFragment {
 
     public class JSONMyTickets extends AsyncTask<String, String, JSONObject> {
 
+        private Context mContext;
+        public JSONMyTickets (Context context){
+            mContext = context;
+        }
+
 
 
 
         @Override
         protected JSONObject doInBackground(String... args) {
+
+
             String user;
 
             user = de.hoell.jobcontrol.Start.user;
@@ -356,129 +364,131 @@ public class TicketFragment extends ListFragment {
             //Function.isTerminheute();
             // check for login response
             // check log cat fro response
-            Log.d("Create Response", json.toString());
+            if (json!=null){
+            Log.d("Create Response", json.toString()); }
             return json;
+
         }
 
         @Override
         protected void onPostExecute(JSONObject json) {
+            if (json != null) {
+                try {
 
-            try {
+                    int success = json.getInt(TAG_SUCCESS);
 
-                int success = json.getInt(TAG_SUCCESS);
+                    if (success == 1) {
 
-                if (success == 1) {
+                        Ticketliste = json.getJSONArray("tickets");
+                        for (int i = 0; i < Ticketliste.length(); i++) {
+                            JSONObject c = Ticketliste.getJSONObject(i);
+                            String Firma = c.getString("Firma");
+                            int Statusnum = c.getInt("Status");
+                            //TODO: MACH DAS HIER SCHÖNER.....
+                            switch (Statusnum) {
 
-                    Ticketliste = json.getJSONArray("tickets");
-                    for (int i = 0; i < Ticketliste.length(); i++) {
-                        JSONObject c = Ticketliste.getJSONObject(i);
-                        String Firma = c.getString("Firma");
-                        int Statusnum = c.getInt("Status");
-                        //TODO: MACH DAS HIER SCHÖNER.....
-                        switch (Statusnum){
+                                case 10:
+                                    Status = "Unbearbeitet";
+                                    DropPos = 0;
+                                    break;
+                                case 11:
+                                    Status = "Fahrt";
+                                    DropPos = 1;
+                                    break;
+                                case 12:
+                                    Status = "In arbeit";
+                                    DropPos = 2;
+                                    break;
+                                case 13:
+                                    Status = "offen";
+                                    DropPos = 3;
+                                    break;
+                                case 14:
+                                    Status = "Abgeschlossen";
+                                    DropPos = 4;
+                                    break;
+                                case 15:
+                                    Status = "Erledigt";
+                                    DropPos = 5;
+                                    break;
+                                case 16:
+                                    Status = "wartet";
+                                    DropPos = 6;
+                                    break;
+                                case 17:
+                                    Status = "Ware bestellt";
+                                    DropPos = 7;
+                                    break;
+                                case 18:
+                                    Status = "Ware da";
+                                    DropPos = 8;
+                                    break;
+                                case 19:
+                                    Status = "Ware benötigt";
+                                    DropPos = 9;
+                                    break;
+                                case 20:
+                                    Status = "installiert";
+                                    DropPos = 10;
+                                    break;
+                                case 39:
+                                    Status = "gelöscht";
+                                    DropPos = 11;
+                                    break;
 
-                            case 10:
-                                Status = "Unbearbeitet";
-                                DropPos = 0;
-                                break;
-                            case 11:
-                                Status = "Fahrt";
-                                DropPos = 1;
-                                break;
-                            case 12:
-                                Status = "In arbeit";
-                                DropPos = 2;
-                                break;
-                            case 13:
-                                Status = "offen";
-                                DropPos = 3;
-                                break;
-                            case 14:
-                                Status = "Abgeschlossen";
-                                DropPos = 4;
-                                break;
-                            case 15:
-                                Status = "Erledigt";
-                                DropPos = 5;
-                                break;
-                            case 16:
-                                Status = "wartet";
-                                DropPos = 6;
-                                break;
-                            case 17:
-                                Status = "Ware bestellt";
-                                DropPos = 7;
-                                break;
-                            case 18:
-                                Status = "Ware da";
-                                DropPos = 8;
-                                break;
-                            case 19:
-                                Status = "Ware benötigt";
-                                DropPos = 9;
-                                break;
-                            case 20:
-                                Status = "installiert";
-                                DropPos = 10;
-                                break;
-                            case 39:
-                                Status = "gelöscht";
-                                DropPos = 11;
-                                break;
+                            }
+
+                            String Modell = c.getString("Modell");
+
+
+                            ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
+                            ListView lv = getListView();
+                            /**   if (Statusnum > 11) {
+
+                             lv.setBackgroundColor(Color.RED);
+                             }
+                             else {
+                             lv.setBackgroundColor(Color.WHITE);
+                             }
+
+                             String Termintag = c.getString("terminTag");
+                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                             Date Terminsdf = sdf.parse(Termintag);
+
+                             Functions Function = new Functions();
+
+                             boolean isheute =Function.isTerminheute(Terminsdf);
+
+                             if (isheute){
+                             System.out.println("yay");
+                             //TODO: If this true should this row in the listAdapter colored red ...
+                             }/**/
+
+
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put("Firma", Firma);
+
+                            map.put("Status", Status);
+
+                            TheTickets.add(map);
+
 
                         }
+                        System.out.println("Abfrage" + TheTickets);
 
-                        String Modell = c.getString("Modell");
-
-
-                        ticketsList.add(new Tickets(Firma+ ", " +Modell+ ", " +  Status));
-                        ListView lv = getListView();
-                        /**   if (Statusnum > 11) {
-
-                            lv.setBackgroundColor(Color.RED);
-                        }
-                        else {
-                            lv.setBackgroundColor(Color.WHITE);
-                        }
-
-                        String Termintag = c.getString("terminTag");
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date Terminsdf = sdf.parse(Termintag);
-
-                        Functions Function = new Functions();
-
-                        boolean isheute =Function.isTerminheute(Terminsdf);
-
-                        if (isheute){
-                            System.out.println("yay");
-                            //TODO: If this true should this row in the listAdapter colored red ...
-                        }/**/
+                    } else {
 
 
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("Firma", Firma);
+                    }
 
-                        map.put("Status", Status);
-
-                        TheTickets.add(map);
-
-
-
-                    }System.out.println("Abfrage" + TheTickets);
-
-                }
-                else{
-
-
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }/** catch (ParseException e) {
-                e.printStackTrace();
-            }/**/
-            setListAdapter(new ArrayAdapter<Tickets>(getActivity(),
-                    android.R.layout.simple_list_item_1, android.R.id.text1, ticketsList));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }/** catch (ParseException e) {
+                 e.printStackTrace();
+                 }/**/
+                setListAdapter(new ArrayAdapter<Tickets>(getActivity(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, ticketsList));
+            }else{ Toast.makeText(mContext, "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
         }
     }
 

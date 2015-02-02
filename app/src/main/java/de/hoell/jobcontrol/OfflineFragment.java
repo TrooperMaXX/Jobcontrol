@@ -10,15 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Kalender extends Fragment {
+public class OfflineFragment extends Fragment {
 
-    public Kalender(){}
+    public OfflineFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_kalender, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_offline, container, false);
 
         return rootView;
     }

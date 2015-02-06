@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -104,6 +105,7 @@ public class TicketFragment extends ListFragment {
             String Strasse = extra.getString("Straße");
             String Plz = extra.getString("Plz");
             String Ort = extra.getString("Ort");
+
             String Adresse = Strasse + "\n" + Plz + " " + Ort;
 
             String uri = "geo:"+ 0 + "," + 0 + "?q="+ Strasse + "%20" + Plz + "%20"+ Ort;
@@ -389,6 +391,13 @@ public class TicketFragment extends ListFragment {
 
                             String Modell = c.getString("Modell");
 
+                            String Strasse = c.getString("Straße");
+                            String Plz = c.getString("Plz");
+                            String Ort = c.getString("Ort");
+
+                            String Adresse = Strasse + "              " + Plz + " " + Ort;
+
+                            String Fehler = c.getString("Stoerung");
 
                             ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
                             ListView lv = getListView();
@@ -416,8 +425,13 @@ public class TicketFragment extends ListFragment {
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
-
                             map.put("Status", Status);
+                            //TODO: STATUS RECHTS NEBEN GERÄT
+                            //TODO: Status farbig
+                            map.put("Model",Modell);
+                            map.put("Adresse",Adresse);
+                            //TODO: PLZ UND ORT NACH RECHTS
+                            map.put("Fehler",Fehler);
 
                             TheTickets.add(map);
 
@@ -435,8 +449,8 @@ public class TicketFragment extends ListFragment {
                 }/** catch (ParseException e) {
                  e.printStackTrace();
                  }/**/
-                setListAdapter(new ArrayAdapter<Tickets>(getActivity(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, ticketsList));
+                setListAdapter(new SimpleAdapter(getActivity(),TheTickets,R.layout.row_list,
+                        new String[] {"Firma", "Status", "Adresse", "Model", "Fehler"}, new int[] {R.id.FIRMA_CELL, R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
 
                 //TODO: automatisch offlinemodus starten

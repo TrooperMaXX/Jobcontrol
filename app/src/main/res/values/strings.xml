@@ -53,7 +53,7 @@
         <item>Fahrt</item>          <!-- 1  -->
         <item>In Arbeit</item>      <!-- 2  -->
         <item>offen</item>          <!-- 3  -->
-        <item>Abgeschlossen</item>  <!-- 4  -->
+
         <item>Erledigt</item>       <!-- 5  -->
         <item>wartet</item>         <!-- 6  -->
         <item>Ware bestellt</item>  <!-- 7  -->
@@ -91,5 +91,7 @@
     <string name="button_save">Speichern</string>
     <string name="auftragsnr">AuftragsNr</string>
     <string name="wvnr">Wartungs Vertrags Typ</string>
+    <string name="angenommen">Angenommen am</string>
+    <string name="button_his">Historie</string>
 
 </resources>

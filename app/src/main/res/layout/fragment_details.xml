@@ -255,6 +255,34 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/Angenommenam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/angenommen"
+                android:id="@+id/textViewAngenommen"
+                android:textStyle="normal|bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_text"
+                android:id="@+id/textViewContentAngenommen"
+                android:clickable="true"
+                android:enabled="false"
+                android:layout_column="0"
+                android:textColor="#383838" />
+        </TableRow>
+
+        <TableRow
         android:id="@+id/Termin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -390,7 +418,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/button_maps"
-
                     android:text="@string/button_map" />
 
                 <Button
@@ -400,6 +427,14 @@
                     android:text="@string/button_save"
                     android:id="@+id/button_save"
                     />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_his"
+                    android:id="@+id/button_his"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </TableRow>

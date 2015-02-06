@@ -363,37 +363,34 @@ public class OfflineFragment extends ListFragment {
                 Status = "offen";
                 DropPos = 3;
                 break;
-            case 14:
-                Status = "Abgeschlossen";
-                DropPos = 4;
-                break;
+
             case 15:
                 Status = "Erledigt";
-                DropPos = 5;
+                DropPos = 4;
                 break;
             case 16:
                 Status = "wartet";
-                DropPos = 6;
+                DropPos = 5;
                 break;
             case 17:
                 Status = "Ware bestellt";
-                DropPos = 7;
+                DropPos = 6;
                 break;
             case 18:
                 Status = "Ware da";
-                DropPos = 8;
+                DropPos = 7;
                 break;
             case 19:
                 Status = "Ware benötigt";
-                DropPos = 9;
+                DropPos = 8;
                 break;
             case 20:
                 Status = "installiert";
-                DropPos = 10;
+                DropPos = 9;
                 break;
             case 39:
                 Status = "gelöscht";
-                DropPos = 11;
+                DropPos = 10;
                 break;
 
         }
@@ -420,43 +417,39 @@ public class OfflineFragment extends ListFragment {
                 Status = "offen";
                 DropPos = 3;
                 break;
-            case 14:
-                Status = "Abgeschlossen";
-                DropPos = 4;
-                break;
+
             case 15:
                 Status = "Erledigt";
-                DropPos = 5;
+                DropPos = 4;
                 break;
             case 16:
                 Status = "wartet";
-                DropPos = 6;
+                DropPos = 5;
                 break;
             case 17:
                 Status = "Ware bestellt";
-                DropPos = 7;
+                DropPos = 6;
                 break;
             case 18:
                 Status = "Ware da";
-                DropPos = 8;
+                DropPos = 7;
                 break;
             case 19:
                 Status = "Ware benötigt";
-                DropPos = 9;
+                DropPos = 8;
                 break;
             case 20:
                 Status = "installiert";
-                DropPos = 10;
+                DropPos = 9;
                 break;
             case 39:
                 Status = "gelöscht";
-                DropPos = 11;
+                DropPos = 10;
                 break;
 
         }
 
         return DropPos;
     }
-
 
 }

@@ -34,8 +34,9 @@ import java.util.TimeZone;
         private static String login_tag = "login";
         private static String mytickets_tag = "mytickets";
         private static String savedetails_tag = "savedetails";
+        private static String historie_tag = "historie";
 
-        // constructor
+    // constructor
         public Functions(){
             jsonParser = new JSONParser();
         }
@@ -135,7 +136,21 @@ import java.util.TimeZone;
 
     }
 
+    public JSONObject Historie(String serienummer) {
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", historie_tag));
+        params.add(new BasicNameValuePair("seriennummer", serienummer));
+
+        System.out.println("seriennummer"+serienummer);
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("SeriennummerJSON", json.toString());
+        // return json
+        return json;
+
     }
+}
 
 
 

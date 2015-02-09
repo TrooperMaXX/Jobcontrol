@@ -14,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hoell.jobcontrol.session.SessionManager;
@@ -32,6 +34,7 @@ public class OfflineFragment extends ListFragment {
     private static final String TAG_SUCCESS = "success";
     JSONArray Ticketliste = null;
     List<Tickets> ticketsList = new ArrayList<Tickets>();
+    ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
     String Status = "Unbearbeitet";
     int DropPos= 0;
     private OnTicketInteractionListener mListener;
@@ -113,6 +116,26 @@ public class OfflineFragment extends ListFragment {
                             }
 
                             String Modell = c.getString("Modell");
+                            String Strasse = c.getString("Straße");
+                            String Plz = c.getString("Plz");
+                            String Ort = c.getString("Ort");
+                            String ort = Plz + " " + Ort;
+                            String Fehler = c.getString("Stoerung");
+
+
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put("Firma", Firma);
+                            map.put("Status", Status);
+
+                            //TODO: Status farbig
+                            map.put("Model",Modell);
+                            map.put("Adresse",Strasse);
+                            map.put("Ort",ort);
+
+                            map.put("Fehler",Fehler);
+
+                            TheTickets.add(map);
+
 
 
                             ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
@@ -125,8 +148,9 @@ public class OfflineFragment extends ListFragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            setListAdapter(new ArrayAdapter<Tickets>(getActivity(),
-                    android.R.layout.simple_list_item_1, android.R.id.text1, ticketsList));
+            setListAdapter(new SimpleAdapter(getActivity(),TheTickets,R.layout.row_list,
+                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler"},
+                    new int[] {R.id.FIRMA_CELL, R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL}));
             }
 
         }
@@ -176,6 +200,7 @@ public class OfflineFragment extends ListFragment {
             String Strasse = extra.getString("Straße");
             String Plz = extra.getString("Plz");
             String Ort = extra.getString("Ort");
+
             String Adresse = Strasse + "\n" + Plz + " " + Ort;
 
             String uri = "geo:"+ 0 + "," + 0 + "?q="+ Strasse + "%20" + Plz + "%20"+ Ort;
@@ -207,6 +232,9 @@ public class OfflineFragment extends ListFragment {
 
             String ID = extra.getString("ID");
             intent.putExtra("value_id", ID);
+
+            String Angenommen = extra.getString("Datum");
+            intent.putExtra("value_angenommen", Angenommen);
 
             String Termin ="";
             if (Terminende == "null" && Termintag != "null")
@@ -316,6 +344,8 @@ public class OfflineFragment extends ListFragment {
             intent.putExtra("value_annahme", Annahme);
 
             getActivity().startActivity(intent);
+
+
 
         } catch (JSONException e) {
             e.printStackTrace();

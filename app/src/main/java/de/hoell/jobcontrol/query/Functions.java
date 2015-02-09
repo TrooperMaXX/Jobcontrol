@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -99,7 +100,7 @@ import java.util.TimeZone;
             int month_today = cal.get(Calendar.MONTH) + 1;
             int day_today = cal.get(Calendar.DATE);
             String date_today = year_today + "-" + month_today + "-" + day_today;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
             Date heute = null;
             try {
                 heute = sdf.parse(date_today);

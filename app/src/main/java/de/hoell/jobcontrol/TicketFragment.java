@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,10 +20,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
+import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
@@ -34,12 +42,12 @@ public class TicketFragment extends ListFragment {
     private static final String TAG_SUCCESS = "success";
 
     String Status = "Unbearbeitet";
-    int DropPos= 0;
+    public int DropPos= 0;
 
     ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
     List<Tickets> ticketsList = new ArrayList<Tickets>();
 
-    JSONArray Ticketliste = null;
+    public JSONArray Ticketliste = null;
 
 
 
@@ -335,6 +343,10 @@ public class TicketFragment extends ListFragment {
                         Ticketliste = json.getJSONArray("tickets");
                         for (int i = 0; i < Ticketliste.length(); i++) {
                             JSONObject c = Ticketliste.getJSONObject(i);
+                            String Farbe="#ffffffff";
+
+                            int imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+
 
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
@@ -344,43 +356,61 @@ public class TicketFragment extends ListFragment {
                                 case 10:
                                     Status = "Unbearbeitet";
                                     DropPos = 0;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 11:
                                     Status = "Fahrt";
                                     DropPos = 1;
+                                    Farbe="#ffff4d00";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 12:
                                     Status = "In arbeit";
                                     DropPos = 2;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 13:
                                     Status = "offen";
                                     DropPos = 3;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
-
                                 case 15:
                                     Status = "Erledigt";
                                     DropPos = 4;
+
                                     break;
                                 case 16:
                                     Status = "wartet";
                                     DropPos = 5;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 17:
                                     Status = "Ware bestellt";
                                     DropPos = 6;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 18:
                                     Status = "Ware da";
                                     DropPos = 7;
+                                    Farbe="#ffff4d00";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 19:
                                     Status = "Ware benötigt";
                                     DropPos = 8;
+                                    Farbe="#ffffffff";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 20:
                                     Status = "installiert";
                                     DropPos = 9;
+                                    Farbe="#FF0000";
+                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 39:
                                     Status = "gelöscht";
@@ -395,43 +425,50 @@ public class TicketFragment extends ListFragment {
                             String Plz = c.getString("Plz");
                             String Ort = c.getString("Ort");
 
-                            String Adresse = Strasse + "              " + Plz + " " + Ort;
+                            String ort = Plz + " " + Ort;
 
                             String Fehler = c.getString("Stoerung");
 
                             ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
-                            ListView lv = getListView();
-                            /**   if (Statusnum > 11) {
-
-                             lv.setBackgroundColor(Color.RED);
-                             }
-                             else {
-                             lv.setBackgroundColor(Color.WHITE);
-                             }
-
+                            int hintergrundid ;
                              String Termintag = c.getString("terminTag");
-                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                             Date Terminsdf = sdf.parse(Termintag);
+                            Log.e("terminTag",":"+Termintag);
+                            if (Termintag != null){
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
+                                Date Terminsdf = sdf.parse(Termintag);
 
-                             Functions Function = new Functions();
+                                Functions Function = new Functions();
 
-                             boolean isheute =Function.isTerminheute(Terminsdf);
+                                boolean isheute =Function.isTerminheute(Terminsdf);
 
-                             if (isheute){
-                             System.out.println("yay");
-                             //TODO: If this true should this row in the listAdapter colored red ...
-                             }/**/
+                                if (isheute){
+                                    System.out.println("yay");
+                                    hintergrundid= mContext.getResources().getIdentifier("ic_rot","mipmap","de.hoell.jobcontrol");
+                                    //TODO: If this true should this row in the listAdapter colored red ...
+                                }
+                                else{
+                                    hintergrundid= mContext.getResources().getIdentifier("ic_weis","mipmap","de.hoell.jobcontrol");
+                                }
+
+                            }else{
+                                hintergrundid= mContext.getResources().getIdentifier("ic_weis","mipmap","de.hoell.jobcontrol");
+                            }
+
+
 
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
-                            //TODO: STATUS RECHTS NEBEN GERÄT
                             //TODO: Status farbig
                             map.put("Model",Modell);
-                            map.put("Adresse",Adresse);
-                            //TODO: PLZ UND ORT NACH RECHTS
+                            map.put("Adresse",Strasse);
+                            map.put("Ort",ort);
                             map.put("Fehler",Fehler);
+                            map.put("Farbe",Farbe);
+                            map.put("Status_ic",String.valueOf(imgid));
+                            map.put("Hintergrund",String.valueOf(hintergrundid));
+                            Log.e("Statusid",""+imgid);
 
                             TheTickets.add(map);
 
@@ -444,19 +481,30 @@ public class TicketFragment extends ListFragment {
 
                     }
 
-                } catch (JSONException e) {
+                } catch (JSONException | ParseException e) {
                     e.printStackTrace();
-                }/** catch (ParseException e) {
-                 e.printStackTrace();
-                 }/**/
-                setListAdapter(new SimpleAdapter(getActivity(),TheTickets,R.layout.row_list,
-                        new String[] {"Firma", "Status", "Adresse", "Model", "Fehler"}, new int[] {R.id.FIRMA_CELL, R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL}));
+                }
+                setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
+                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
+                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
 
                 //TODO: automatisch offlinemodus starten
 
             }
+            ListView lv = getListView();
+            ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));
+            lv.setDivider(sage);
+            lv.setDividerHeight(2);
+            /*ListView listView = getListView();
+            if(listView!= null)
+            { if(DropPos==0)
+                listView.setBackgroundColor(0xff32ff21);
+                Log.e("listView","YAAAAYYY NOT NULL"+listView);
+            }*/
         }
+
+
     }
 
 

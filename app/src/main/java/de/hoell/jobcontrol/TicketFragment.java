@@ -443,15 +443,15 @@ public class TicketFragment extends ListFragment {
 
                                 if (isheute){
                                     System.out.println("yay");
-                                    hintergrundid= mContext.getResources().getIdentifier("ic_rot","mipmap","de.hoell.jobcontrol");
+                                    hintergrundid= mContext.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
                                     //TODO: If this true should this row in the listAdapter colored red ...
                                 }
                                 else{
-                                    hintergrundid= mContext.getResources().getIdentifier("ic_weis","mipmap","de.hoell.jobcontrol");
+                                    hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                 }
 
                             }else{
-                                hintergrundid= mContext.getResources().getIdentifier("ic_weis","mipmap","de.hoell.jobcontrol");
+                                hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                             }
 
 
@@ -495,7 +495,7 @@ public class TicketFragment extends ListFragment {
             ListView lv = getListView();
             ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));
             lv.setDivider(sage);
-            lv.setDividerHeight(2);
+            lv.setDividerHeight(10);
             /*ListView listView = getListView();
             if(listView!= null)
             { if(DropPos==0)

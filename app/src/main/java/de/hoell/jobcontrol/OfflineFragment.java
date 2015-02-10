@@ -4,26 +4,28 @@ package de.hoell.jobcontrol;
  * Created by Hoell on 16.10.2014.
  */
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
+import de.hoell.jobcontrol.adapter.SpecialAdapter;
+import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
 import de.hoell.jobcontrol.ticketlist.Tickets;
@@ -59,6 +61,10 @@ public class OfflineFragment extends ListFragment {
                         for (int i = 0; i < Ticketliste.length(); i++) {
                             JSONObject c = Ticketliste.getJSONObject(i);
 
+
+                            int imgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+
+
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
                             //TODO: MACH DAS HIER SCHÖNER.....
@@ -67,90 +73,134 @@ public class OfflineFragment extends ListFragment {
                                 case 10:
                                     Status = "Unbearbeitet";
                                     DropPos = 0;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 11:
                                     Status = "Fahrt";
                                     DropPos = 1;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 12:
                                     Status = "In arbeit";
                                     DropPos = 2;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 13:
                                     Status = "offen";
                                     DropPos = 3;
-                                    break;
-                                case 14:
-                                    Status = "Abgeschlossen";
-                                    DropPos = 4;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 15:
                                     Status = "Erledigt";
-                                    DropPos = 5;
+                                    DropPos = 4;
+
                                     break;
                                 case 16:
                                     Status = "wartet";
-                                    DropPos = 6;
+                                    DropPos = 5;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 17:
                                     Status = "Ware bestellt";
-                                    DropPos = 7;
+                                    DropPos = 6;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 18:
                                     Status = "Ware da";
-                                    DropPos = 8;
+                                    DropPos = 7;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 19:
                                     Status = "Ware benötigt";
-                                    DropPos = 9;
+                                    DropPos = 8;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 20:
                                     Status = "installiert";
-                                    DropPos = 10;
+                                    DropPos = 9;
+
+                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 39:
                                     Status = "gelöscht";
-                                    DropPos = 11;
+                                    DropPos = 10;
                                     break;
 
                             }
 
                             String Modell = c.getString("Modell");
+
                             String Strasse = c.getString("Straße");
                             String Plz = c.getString("Plz");
                             String Ort = c.getString("Ort");
+
                             String ort = Plz + " " + Ort;
+
                             String Fehler = c.getString("Stoerung");
+
+                            ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
+                            int hintergrundid ;
+                            String Termintag = c.getString("terminTag");
+                            Log.e("terminTag", ":" + Termintag);
+                            if (Termintag != null){
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
+                                Date Terminsdf = sdf.parse(Termintag);
+
+                                Functions Function = new Functions();
+
+                                boolean isheute =Function.isTerminheute(Terminsdf);
+
+                                if (isheute){
+                                    System.out.println("yay");
+                                    hintergrundid= this.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+                                    //TODO: If this true should this row in the listAdapter colored red ...
+                                }
+                                else{
+                                    hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                }
+
+                            }else{
+                                hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                            }
+
+
 
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
-
                             //TODO: Status farbig
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);
-
                             map.put("Fehler",Fehler);
+                            map.put("Status_ic",String.valueOf(imgid));
+                            map.put("Hintergrund",String.valueOf(hintergrundid));
+                            Log.e("Statusid",""+imgid);
 
                             TheTickets.add(map);
 
 
-
-                            ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
-
-                            System.out.println("ticket ["+i+"]" +Firma + ", " + Modell + ", " + Status);
                         }
-
+                        System.out.println("Abfrage" + TheTickets);
 
                     }
-                } catch (JSONException e) {
+                } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
-            setListAdapter(new SimpleAdapter(getActivity(),TheTickets,R.layout.row_list,
-                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler"},
-                    new int[] {R.id.FIRMA_CELL, R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL}));
+
+            setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
+                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
+                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
+
             }
 
         }
@@ -355,6 +405,10 @@ public class OfflineFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
+            ListView lv = getListView();
+            ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.ticket_list_divider));
+            lv.setDivider(sage);
+            lv.setDividerHeight(10);
 
         }
     }

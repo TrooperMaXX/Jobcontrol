@@ -145,17 +145,15 @@
                 // Handle action bar actions click
                 switch (item.getItemId()) {
                     case R.id.action_info:
-                        Toast.makeText(getApplicationContext(), "Version 0.0.6", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Version 0.9.9", Toast.LENGTH_SHORT).show();
                         return true;
 
 
-                    case R.id.action_search:
-                        Toast.makeText(getApplicationContext(), "Searching...", Toast.LENGTH_SHORT).show();
-                        return true;
 
 
                     case R.id.action_refresh:
                         Toast.makeText(getApplicationContext(), "Refresh...", Toast.LENGTH_SHORT).show();
+                        displayView(0);
                         return true;
 
                     case R.id.action_logout:
@@ -182,7 +180,7 @@
             public boolean onPrepareOptionsMenu(Menu menu) {
                 // if nav drawer is opened, hide the action items
                 boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-                menu.findItem(R.id.action_search).setVisible(!drawerOpen);
+
                 menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
                 menu.findItem(R.id.action_logout).setVisible(drawerOpen);
                 return super.onPrepareOptionsMenu(menu);

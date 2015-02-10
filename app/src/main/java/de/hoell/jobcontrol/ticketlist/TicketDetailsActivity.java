@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
+
 import de.hoell.jobcontrol.query.Functions;
 
 public class TicketDetailsActivity extends Activity {
@@ -101,6 +103,7 @@ private static final String TAG_SUCCESS = "success";
 
         TextView textViewTelefonnummer = (TextView) findViewById(R.id.textViewContentTelefonnummer);
         textViewTelefonnummer.setText(Telefonnummer);
+        Linkify.addLinks(textViewTelefonnummer, Linkify.PHONE_NUMBERS);
 
         TextView textViewAngenommen = (TextView) findViewById(R.id.textViewContentAngenommen);
         textViewAngenommen.setText(Angenommen);
@@ -326,7 +329,8 @@ private static final String TAG_SUCCESS = "success";
             ListView list = (ListView) findViewById(android.R.id.list);
             ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> map = new HashMap<String, String>();
-
+           //Intent intent = new Intent(mContext, HistorieFragment.class);
+            //intent.putExtra("value_wvnr", String.valueOf(jsonh));
             try {
 
                 int success = jsonh.getInt(TAG_SUCCESS);

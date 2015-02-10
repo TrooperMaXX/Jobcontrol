@@ -150,7 +150,13 @@ public class OfflineFragment extends ListFragment {
                             int hintergrundid ;
                             String Termintag = c.getString("terminTag");
                             Log.e("terminTag", ":" + Termintag);
-                            if (Termintag != null){
+                            if(Termintag.equals("null"))
+                            {
+                                Termintag="---";
+
+                                hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                            }else
+                            {
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
                                 Date Terminsdf = sdf.parse(Termintag);
 
@@ -167,8 +173,6 @@ public class OfflineFragment extends ListFragment {
                                     hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                 }
 
-                            }else{
-                                hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                             }
 
 
@@ -313,10 +317,19 @@ public class OfflineFragment extends ListFragment {
             String Annahmekue = extra.getString("annahmedurch");
             String Annahme = null;
             if (Annahmekue.equals("mt")){
-                Annahme="Tomas Mersch";
-            }else if(Annahmekue.equals("am")){
+                Annahme="Thomas Mersch";
+            }
+            else if(Annahmekue.equals("mt")){
+
+                Annahme="Thomas Mersch";
+            }
+            else if(Annahmekue.equals("am")){
 
                 Annahme="Andrej Makarevic";
+            }
+            else if(Annahmekue.equals("ubu")){
+
+                Annahme="Ursula Büchel";
             }
             else if(Annahmekue.equals("ao")){
 
@@ -329,6 +342,10 @@ public class OfflineFragment extends ListFragment {
             else if(Annahmekue.equals("ce")){
 
                 Annahme="Christian Einbock";
+            }
+            else if(Annahmekue.equals("ch")){
+
+                Annahme="Christelle Heimlich";
             }
             else if(Annahmekue.equals("dg")){
 
@@ -389,6 +406,9 @@ public class OfflineFragment extends ListFragment {
             else if(Annahmekue.equals("tm")){
 
                 Annahme="Torsten Mehlhorn";
+            }
+            else{
+                Annahme=Annahmekue;
             }
 
             intent.putExtra("value_annahme", Annahme);

@@ -1,6 +1,8 @@
 package de.hoell.jobcontrol;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -150,12 +152,12 @@ public class TicketFragment extends ListFragment {
             intent.putExtra("value_angenommen", Angenommen);
 
             String Termin ="";
-            if (Terminende == "null" && Termintag != "null")
+            if (Terminende.equals("null") && !Termintag.equals("null"))
             {
                 Termin = Termintag;
 
             }
-            else if(Termintag == "null"){
+            else if(Termintag.equals("null")){
 
                 Termin = "---";
             }
@@ -176,10 +178,18 @@ public class TicketFragment extends ListFragment {
             String Annahmekue = extra.getString("annahmedurch");
             String Annahme = null;
           if (Annahmekue.equals("mt")){
-               Annahme="Tomas Mersch";
+               Annahme="Thomas Mersch";
             }else if(Annahmekue.equals("am")){
 
               Annahme="Andrej Makarevic";
+          }
+          else if(Annahmekue.equals("mt")){
+
+              Annahme="Thomas Mersch";
+          }
+          else if(Annahmekue.equals("ubu")){
+
+              Annahme="Ursula Büchel";
           }
           else if(Annahmekue.equals("ao")){
 
@@ -192,6 +202,10 @@ public class TicketFragment extends ListFragment {
           else if(Annahmekue.equals("ce")){
 
               Annahme="Christian Einbock";
+          }
+          else if(Annahmekue.equals("ch")){
+
+              Annahme="Christelle Heimlich";
           }
           else if(Annahmekue.equals("dg")){
 
@@ -252,6 +266,8 @@ public class TicketFragment extends ListFragment {
           else if(Annahmekue.equals("tm")){
 
               Annahme="Torsten Mehlhorn";
+          }else{
+              Annahme=Annahmekue;
           }
 
             intent.putExtra("value_annahme", Annahme);
@@ -433,7 +449,14 @@ public class TicketFragment extends ListFragment {
                             int hintergrundid ;
                              String Termintag = c.getString("terminTag");
                             Log.e("terminTag",":"+Termintag);
-                            if (Termintag != null){
+
+                            if(Termintag.equals("null"))
+                            {
+                                Termintag="---";
+
+                                hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                            }else
+                           {
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
                                 Date Terminsdf = sdf.parse(Termintag);
 
@@ -444,14 +467,12 @@ public class TicketFragment extends ListFragment {
                                 if (isheute){
                                     System.out.println("yay");
                                     hintergrundid= mContext.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
-                                    //TODO: If this true should this row in the listAdapter colored red ...
+
                                 }
                                 else{
                                     hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                 }
 
-                            }else{
-                                hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                             }
 
 
@@ -488,9 +509,16 @@ public class TicketFragment extends ListFragment {
                         new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
                         new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
+                Fragment fragment = null;
+                fragment = new OfflineFragment();
+                if (fragment != null) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.frame_container, fragment).commit();
 
-                //TODO: automatisch offlinemodus starten
 
+                    //TODO: automatisch offlinemodus starten
+                }
             }
             ListView lv = getListView();
             ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));

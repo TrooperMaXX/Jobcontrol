@@ -167,7 +167,7 @@ public class OfflineFragment extends ListFragment {
                                 if (isheute){
                                     System.out.println("yay");
                                     hintergrundid= this.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
-                                    //TODO: If this true should this row in the listAdapter colored red ...
+
                                 }
                                 else{
                                     hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
@@ -181,7 +181,6 @@ public class OfflineFragment extends ListFragment {
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
-                            //TODO: Status farbig
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);

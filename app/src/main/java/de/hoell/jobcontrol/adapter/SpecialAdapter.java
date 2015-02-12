@@ -26,12 +26,7 @@ public class SpecialAdapter extends SimpleAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
-       // int colorPos = position % colors.length;
-       // TicketFragment ticketFragment=new TicketFragment();
-       //int Dpos =ticketFragment.DropPos;
-        //Log.e("Liste im VIEW","Ticketliste: "+ Dpos);
-        //liste[position]
-       // view.setBackgroundColor(colors[colorPos]);
+
         return view;
     }
 }

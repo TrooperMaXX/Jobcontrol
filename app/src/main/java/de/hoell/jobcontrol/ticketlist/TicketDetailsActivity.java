@@ -1,6 +1,8 @@
 package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -30,8 +32,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hoell.jobcontrol.MainActivity;
+import de.hoell.jobcontrol.OfflineFragment;
 import de.hoell.jobcontrol.R;
 
+import de.hoell.jobcontrol.adapter.SpecialAdapter;
+import de.hoell.jobcontrol.historie.Historie_Activity;
 import de.hoell.jobcontrol.query.Functions;
 
 public class TicketDetailsActivity extends Activity {
@@ -149,9 +154,18 @@ private static final String TAG_SUCCESS = "success";
             @Override
             public void onClick(View view) {
 
-                new JSONHistorie(getApplicationContext()).execute();
 
 
+                TextView textViewSerienummer =  (TextView) findViewById(R.id.textViewContentSerienummer);
+                String Serienummer = textViewSerienummer.getText().toString();
+                Intent i = new Intent(getApplicationContext(), Historie_Activity.class);
+                i.putExtra("value_seriennummer", Serienummer);
+                startActivity(i);
+              /*  Bundle args = new Bundle();
+                args.putSerializable("Seriennummer", Serienummer);
+                /TODO: Historie anzeigen
+                TODO: ab hier neue Activity Starten mit Seriennummer als übergabe
+                new JSONHistorie(getApplicationContext(),Serienummer).execute();*/
             }
         });
 
@@ -304,8 +318,10 @@ private static final String TAG_SUCCESS = "success";
 
 
         private Context mContext;
-        public JSONHistorie (Context context){
+        private String mSeriennummer;
+        public JSONHistorie (Context context,String Seriennummer){
             mContext = context;
+            mSeriennummer =Seriennummer;
 
         }
 
@@ -313,9 +329,8 @@ private static final String TAG_SUCCESS = "success";
         protected JSONObject doInBackground(Integer... args) {
             Functions Function = new Functions();
 
-            TextView textViewSerienummer =  (TextView) findViewById(R.id.textViewContentSerienummer);
-            String Serienummer = textViewSerienummer.getText().toString();
-            JSONObject json = Function.Historie(Serienummer);
+            JSONObject json = Function.Historie(mSeriennummer);
+
 
             // check for login response
             // check log cat fro response
@@ -329,8 +344,15 @@ private static final String TAG_SUCCESS = "success";
             ListView list = (ListView) findViewById(android.R.id.list);
             ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> map = new HashMap<String, String>();
-           //Intent intent = new Intent(mContext, HistorieFragment.class);
-            //intent.putExtra("value_wvnr", String.valueOf(jsonh));
+
+
+
+
+
+
+
+
+
             try {
 
                 int success = jsonh.getInt(TAG_SUCCESS);
@@ -375,13 +397,24 @@ private static final String TAG_SUCCESS = "success";
 
 
                         }else{System.out.println(String.valueOf(i) + "lol" + whatisinit + "nix?"); }
-                    }
+                       //TODO: setListAdapter(new SpecialAdapter(mContext, mylist, R.layout.row_his,
+                        //       new String[] {"Auftragsnr", "Posnr", "Texte"}, new int[] {R.id.AUANR_CELL, R.id.POS_CELL, R.id.TXT_CELL});
+                   }
+                   /*     Bundle args = new Bundle();
+                    args.putSerializable("myist", mylist);
+                    HistorieFragment newFragment = new HistorieFragment ();
+
+                    newFragment.setArguments(args);
+                    FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.layout.fragment_details, newFragment).commit();
+
                     SimpleAdapter mHistorie = new SimpleAdapter(mContext, mylist, R.layout.row_his,
                             new String[] {"Auftragsnr", "Posnr", "Texte"}, new int[] {R.id.AUANR_CELL, R.id.POS_CELL, R.id.TXT_CELL});
 
                     list.setAdapter(mHistorie);
 
-     /*               Log.e("COMMERZ query", jsonh.toString());
+                 Log.e("COMMERZ query", jsonh.toString());
                     System.out.println("LOL COMMERZ RULZZZZ"+ success);
                     JSONObject Historie =jsonh.getJSONObject("historie");
                     int laenge=Historie.length();

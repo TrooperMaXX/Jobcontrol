@@ -1,15 +1,9 @@
 package de.hoell.jobcontrol.session;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
-
-
-import de.hoell.jobcontrol.MainActivity;
-import de.hoell.jobcontrol.Start;
 
 /**
  * Created by Hoell on 21.11.2014.
@@ -84,48 +78,7 @@ public class SessionManager {
             System.out.println("Daten gespeichert:"+jsonstring);
         }
 
-        /**
-         * Check login method will check user login status
-         * If false it will redirect user to login page
-         * Else do anything
-         *
-        public boolean checkLogin(){
-            // Check login status
-            if(!this.isUserLoggedIn()){
 
-                // user is not logged in redirect him to Login Activity
-                Intent i = new Intent(_context, Start.class);
-
-                // Closing all the Activities from stack
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                // Add new Flag to start new Activity
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Staring Login Activity
-                _context.startActivity(i);
-
-                return true;
-            }
-            return false;
-        }
-    */
-/*/Create login session
-        public void saveTickets(Array Tickets){
-            // Storing login value as TRUE
-            editor.putBoolean(IS_OFFLINE, true);
-
-            // Storing user in pref
-            editor.putString(KEY_USER, user);
-
-            // Storing pwd in pref
-            editor.putString(KEY_PWD, pwd);
-
-            // commit changes
-            editor.commit();
-            System.out.println("Daten gespeichert:"+user + pwd);
-        }
-*/
         /**
          * Get stored session data
          * */

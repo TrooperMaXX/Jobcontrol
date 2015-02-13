@@ -7,15 +7,11 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -334,7 +330,7 @@ public class TicketFragment extends ListFragment {
             SessionManager session = new SessionManager(mContext);
 
 
-            //Function.isTerminheute();
+
             // check for login response
             // check log cat fro response
             if (json!=null){
@@ -366,7 +362,8 @@ public class TicketFragment extends ListFragment {
 
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
-                            //TODO: MACH DAS HIER SCHÖNER.....
+
+
                             switch (Statusnum) {
 
                                 case 10:
@@ -481,7 +478,7 @@ public class TicketFragment extends ListFragment {
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
-                            //TODO: Status farbig
+
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);
@@ -509,6 +506,7 @@ public class TicketFragment extends ListFragment {
                         new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
                         new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
+
                 Fragment fragment = null;
                 fragment = new OfflineFragment();
                 if (fragment != null) {
@@ -517,19 +515,14 @@ public class TicketFragment extends ListFragment {
                             .replace(R.id.frame_container, fragment).commit();
 
 
-                    //TODO: automatisch offlinemodus starten
+
                 }
             }
             ListView lv = getListView();
             ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));
             lv.setDivider(sage);
             lv.setDividerHeight(10);
-            /*ListView listView = getListView();
-            if(listView!= null)
-            { if(DropPos==0)
-                listView.setBackgroundColor(0xff32ff21);
-                Log.e("listView","YAAAAYYY NOT NULL"+listView);
-            }*/
+
         }
 
 

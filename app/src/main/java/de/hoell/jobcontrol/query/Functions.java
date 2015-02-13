@@ -138,11 +138,12 @@ import java.util.TimeZone;
 
     }
 
-    public JSONObject Historie(String serienummer) {
+    public JSONObject Historie(String serienummer, int anfang) {
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", historie_tag));
         params.add(new BasicNameValuePair("seriennummer", serienummer));
+        params.add(new BasicNameValuePair("anfang", String.valueOf(anfang)));
 
         System.out.println("seriennummer"+serienummer);
         // getting JSON Object

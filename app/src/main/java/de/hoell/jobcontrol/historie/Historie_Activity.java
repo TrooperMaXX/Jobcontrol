@@ -1,13 +1,14 @@
 package de.hoell.jobcontrol.historie;
 
-import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +33,37 @@ public class Historie_Activity extends ListActivity {
     private static final String TAG_SUCCESS = "success";
     ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
 
+    private int anfang;
+    private String Seriennummer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        anfang=0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historie);
-        String Seriennummer = getIntent().getStringExtra("value_seriennummer");
+        Button Button_next = (Button) findViewById(R.id.button_next);
+        Seriennummer = getIntent().getStringExtra("value_seriennummer");
 
-        new JSONHistorie(getApplicationContext(),Seriennummer).execute();
+//||Seriennummer!= null
+        if (!Seriennummer.equals("99")){
+            Log.e("anfang","anfangstart"+anfang);
+            new JSONHistorie(getApplicationContext(),Seriennummer,anfang).execute();
+        }
+        else{
+            Toast.makeText(this, "Ungültige Seriennummer NEUE Maschine?", Toast.LENGTH_SHORT).show();
+        }
+
+        Button_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                anfang =anfang+15;
+                Log.e("anfang","anfangclicked"+anfang);
+                new JSONHistorie(getApplicationContext(),Seriennummer,anfang).execute();
+
+
+            }
+        });
     }
 
 
@@ -55,21 +79,36 @@ public class Historie_Activity extends ListActivity {
 
         private Context mContext;
         private String mSeriennummer;
-        public JSONHistorie (Context context,String Seriennummer){
+        private int mAnfang;
+        private ProgressDialog pDialog ;
+        private   int letzter;
+        public JSONHistorie(Context context, String Seriennummer, int anfang){
             mContext = context;
             mSeriennummer =Seriennummer;
+            mAnfang=anfang;
+            Log.e("anfang","anfanginhistoreieasync"+anfang);
 
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Historie_Activity.this);
+            pDialog.setMessage("Working ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
         }
 
         @Override
         protected JSONObject doInBackground(Integer... args) {
             Functions Function = new Functions();
 
-            JSONObject json = Function.Historie(mSeriennummer);
+            JSONObject json = Function.Historie(mSeriennummer,mAnfang);
 
 
-            // check for login response
-            // check log cat fro response
+
             Log.d("Create Response", json.toString());
             return json;
         }
@@ -77,9 +116,15 @@ public class Historie_Activity extends ListActivity {
         @Override
         protected void onPostExecute(JSONObject jsonh) {
 
-           // ListView list = (ListView) findViewById(android.R.id.list);
 
 
+            if (mAnfang==0){
+
+            }else{
+                letzter=mylist.size();
+
+
+            }
 
 
             try {
@@ -92,13 +137,12 @@ public class Historie_Activity extends ListActivity {
                      Log.e("IS MIR SCH..EGAL", "länge "+ auanrs.length() );
 
                     for (int i = 0; i < auanrs.length() ; i++) {
-                        //  String jsonobj_num =  jsonobj_his.getJSONObject(String.valueOf(i)).toString();
-//TODO: auanrs[i] ...
+
                         String whatisinit = jsonobj_his.optString(auanrs.getString(i));
 
                         if (!whatisinit .equals("")){
                             Log.e(String.valueOf(i)+" lel","lol "+whatisinit);
-                            //int auftragsnr=i;
+
                             JSONObject auanr = new JSONObject(whatisinit);
                             int testzaehler=0;
 
@@ -139,13 +183,12 @@ public class Historie_Activity extends ListActivity {
                                     String textges= text1+" "+text2+" "+text3+" "+text4;
 
                                     int posnr =n;
-                                   // map.put("Auftragsnr", String.valueOf(auftragsnr));
-                                   // map.put("Posnr",String.valueOf(posnr));
+
                                     map.put("Texte", textges);
                                     mylist.add(map);
                                     Log.e("Maptest","MAP"+map);
                                     System.out.println("AuftragsNR: "+auanrs.getString(i)+" posnr: "+posnr+" Technickernummer: "+auatechnr+" datum: "+formattedDate + " Texte: "+text1+"  "+text2+"  "+text3+"  "+text4);
-//+"Technickernummer"+auatechnr
+
 
 
                                 }else {
@@ -161,43 +204,21 @@ public class Historie_Activity extends ListActivity {
 
 
 
-                        }else{//System.out.println(String.valueOf(i) + "lol" + whatisinit + "nix?");
+                        }else{
                         }
-                        /*TODO:*/
+
                     }
 
-                   // SimpleAdapter mHistorie = new SimpleAdapter(mContext, mylist, R.layout.row_his,
-                    //        new String[] {"Auftragsnr", "Posnr", "Texte"}, new int[] {R.id.AUANR_CELL, R.id.POS_CELL, R.id.TXT_CELL});
 
-                  //  list.setAdapter(mHistorie);
 
                  Log.e("COMMERZ query", jsonh.toString());
                     System.out.println("LOL COMMERZ RULZZZZ"+ success);
-                   /* JSONObject Historie =jsonh.getJSONObject("historie");
-                    int laenge=Historie.length();
-                    Log.e("HISTORIELAENGE","laenge: "+laenge);
 
-                    for (int i = 0; i < Historie.length(); i++) {
-                        JSONObject auanr = Historie.getJSONObject(String.valueOf(i+1));
-
-                        for (int n = 0; n < auanr.length(); n++) {
-                            JSONObject text = Historie.getJSONObject(String.valueOf(n));
-                            String text1 = text.getString("text1");
-                            String text2 = text.getString("text2");
-                            String text3 = text.getString("text3");
-                            String text4 = text.getString("text4");
-                            String textges= text1+"\n"+text2+"\n"+text3+"\n"+text4;
-                            int posnr =n;
-                           System.out.println("posnr: "+posnr+"Texte: "+textges);
-                        }
-
-
-                    }*/
 
 
                 }
                 else{
-
+                    Toast.makeText(mContext, "Keine Historie verfügbar", Toast.LENGTH_SHORT).show();
                     System.out.println("Y U NOT FUNCTION...");
 
                 }
@@ -209,6 +230,8 @@ public class Historie_Activity extends ListActivity {
             Log.e("mylist", mylist.toString());
             setListAdapter(new SpecialAdapter(mContext, mylist, R.layout.row_his,
                     new String[] {"Datum","Technr","Z1","Z2", "Texte" }, new int[] {R.id.DATUM_CELL, R.id.TECHNR_CELL, R.id.Z1_CELL,R.id.Z2_CELL, R.id.TXT_CELL, }));
+            setSelection (letzter);
+            pDialog.dismiss();
 
 
         }

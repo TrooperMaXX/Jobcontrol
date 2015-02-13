@@ -17,8 +17,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;

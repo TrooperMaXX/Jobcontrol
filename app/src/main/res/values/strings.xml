@@ -94,5 +94,6 @@
     <string name="angenommen">Angenommen am</string>
     <string name="button_his">Historie</string>
     <string name="title_activity_historie">Historie</string>
+    <string name="button_next">Weitere 15 Einträge laden</string>
 
 </resources>

@@ -67,7 +67,9 @@ public class OfflineFragment extends ListFragment {
 
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
-                            //TODO: MACH DAS HIER SCHÖNER.....
+
+
+
                             switch (Statusnum) {
 
                                 case 10:
@@ -210,23 +212,7 @@ public class OfflineFragment extends ListFragment {
 
 
 
-  /*  @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnTicketInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnTicketInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-*/
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -443,7 +429,7 @@ public class OfflineFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnTicketInteractionListener {
-        // TODO: Update argument type and name
+
         public void onTicketInteraction(String id);
     }
 

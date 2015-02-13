@@ -93,5 +93,6 @@
     <string name="wvnr">Wartungs Vertrags Typ</string>
     <string name="angenommen">Angenommen am</string>
     <string name="button_his">Historie</string>
+    <string name="title_activity_historie">Historie</string>
 
 </resources>

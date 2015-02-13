@@ -9,11 +9,17 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
@@ -82,29 +88,48 @@ public class Historie_Activity extends ListActivity {
 
                 if (success == 1) {
                     JSONObject jsonobj_his = jsonh.getJSONObject("historie");
+                   JSONArray auanrs = jsonh.getJSONArray("auanrs");
+                     Log.e("IS MIR SCH..EGAL", "länge "+ auanrs.length() );
 
-
-                    for (int i = 90200; i <90211; i++) {
+                    for (int i = 0; i < auanrs.length() ; i++) {
                         //  String jsonobj_num =  jsonobj_his.getJSONObject(String.valueOf(i)).toString();
-                        String whatisinit = jsonobj_his.optString((String.valueOf(i)));
+//TODO: auanrs[i] ...
+                        String whatisinit = jsonobj_his.optString(auanrs.getString(i));
 
                         if (!whatisinit .equals("")){
                             Log.e(String.valueOf(i)+" lel","lol "+whatisinit);
-                            int auftragsnr=i;
+                            //int auftragsnr=i;
                             JSONObject auanr = new JSONObject(whatisinit);
+                            int testzaehler=0;
 
-
-                            for (int n = 0; n <11; n++) {
+                            for (int n = 0; n <500; n++) {
 
 
                                 if (!auanr.optString((String.valueOf(n))) .equals("")){
                                     HashMap<String, String> map = new HashMap<String, String>();
 
 
+                                    JSONObject json_datech = new JSONDatech(auanrs.getString(i)).execute().get();
+                                    JSONArray jsona_datech = json_datech.getJSONArray("datech");
+                                    JSONObject jsonaa_datech = jsona_datech.getJSONObject(0);
+
+                                    String auatechnr = jsonaa_datech.getString("auatechnr");
+
+                                    String z1 = jsonaa_datech.getString("Z1");
+                                    String z2 = jsonaa_datech.getString("Z2");
+
+                                    String auadatum = jsonaa_datech.getString("auaaufdatumjmt");
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
+                                    SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN);
+                                    Date datum = sdf.parse(auadatum);
+                                    String formattedDate = edf.format(datum);
 
 
-
-
+                                    map.put("Datum", formattedDate.toString());
+                                    map.put("Technr","Tech: "+ auatechnr);
+                                    map.put("Z1","Sw: "+z1);
+                                    map.put("Z2","F: "+z2);
 
                                     JSONObject text = auanr.getJSONObject(String.valueOf(n));
                                     String text1 = text.getString("text1");
@@ -112,22 +137,32 @@ public class Historie_Activity extends ListActivity {
                                     String text3 = text.getString("text3");
                                     String text4 = text.getString("text4");
                                     String textges= text1+" "+text2+" "+text3+" "+text4;
+
                                     int posnr =n;
-                                    map.put("Auftragsnr", String.valueOf(auftragsnr));
-                                    map.put("Posnr",String.valueOf(posnr));
+                                   // map.put("Auftragsnr", String.valueOf(auftragsnr));
+                                   // map.put("Posnr",String.valueOf(posnr));
                                     map.put("Texte", textges);
                                     mylist.add(map);
                                     Log.e("Maptest","MAP"+map);
-                                    System.out.println("AuftragsNR: "+auftragsnr+" posnr: "+posnr+" Texte: "+text1+"  "+text2+"  "+text3+"  "+text4);
+                                    System.out.println("AuftragsNR: "+auanrs.getString(i)+" posnr: "+posnr+" Technickernummer: "+auatechnr+" datum: "+formattedDate + " Texte: "+text1+"  "+text2+"  "+text3+"  "+text4);
+//+"Technickernummer"+auatechnr
 
 
+                                }else {
+                                    if (testzaehler>=3){
+                                        Log.e("testzaehler","leeres dings"+testzaehler);
+                                        break;
 
+                                    }else{
+                                        testzaehler=testzaehler+1;
+                                    }
                                 }
                             }
 
 
 
-                        }else{System.out.println(String.valueOf(i) + "lol" + whatisinit + "nix?"); }
+                        }else{//System.out.println(String.valueOf(i) + "lol" + whatisinit + "nix?");
+                        }
                         /*TODO:*/
                     }
 
@@ -167,13 +202,13 @@ public class Historie_Activity extends ListActivity {
 
                 }
 
-            } catch (JSONException e) {
+            } catch (JSONException | InterruptedException | ExecutionException | ParseException e) {
                 e.printStackTrace();
             }
             //TODO:
             Log.e("mylist", mylist.toString());
             setListAdapter(new SpecialAdapter(mContext, mylist, R.layout.row_his,
-                    new String[] {"Auftragsnr", "Posnr", "Texte"}, new int[] {R.id.AUANR_CELL, R.id.POS_CELL, R.id.TXT_CELL}));
+                    new String[] {"Datum","Technr","Z1","Z2", "Texte" }, new int[] {R.id.DATUM_CELL, R.id.TECHNR_CELL, R.id.Z1_CELL,R.id.Z2_CELL, R.id.TXT_CELL, }));
 
 
         }
@@ -184,6 +219,19 @@ public class Historie_Activity extends ListActivity {
 
 
     }
+    private class JSONDatech extends AsyncTask<Integer, Integer, JSONObject> {
+        private String mAuanr;
+        public JSONDatech(String auftragsnr) {
+           mAuanr =auftragsnr;
+        }
 
+        @Override
+        protected JSONObject doInBackground(Integer... params) {
+            Functions Function = new Functions();
+            JSONObject json_datech = Function.DaTech(String.valueOf(mAuanr));
+
+            return json_datech;
+        }
+    }
 
 }

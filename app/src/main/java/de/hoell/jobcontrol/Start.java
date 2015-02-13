@@ -140,7 +140,7 @@ public class Start extends Activity {
 
                         System.out.println("Checkbox is gesetz daten werden gespeichert ");
 
-                        session.saveSession(user, password);
+                        session.saveSession(user);
                     }
                     else{
                         System.out.println("Checkbox is leer daten werden NICHT gespeichert");

@@ -59,20 +59,17 @@ public class SessionManager {
 
 
     //Create login session
-        public void saveSession(String user, String pwd){
+        public void saveSession(String user){
             // Storing login value as TRUE
             editor.putBoolean(IS_USER_LOGIN, true);
 
             // Storing user in pref
             editor.putString(KEY_USER, user);
 
-            // Storing pwd in pref
-            editor.putString(KEY_PWD, pwd);
-
 
             // commit changes
             editor.commit();
-            System.out.println("Daten gespeichert:"+user + pwd);
+            System.out.println("Daten gespeichert:"+user);
         }
 
         public void saveJSON(String jsonstring){

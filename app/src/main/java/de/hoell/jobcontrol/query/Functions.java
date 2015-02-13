@@ -36,6 +36,7 @@ import java.util.TimeZone;
         private static String mytickets_tag = "mytickets";
         private static String savedetails_tag = "savedetails";
         private static String historie_tag = "historie";
+        private static String datech_tag = "datech";
 
     // constructor
         public Functions(){
@@ -149,6 +150,23 @@ import java.util.TimeZone;
         Log.e("SeriennummerJSON", json.toString());
         // return json
         return json;
+
+    }
+
+    public JSONObject DaTech(String auanr) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", datech_tag));
+        params.add(new BasicNameValuePair("auanr", auanr));
+
+        System.out.println("auanr"+auanr);
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("datechJSON", json.toString());
+        // return json
+        return json;
+
+
 
     }
 }

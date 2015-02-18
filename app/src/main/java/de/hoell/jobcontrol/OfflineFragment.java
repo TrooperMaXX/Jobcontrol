@@ -40,6 +40,7 @@ public class OfflineFragment extends ListFragment {
     String Status = "Unbearbeitet";
     int DropPos= 0;
     private OnTicketInteractionListener mListener;
+    public  Date Terminsdf;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,15 +153,21 @@ public class OfflineFragment extends ListFragment {
                             int hintergrundid ;
                             String Termintag = c.getString("terminTag");
                             Log.e("terminTag", ":" + Termintag);
+                            String finalTermin;
+
                             if(Termintag.equals("null"))
                             {
                                 Termintag="---";
+                                finalTermin="";
 
                                 hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                             }else
                             {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
-                                Date Terminsdf = sdf.parse(Termintag);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                                Terminsdf = sdf.parse(Termintag);
+                                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+                                finalTermin = edf.format(Terminsdf);
+                                finalTermin="Termin: "+finalTermin;
 
                                 Functions Function = new Functions();
 
@@ -180,6 +187,7 @@ public class OfflineFragment extends ListFragment {
 
 
 
+
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
@@ -189,6 +197,7 @@ public class OfflineFragment extends ListFragment {
                             map.put("Fehler",Fehler);
                             map.put("Status_ic",String.valueOf(imgid));
                             map.put("Hintergrund",String.valueOf(hintergrundid));
+                            map.put("Termin", finalTermin);
                             Log.e("Statusid",""+imgid);
 
                             TheTickets.add(map);
@@ -203,8 +212,8 @@ public class OfflineFragment extends ListFragment {
                 }
 
             setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
-                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
+                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin"},
+                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL}));
 
             }
 
@@ -219,7 +228,9 @@ public class OfflineFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
 
         Intent intent = new Intent(getActivity(), TicketDetailsActivity.class);
-        try {
+        try {SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+            SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+
             JSONObject extra = Ticketliste.getJSONObject(position);
 
             int Statusnum = extra.getInt("Status");
@@ -273,20 +284,28 @@ public class OfflineFragment extends ListFragment {
             intent.putExtra("value_id", ID);
 
             String Angenommen = extra.getString("Datum");
-            intent.putExtra("value_angenommen", Angenommen);
+            Date angenomensdf = sdf.parse(Angenommen);
+            String finalAngenommen = edf.format(angenomensdf);
 
-            String Termin ="";
-            if (Terminende == "null" && Termintag != "null")
+            intent.putExtra("value_angenommen", finalAngenommen);
+
+            String Termin =""; String finalTermin="";
+            if(Termintag.equals("null"))
             {
-                Termin = Termintag;
-
-            }
-            else if(Termintag == "null"){
 
                 Termin = "---";
             }
+            else if (Terminende.equals("null") && !Termintag.equals("null")){
+
+                Date Terminsdf = sdf.parse(Termintag);
+                finalTermin = edf.format(Terminsdf);
+
+                Termin = finalTermin;
+            }
             else{
-                Termin = "Zwischen " + Termintag + " und " + Terminende;
+                Date Terminendesdf=sdf.parse(Terminende);
+                String finalTerminende = edf.format(Terminendesdf);
+                Termin = "Zwischen " + finalTermin + " und " + finalTerminende;
 
             }
 
@@ -402,7 +421,7 @@ public class OfflineFragment extends ListFragment {
 
 
 
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 

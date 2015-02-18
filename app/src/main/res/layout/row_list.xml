@@ -27,7 +27,7 @@
         android:layout_alignParentBottom="false"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="false"
-        android:layout_alignBottom="@+id/FEHLER_CELL" />
+        android:layout_alignBottom="@+id/TERMIN_CELL" />
 
 
     <TextView
@@ -124,7 +124,18 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="55dp"/>
+    <TextView
+        android:id="@+id/TERMIN_CELL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
+        android:text="HIER KOMMT DERTermin hinn"
+        android:textSize="15dp"
+        android:textColor="#ffff0000"
+        android:background="#ffbfbfbf"
+        android:layout_below="@+id/FEHLER_CELL"
+        android:layout_toLeftOf="@+id/ORT_CELL"
+        android:layout_toStartOf="@+id/ORT_CELL" />
 
 
 </RelativeLayout>

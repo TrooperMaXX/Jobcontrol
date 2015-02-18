@@ -324,7 +324,7 @@
                 android:clickable="true"
                 android:enabled="false"
                 android:layout_column="0"
-                android:textColor="#383838" />
+                android:textColor="#ffff0000" />
         </TableRow>
 
         <TableRow

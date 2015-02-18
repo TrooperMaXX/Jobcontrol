@@ -141,23 +141,39 @@ public class TicketFragment extends ListFragment {
             String Termintag = extra.getString("terminTag");
             String Terminende = extra.getString("terminEnde");
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+            SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+
+
+
 
 
             String Angenommen = extra.getString("Datum");
-            intent.putExtra("value_angenommen", Angenommen);
+            Date angenomensdf = sdf.parse(Angenommen);
+            String finalAngenommen = edf.format(angenomensdf);
+
+
+            intent.putExtra("value_angenommen", finalAngenommen);
+
 
             String Termin ="";
-            if (Terminende.equals("null") && !Termintag.equals("null"))
+            String finalTermin="";
+             if(Termintag.equals("null"))
             {
-                Termin = Termintag;
-
-            }
-            else if(Termintag.equals("null")){
 
                 Termin = "---";
             }
+            else if (Terminende.equals("null") && !Termintag.equals("null")){
+
+                 Date Terminsdf = sdf.parse(Termintag);
+                 finalTermin = edf.format(Terminsdf);
+
+                 Termin = finalTermin;
+            }
             else{
-            Termin = "Zwischen " + Termintag + " und " + Terminende;
+                Date Terminendesdf=sdf.parse(Terminende);
+                String finalTerminende = edf.format(Terminendesdf);
+            Termin = "Zwischen " + finalTermin + " und " + finalTerminende;
 
             }
 
@@ -269,7 +285,7 @@ public class TicketFragment extends ListFragment {
 
             getActivity().startActivity(intent);
 
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 
@@ -308,6 +324,7 @@ public class TicketFragment extends ListFragment {
     public class JSONMyTickets extends AsyncTask<String, String, JSONObject> {
 
         private Context mContext;
+        public  Date Terminsdf;
         public JSONMyTickets (Context context){
             mContext = context;
         }
@@ -445,16 +462,21 @@ public class TicketFragment extends ListFragment {
                             int hintergrundid ;
                              String Termintag = c.getString("terminTag");
                             Log.e("terminTag",":"+Termintag);
+                            String finalTermin;
 
                             if(Termintag.equals("null"))
                             {
                                 Termintag="---";
+                                finalTermin="";
 
                                 hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                             }else
                            {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
-                                Date Terminsdf = sdf.parse(Termintag);
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                               Terminsdf = sdf.parse(Termintag);
+                               SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+                               finalTermin = edf.format(Terminsdf);
+                               finalTermin="Termin: "+finalTermin;
 
                                 Functions Function = new Functions();
 
@@ -477,6 +499,7 @@ public class TicketFragment extends ListFragment {
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
+                            map.put("Termin", finalTermin);
 
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
@@ -502,8 +525,8 @@ public class TicketFragment extends ListFragment {
                     e.printStackTrace();
                 }
                 setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
-                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
+                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin"},
+                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                 Fragment fragment = null;

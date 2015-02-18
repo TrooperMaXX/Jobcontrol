@@ -35,7 +35,7 @@
     <string-array name="nav_drawer_items">
         <item>Meine Tickets</item>
         <item>Offline Modus</item>
-        <item>Neues Ticket</item>
+        <item>Gerät suchen</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -43,8 +43,8 @@
     <!-- TODO: die richtigen icons hinzufügen -->
     <array name="nav_drawer_icons">
         <item>@drawable/ic_action_info</item>
-        <item>@drawable/ic_action_search</item>
         <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_search</item>
     </array>
 
 
@@ -95,5 +95,14 @@
     <string name="button_his">Historie</string>
     <string name="title_activity_historie">Historie</string>
     <string name="button_next">Weitere 15 Einträge laden</string>
+    <string name="title_activity_rueckmeldung">Rückmeldung</string>
+    <string name="rueckmeldung">Rückmeldung</string>
+    <string name="info_hint">Info für TEL</string>
+    <string name="info">Info</string>
+    <string name="button_saverueck">Senden!</string>
+    <string name="ansprechpartner_hint">Ansprechpartner</string>
+    <string name="rueckmeldung_caps">RÜCKMELDUNG</string>
+    <string name="title_activity_info">Info</string>
+    <string name="title_activity_new_info">NewInfo</string>
 
 </resources>

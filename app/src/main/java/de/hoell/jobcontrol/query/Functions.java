@@ -37,6 +37,9 @@ import java.util.TimeZone;
         private static String savedetails_tag = "savedetails";
         private static String historie_tag = "historie";
         private static String datech_tag = "datech";
+        private static String saverueck_tag = "saverueck";
+        private static String saveinfo_tag = "saveinfo";
+        private static String info_tag = "info";
 
     // constructor
         public Functions(){
@@ -169,6 +172,53 @@ import java.util.TimeZone;
 
 
 
+    }
+
+    public JSONObject SaveRueck(String id, String ansprech, String info,String user) {  // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", saverueck_tag));
+        params.add(new BasicNameValuePair("id", id));
+        params.add(new BasicNameValuePair("ansprech", ansprech));
+        params.add(new BasicNameValuePair("info", info));
+        params.add(new BasicNameValuePair("user", user));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("SAVERUECK", json.toString());
+        // return json
+        return json;
+    }
+
+    public JSONObject Info(String id) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", info_tag));
+        params.add(new BasicNameValuePair("id", id));
+
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("datechJSON", json.toString());
+        // return json
+        return json;
+    }
+
+    public JSONObject SaveInfo(String id, String ansprech, String info,String user) {  // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+
+        params.add(new BasicNameValuePair("tag", saveinfo_tag));
+        params.add(new BasicNameValuePair("id", id));
+        params.add(new BasicNameValuePair("ansprech", ansprech));
+        params.add(new BasicNameValuePair("info", info));
+        params.add(new BasicNameValuePair("user", user));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("SAVEINFO", json.toString());
+        // return json
+        return json;
     }
 }
 

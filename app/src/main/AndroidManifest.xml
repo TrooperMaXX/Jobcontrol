@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.hoell.jobcontrol.Start"
+            android:name=".Start"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,31 +20,39 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.hoell.jobcontrol.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_slidermenu" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
         <activity
-            android:name="de.hoell.jobcontrol.ticketlist.TicketDetailsActivity"
+            android:name=".ticketlist.TicketDetailsActivity"
             android:label="@string/title_activity_ticket_details"
-            android:parentActivityName="de.hoell.jobcontrol.MainActivity" >
+            android:parentActivityName=".MainActivity" >
+
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.hoell.jobcontrol.MainActivity" />
-
         </activity>
         <activity
-            android:name="de.hoell.jobcontrol.historie.Historie_Activity"
-            android:label="@string/title_activity_historie">
+            android:name=".historie.Historie_Activity"
+            android:label="@string/title_activity_historie" >
+        </activity>
+        <activity
+            android:name=".ticketlist.Rueckmeldung"
+            android:label="@string/title_activity_rueckmeldung" >
+        </activity>
+        <activity
+            android:name=".ticketlist.InfoActivity"
+            android:label="@string/title_activity_info" >
+        </activity>
+        <activity
+            android:name=".ticketlist.NewInfo"
+            android:label="@string/title_activity_new_info">
 
-            </activity>
-
-
-
+        </activity>
     </application>
 
 </manifest>

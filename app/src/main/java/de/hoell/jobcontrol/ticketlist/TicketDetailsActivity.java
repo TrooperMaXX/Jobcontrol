@@ -43,7 +43,8 @@ private static final String TAG_SUCCESS = "success";
         Button Button_maps = (Button) findViewById(R.id.button_maps);
         Button Button_save = (Button) findViewById(R.id.button_save);
         Button Button_his = (Button) findViewById(R.id.button_his);
-
+        Button Button_rueck = (Button) findViewById(R.id.button_rueck);
+        Button Button_info = (Button) findViewById(R.id.button_info);
 
         int DropPos = getIntent().getIntExtra("value_droppos",0);
         String Firma = getIntent().getStringExtra("value_firma");
@@ -105,7 +106,7 @@ private static final String TAG_SUCCESS = "success";
         textViewAuftragsnr.setText(Auftragsnr);
 
         TextView textViewWvnr = (TextView) findViewById(R.id.textViewContentWvnr);
-        if(Wvnr.equals("null")||Wvnr==null){Wvnr=" ";}
+        if(Wvnr.equals("null")){Wvnr=" ";}
         textViewWvnr.setText(Wvnr);
 
         TextView textViewAnnahme = (TextView) findViewById(R.id.textViewContentAnnahme);
@@ -148,6 +149,52 @@ private static final String TAG_SUCCESS = "success";
 
             }
         });
+
+        Button_rueck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                TextView textViewFirma =  (TextView) findViewById(R.id.textViewContentFirma);
+                String Firma = textViewFirma.getText().toString();
+                TextView textViewModel =  (TextView) findViewById(R.id.textViewContentModell);
+                String Model = textViewModel.getText().toString();
+                TextView textViewStoerung =  (TextView) findViewById(R.id.textViewContentStoerung);
+                String Stoerung = textViewStoerung.getText().toString();
+                TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
+                String Ansprechpartner = textViewAnsprechpartner.getText().toString();
+
+                Intent i = new Intent(getApplicationContext(), Rueckmeldung.class);
+
+                i.putExtra("value_firma", Firma);
+                i.putExtra("value_model", Model);
+                i.putExtra("value_stoerung", Stoerung);
+                i.putExtra("value_ansprechpartner", Ansprechpartner);
+                i.putExtra("value_id", ID);
+
+                startActivity(i);
+
+            }
+        });
+
+        Button_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Functions Function = new Functions();
+                    if( Function.isNetworkOnline(TicketDetailsActivity.this)) {
+
+                        Intent i = new Intent(getApplicationContext(), InfoActivity.class);
+                        i.putExtra("value_id", ID);
+                        startActivity(i);
+                    }
+                    else{
+                            Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
+                        }
+
+                }
+            });
+
 
     }
 

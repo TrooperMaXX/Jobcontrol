@@ -100,7 +100,8 @@ public class TicketFragment extends ListFragment {
             DropPos= getDropPos(Statusnum);
             intent.putExtra("value_statusnum", StringStatusnum);
 
-
+            String ID = extra.getString("ID");
+            intent.putExtra("value_id", ID);
 
             intent.putExtra("value_status", Status);
             intent.putExtra("value_droppos", DropPos);
@@ -141,8 +142,6 @@ public class TicketFragment extends ListFragment {
             String Terminende = extra.getString("terminEnde");
 
 
-            String ID = extra.getString("ID");
-            intent.putExtra("value_id", ID);
 
             String Angenommen = extra.getString("Datum");
             intent.putExtra("value_angenommen", Angenommen);
@@ -505,7 +504,7 @@ public class TicketFragment extends ListFragment {
                 setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
                         new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund"},
                         new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all}));
-            }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_SHORT).show();
+            }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                 Fragment fragment = null;
                 fragment = new OfflineFragment();

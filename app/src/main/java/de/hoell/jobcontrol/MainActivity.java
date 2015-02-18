@@ -200,7 +200,7 @@
                         fragment = new OfflineFragment();
                         break;
                     case 2:
-                        fragment = new NewTickets();
+                        fragment = new SrnSuche();
                         break;
 
                     default:

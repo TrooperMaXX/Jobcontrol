@@ -341,7 +341,11 @@ public class TicketFragment extends ListFragment {
             user = de.hoell.jobcontrol.Start.user;
 
             Functions Function = new Functions();
-            JSONObject json = Function.MyTickets(user);
+            JSONObject json=null;
+            if (TheTickets!= null){
+                json = Function.MyTickets(user);
+            }
+
             System.out.println("is JSON null?" +json);
             SessionManager session = new SessionManager(mContext);
 

@@ -104,10 +104,13 @@ public class Historie_Activity extends ListActivity {
         @Override
         protected JSONObject doInBackground(Integer... args) {
             Functions Function = new Functions();
+            JSONObject json=null;
+            if(mylist!=null){
 
-            JSONObject json = Function.Historie(mSeriennummer,mAnfang);
 
+            json = Function.Historie(mSeriennummer,mAnfang);
 
+        }
 
             Log.d("Create Response", json.toString());
             return json;

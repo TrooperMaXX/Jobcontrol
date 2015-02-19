@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -42,7 +43,7 @@ public class TicketFragment extends ListFragment {
     String Status = "Unbearbeitet";
     public int DropPos= 0;
 
-    ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
+
     List<Tickets> ticketsList = new ArrayList<Tickets>();
 
     public JSONArray Ticketliste = null;
@@ -65,6 +66,8 @@ public class TicketFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         new JSONMyTickets(getActivity().getApplicationContext()).execute();
+
+
     }
 
 
@@ -325,6 +328,7 @@ public class TicketFragment extends ListFragment {
 
         private Context mContext;
         public  Date Terminsdf;
+        ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
         public JSONMyTickets (Context context){
             mContext = context;
         }
@@ -341,10 +345,10 @@ public class TicketFragment extends ListFragment {
             user = de.hoell.jobcontrol.Start.user;
 
             Functions Function = new Functions();
-            JSONObject json=null;
-            if (TheTickets!= null){
-                json = Function.MyTickets(user);
-            }
+
+
+               JSONObject json = Function.MyTickets(user);
+
 
             System.out.println("is JSON null?" +json);
             SessionManager session = new SessionManager(mContext);
@@ -497,14 +501,14 @@ public class TicketFragment extends ListFragment {
 
                             }
 
-
+                            String auanr = c.getString("Auftragtkd");
 
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
                             map.put("Termin", finalTermin);
-
+                            map.put("AuaNr", auanr);
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);
@@ -529,8 +533,8 @@ public class TicketFragment extends ListFragment {
                     e.printStackTrace();
                 }
                 setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin"},
-                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL}));
+                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
+                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
             }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                 Fragment fragment = null;
@@ -548,7 +552,16 @@ public class TicketFragment extends ListFragment {
             ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));
             lv.setDivider(sage);
             lv.setDividerHeight(10);
+           /* TODO: autoupdater
+           new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
+                    Log.e("Autoreload","hat es geklappte:)?");
+                   // Toast.makeText(getActivity().getApplicationContext(), "AUTORELOAD! yaaayayay", Toast.LENGTH_LONG).show();
+                    new JSONMyTickets(mContext).execute();
+                }
+            }, 10*1000);// 5*60*1000*/
         }
 
 

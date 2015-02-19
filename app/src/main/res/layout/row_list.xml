@@ -41,12 +41,22 @@
         android:background="#ffbfbfbf" />
 
     <TextView android:id="@+id/FIRMA_CELL"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="HIER KOMMT DIE FIRMA HIN"
         android:textSize="20dp"
         android:background="#ff9f9f9f" />
 
+
+    <TextView
+        android:id="@+id/AUA_CELL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AUANR"
+        android:textSize="15dp"
+        android:background="#ff9f9f9f"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:id="@+id/MODEL_CELL"

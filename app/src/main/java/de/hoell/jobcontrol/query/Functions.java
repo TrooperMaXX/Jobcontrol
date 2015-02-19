@@ -1,8 +1,12 @@
 package de.hoell.jobcontrol.query;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.SystemClock;
 import android.util.Log;
 
 import org.apache.http.NameValuePair;
@@ -18,6 +22,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import de.hoell.jobcontrol.MainActivity;
 
 /**
  * Created by Hoell on 12.11.2014.
@@ -219,6 +225,23 @@ import java.util.TimeZone;
         Log.e("SAVEINFO", json.toString());
         // return json
         return json;
+    }
+
+    public static void registerAlarm(Context context) {
+        Intent i = new Intent(context, Refresh.class);
+
+        PendingIntent sender = PendingIntent.getBroadcast(context,0, i, 0);
+
+        // We want the alarm to go off 3 seconds from now.
+        long firstTime = SystemClock.elapsedRealtime();
+        firstTime += 3 * 1000;//start 3 seconds after first register.
+        Log.e("refreshalarm ", "bis hier gehts");
+        // Schedule the alarm!
+        AlarmManager am = (AlarmManager) context
+                .getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime,
+                3000, sender);//10min interval
+
     }
 }
 

@@ -38,7 +38,8 @@
         </activity>
         <activity
             android:name=".historie.Historie_Activity"
-            android:label="@string/title_activity_historie" >
+            android:label="@string/title_activity_historie"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ticketlist.Rueckmeldung"
@@ -46,7 +47,8 @@
         </activity>
         <activity
             android:name=".ticketlist.InfoActivity"
-            android:label="@string/title_activity_info" >
+            android:label="@string/title_activity_info"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ticketlist.NewInfo"

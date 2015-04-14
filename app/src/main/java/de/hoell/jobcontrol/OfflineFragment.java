@@ -184,20 +184,22 @@ public class OfflineFragment extends ListFragment {
 
                             }
 
-
+                            String auanr = c.getString("Auftragtkd");
 
 
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
                             map.put("Status", Status);
+                            map.put("Termin", finalTermin);
+                            map.put("AuaNr", auanr);
                             map.put("Model",Modell);
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);
                             map.put("Fehler",Fehler);
+
                             map.put("Status_ic",String.valueOf(imgid));
                             map.put("Hintergrund",String.valueOf(hintergrundid));
-                            map.put("Termin", finalTermin);
                             Log.e("Statusid",""+imgid);
 
                             TheTickets.add(map);
@@ -212,10 +214,18 @@ public class OfflineFragment extends ListFragment {
                 }
 
             setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin"},
-                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL}));
+                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
+                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
 
-            }
+            if (null != mListener) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                ListView lv = getListView();
+                ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.ticket_list_divider));
+                lv.setDivider(sage);
+                lv.setDividerHeight(10);
+
+            }}
 
         }
 
@@ -426,15 +436,7 @@ public class OfflineFragment extends ListFragment {
         }
 
 
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            ListView lv = getListView();
-            ColorDrawable sage = new ColorDrawable(this.getResources().getColor(R.color.ticket_list_divider));
-            lv.setDivider(sage);
-            lv.setDividerHeight(10);
 
-        }
     }
 
     /**

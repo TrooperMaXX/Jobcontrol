@@ -1,6 +1,7 @@
 package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,11 +57,22 @@ public class NewInfo extends Activity {
     public class JSONSaveInfo extends AsyncTask<Integer, Integer, JSONObject> {
 
         private String mID,mAnsprech,mInfo,mUser;
+        private ProgressDialog pDialog ;
         public JSONSaveInfo(String id, String ansprech, String info,String user) {
             mID=id;
             mAnsprech=ansprech;
             mInfo=info;
             mUser=user;
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(NewInfo.this);
+            pDialog.setMessage("Sending ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
 
         @Override
@@ -87,6 +99,7 @@ public class NewInfo extends Activity {
 
                     Toast.makeText(getApplicationContext(), "Info Erfolgreich gesendet", Toast.LENGTH_LONG).show();
 
+                    pDialog.dismiss();
 
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(i);
@@ -98,6 +111,7 @@ public class NewInfo extends Activity {
                 else{
 
                     System.out.println("Y U NOT FUNCTION...");
+                    pDialog.dismiss();
 
                 }
 

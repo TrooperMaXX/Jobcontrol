@@ -133,7 +133,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="55dp"/>
+        android:layout_marginTop="55dp" />
     <TextView
         android:id="@+id/TERMIN_CELL"
         android:layout_width="wrap_content"

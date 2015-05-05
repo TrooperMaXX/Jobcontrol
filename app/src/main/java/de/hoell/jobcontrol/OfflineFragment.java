@@ -133,8 +133,9 @@ public class OfflineFragment extends ListFragment {
                                     imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 39:
-                                    Status = "gelöscht";
+                                    Status = "Eskalation";
                                     DropPos = 10;
+                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
 
                             }
@@ -498,8 +499,8 @@ public class OfflineFragment extends ListFragment {
                 Status = "installiert";
                 DropPos = 9;
                 break;
-            case 39:
-                Status = "gelöscht";
+            case 99:
+                Status = "Eskalation";
                 DropPos = 10;
                 break;
 
@@ -552,8 +553,8 @@ public class OfflineFragment extends ListFragment {
                 Status = "installiert";
                 DropPos = 9;
                 break;
-            case 39:
-                Status = "gelöscht";
+            case 99:
+                Status = "Eskalation";
                 DropPos = 10;
                 break;
 

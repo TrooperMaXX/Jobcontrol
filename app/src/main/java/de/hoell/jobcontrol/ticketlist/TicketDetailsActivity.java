@@ -299,8 +299,8 @@ private static final String TAG_SUCCESS = "success";
                     Statusnum = "20";
                     break;
                 case 10:
-                    // Status = "gelöscht";
-                    Statusnum = "39";
+                    // Status = "Eskalation";
+                    Statusnum = "99";
                     break;
 
             }

@@ -54,13 +54,13 @@
         <item>In Arbeit</item>      <!-- 2  -->
         <item>offen</item>          <!-- 3  -->
 
-        <item>Erledigt</item>       <!-- 5  -->
-        <item>wartet</item>         <!-- 6  -->
-        <item>Ware bestellt</item>  <!-- 7  -->
-        <item>Ware da</item>        <!-- 8  -->
-        <item>Ware benötigt</item>  <!-- 9  -->
-        <item>installiert</item>    <!-- 10 -->
-        <item>gelöscht</item>       <!-- 11 -->
+        <item>Erledigt</item>       <!-- 4  -->
+        <item>wartet</item>         <!-- 5  -->
+        <item>Ware bestellt</item>  <!-- 6  -->
+        <item>Ware da</item>        <!-- 7  -->
+        <item>Ware benötigt</item>  <!-- 8  -->
+        <item>installiert</item>    <!-- 9 -->
+        <item>Eskalation</item>       <!-- 10 -->
     </string-array>
 
 

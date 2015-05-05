@@ -449,9 +449,10 @@ public class TicketFragment extends ListFragment {
                                     Farbe="#FF0000";
                                     imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
-                                case 39:
-                                    Status = "gelöscht";
+                                case 99:
+                                    Status = "Eskalation";
                                     DropPos = 10;
+                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
 
                             }
@@ -613,8 +614,9 @@ public class TicketFragment extends ListFragment {
                 Status = "installiert";
                 DropPos = 9;
                 break;
-            case 39:
-                Status = "gelöscht";
+
+            case 99:
+                Status = "Eskalation";
                 DropPos = 10;
                 break;
 
@@ -667,8 +669,8 @@ public class TicketFragment extends ListFragment {
                 Status = "installiert";
                 DropPos = 9;
                 break;
-            case 39:
-                Status = "gelöscht";
+            case 99:
+                Status = "Eskalation";
                 DropPos = 10;
                 break;
 

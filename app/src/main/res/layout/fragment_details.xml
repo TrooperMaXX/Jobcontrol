@@ -447,6 +447,13 @@
                     android:layout_height="wrap_content"
                     android:text="@string/info"
                     android:id="@+id/button_info" />
+
+                <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_eskalation"
+                    android:id="@+id/button_eskalation" />
             </LinearLayout>
 
         </TableRow>

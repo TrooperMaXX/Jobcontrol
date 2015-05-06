@@ -104,5 +104,8 @@
     <string name="rueckmeldung_caps">RÜCKMELDUNG</string>
     <string name="title_activity_info">Info</string>
     <string name="title_activity_new_info">NewInfo</string>
+    <string name="button_eskalation">Eskalation</string>
+    <string name="eskalation_caps">ESKALATION</string>
+    <string name="title_activity_eskalation">Eskalation</string>
 
 </resources>

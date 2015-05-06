@@ -46,6 +46,7 @@ import de.hoell.jobcontrol.MainActivity;
         private static String saverueck_tag = "saverueck";
         private static String saveinfo_tag = "saveinfo";
         private static String info_tag = "info";
+        private static String saveesk_tag = "saveesk";
 
     // constructor
         public Functions(){
@@ -93,7 +94,7 @@ import de.hoell.jobcontrol.MainActivity;
             params.add(new BasicNameValuePair("tag", savedetails_tag));
             params.add(new BasicNameValuePair("status", Status));
             params.add(new BasicNameValuePair("id", ID));
-            System.out.println("status"+Status);
+            System.out.println("status" + Status);
             // getting JSON Object
             JSONObject json = jsonParser.getJSONFromUrl(URL, params);
             Log.e("TROLJSON", json.toString());
@@ -119,7 +120,7 @@ import de.hoell.jobcontrol.MainActivity;
             }
             boolean ja=heute.equals(termin);
 
-            System.out.println("date_today" + heute +" termin" + termin + " ja"+ ja);
+            System.out.println("date_today" + heute + " termin" + termin + " ja" + ja);
             if (ja){
                 return true;
             }
@@ -242,6 +243,22 @@ import de.hoell.jobcontrol.MainActivity;
         am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime,
                 3000, sender);//10min interval
 
+    }
+
+    public JSONObject SaveEsk(String id, String ansprech, String info, String user) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", saveesk_tag));
+        params.add(new BasicNameValuePair("id", id));
+        params.add(new BasicNameValuePair("ansprech", ansprech));
+        params.add(new BasicNameValuePair("info", info));
+        params.add(new BasicNameValuePair("user", user));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("SAVEESK", json.toString());
+        // return json
+        return json;
     }
 }
 

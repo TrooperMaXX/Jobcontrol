@@ -49,6 +49,7 @@ private static final String TAG_SUCCESS = "success";
         Button Button_his = (Button) findViewById(R.id.button_his);
         Button Button_rueck = (Button) findViewById(R.id.button_rueck);
         Button Button_info = (Button) findViewById(R.id.button_info);
+        Button Button_eskalation = (Button) findViewById(R.id.button_eskalation);
 
         int DropPos = getIntent().getIntExtra("value_droppos",0);
         String Firma = getIntent().getStringExtra("value_firma");
@@ -199,7 +200,33 @@ private static final String TAG_SUCCESS = "success";
                 }
             });
 
+        Button_eskalation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+
+
+                TextView textViewFirma =  (TextView) findViewById(R.id.textViewContentFirma);
+                String Firma = textViewFirma.getText().toString();
+                TextView textViewModel =  (TextView) findViewById(R.id.textViewContentModell);
+                String Model = textViewModel.getText().toString();
+                TextView textViewStoerung =  (TextView) findViewById(R.id.textViewContentStoerung);
+                String Stoerung = textViewStoerung.getText().toString();
+                TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
+                String Ansprechpartner = textViewAnsprechpartner.getText().toString();
+
+                Intent i = new Intent(getApplicationContext(), Eskalation.class);
+
+                i.putExtra("value_firma", Firma);
+                i.putExtra("value_model", Model);
+                i.putExtra("value_stoerung", Stoerung);
+                i.putExtra("value_ansprechpartner", Ansprechpartner);
+                i.putExtra("value_id", ID);
+
+                startActivity(i);
+
+            }
+        });
     }
 
 

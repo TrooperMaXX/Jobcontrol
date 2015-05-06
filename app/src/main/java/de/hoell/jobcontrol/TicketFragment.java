@@ -452,7 +452,7 @@ public class TicketFragment extends ListFragment {
                                 case 99:
                                     Status = "Eskalation";
                                     DropPos = 10;
-                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
 
                             }

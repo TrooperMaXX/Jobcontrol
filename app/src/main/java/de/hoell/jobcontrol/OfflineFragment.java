@@ -135,7 +135,7 @@ public class OfflineFragment extends ListFragment {
                                 case 39:
                                     Status = "Eskalation";
                                     DropPos = 10;
-                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
 
                             }

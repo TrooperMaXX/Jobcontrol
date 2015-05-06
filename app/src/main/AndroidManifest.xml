@@ -55,7 +55,10 @@
         <activity
             android:name=".ticketlist.NewInfo"
             android:label="@string/title_activity_new_info">
-
+        </activity>
+        <activity
+            android:name=".ticketlist.Eskalation"
+            android:label="@string/title_activity_eskalation" >
         </activity>
     </application>
 

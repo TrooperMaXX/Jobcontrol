@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.Functions;
@@ -42,7 +43,8 @@ public class TicketFragment extends ListFragment {
 
     String Status = "Unbearbeitet";
     public int DropPos= 0;
-
+    public  Date Terminsdf;
+    ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
 
     List<Tickets> ticketsList = new ArrayList<Tickets>();
 
@@ -65,10 +67,223 @@ public class TicketFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new JSONMyTickets(getActivity().getApplicationContext()).execute();
+        try {
+            Functions Function = new Functions();
+            if( Function.isNetworkOnline(getActivity().getApplicationContext())) {
+                JSONObject json = new JSONMyTickets(getActivity().getApplicationContext()).execute().get();
+                if (json != null) {
+                    try {
+
+                        int success = json.getInt(TAG_SUCCESS);
+
+                        if (success == 1) {
+
+                            Ticketliste = json.getJSONArray("tickets");
+                            for (int i = 0; i < Ticketliste.length(); i++) {
+                                JSONObject c = Ticketliste.getJSONObject(i);
+                                String Farbe="#ffffffff";
+
+                                int imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+
+
+                                String Firma = c.getString("Firma");
+                                int Statusnum = c.getInt("Status");
+
+
+                                switch (Statusnum) {
+
+                                    case 10:
+                                        Status = "Unbearbeitet";
+                                        DropPos = 0;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 11:
+                                        Status = "Fahrt";
+                                        DropPos = 1;
+                                        Farbe="#ffff4d00";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 12:
+                                        Status = "In arbeit";
+                                        DropPos = 2;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 13:
+                                        Status = "offen";
+                                        DropPos = 3;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 15:
+                                        Status = "Erledigt";
+                                        DropPos = 4;
+
+                                        break;
+                                    case 16:
+                                        Status = "wartet";
+                                        DropPos = 5;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 17:
+                                        Status = "Ware bestellt";
+                                        DropPos = 6;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 18:
+                                        Status = "Ware da";
+                                        DropPos = 7;
+                                        Farbe="#ffff4d00";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 19:
+                                        Status = "Ware benötigt";
+                                        DropPos = 8;
+                                        Farbe="#ffffffff";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 20:
+                                        Status = "installiert";
+                                        DropPos = 9;
+                                        Farbe="#FF0000";
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        break;
+                                    case 99:
+                                        Status = "Eskalation";
+                                        DropPos = 10;
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
+
+                                }
+
+                                String Modell = c.getString("Modell");
+
+                                String Strasse = c.getString("Straße");
+                                String Plz = c.getString("Plz");
+                                String Ort = c.getString("Ort");
+
+                                String ort = Plz + " " + Ort;
+
+                                String Fehler = c.getString("Stoerung");
+
+                                ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
+                                int hintergrundid ;
+                                String Termintag = c.getString("terminTag");
+                                Log.e("terminTag",":"+Termintag);
+                                String finalTermin;
+
+                                if(Termintag.equals("null"))
+                                {
+                                    Termintag="---";
+                                    finalTermin="";
+
+                                    hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                }else
+                                {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                                    Terminsdf = sdf.parse(Termintag);
+                                    SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+                                    finalTermin = edf.format(Terminsdf);
+                                    finalTermin="Termin: "+finalTermin;
+
+
+
+                                    boolean isheute =Function.isTerminheute(Terminsdf);
+
+                                    if (isheute){
+                                        System.out.println("yay");
+                                        hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+
+                                    }
+                                    else{
+                                        hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                    }
+
+                                }
+
+                                String auanr = c.getString("Auftragtkd");
+
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put("Firma", Firma);
+                                map.put("Status", Status);
+                                map.put("Termin", finalTermin);
+                                map.put("AuaNr", auanr);
+                                map.put("Model",Modell);
+                                map.put("Adresse",Strasse);
+                                map.put("Ort",ort);
+                                map.put("Fehler",Fehler);
+                                map.put("Farbe",Farbe);
+                                map.put("Status_ic",String.valueOf(imgid));
+                                map.put("Hintergrund",String.valueOf(hintergrundid));
+                                Log.e("Statusid",""+imgid);
+
+                                TheTickets.add(map);
+
+
+                            }
+                            System.out.println("Abfrage" + TheTickets);
+
+                        } else {
+
+
+                        }
+
+                    } catch (JSONException | ParseException e) {
+                        e.printStackTrace();
+                    }
+                    setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
+                            new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
+                            new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
+                }
+            }
+            else{
+
+             Toast.makeText(getActivity().getApplicationContext(), "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                Fragment fragment = null;
+                fragment = new OfflineFragment();
+                if (fragment != null) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.frame_container, fragment).commit();
+
+                }
+            }
+//
+          /*/  TODO: autoupdater
+           new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Log.e("Autoreload","hat es geklappte:)?");
+                   // Toast.makeText(getActivity().getApplicationContext(), "AUTORELOAD! yaaayayay", Toast.LENGTH_LONG).show();
+                    new JSONMyTickets(getActivity().getApplicationContext()).execute();
+                }
+            }, 10*1000);// 5*60*1000*/
+
+
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
 
 
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ListView lv = getListView();
+        ColorDrawable sage = new ColorDrawable(getActivity().getApplicationContext().getResources().getColor(R.color.ticket_list_divider));
+        lv.setDivider(sage);
+        lv.setDividerHeight(10);
+    }
+
 
 
     @Override
@@ -188,6 +403,9 @@ public class TicketFragment extends ListFragment {
 
             String wvnr = extra.getString("wvt");
             intent.putExtra("value_wvnr", wvnr);
+
+            String fleet = extra.getString("fleet");
+            intent.putExtra("value_fleet", fleet);
 
             String Annahmekue = extra.getString("annahmedurch");
             String Annahme = null;
@@ -327,8 +545,8 @@ public class TicketFragment extends ListFragment {
     public class JSONMyTickets extends AsyncTask<String, String, JSONObject> {
 
         private Context mContext;
-        public  Date Terminsdf;
-        ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
+
+
         public JSONMyTickets (Context context){
             mContext = context;
         }
@@ -367,203 +585,6 @@ public class TicketFragment extends ListFragment {
 
         }
 
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            if (json != null) {
-                try {
-
-                    int success = json.getInt(TAG_SUCCESS);
-
-                    if (success == 1) {
-
-                        Ticketliste = json.getJSONArray("tickets");
-                        for (int i = 0; i < Ticketliste.length(); i++) {
-                            JSONObject c = Ticketliste.getJSONObject(i);
-                            String Farbe="#ffffffff";
-
-                            int imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-
-
-                            String Firma = c.getString("Firma");
-                            int Statusnum = c.getInt("Status");
-
-
-                            switch (Statusnum) {
-
-                                case 10:
-                                    Status = "Unbearbeitet";
-                                    DropPos = 0;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 11:
-                                    Status = "Fahrt";
-                                    DropPos = 1;
-                                    Farbe="#ffff4d00";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 12:
-                                    Status = "In arbeit";
-                                    DropPos = 2;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 13:
-                                    Status = "offen";
-                                    DropPos = 3;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 15:
-                                    Status = "Erledigt";
-                                    DropPos = 4;
-
-                                    break;
-                                case 16:
-                                    Status = "wartet";
-                                    DropPos = 5;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 17:
-                                    Status = "Ware bestellt";
-                                    DropPos = 6;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 18:
-                                    Status = "Ware da";
-                                    DropPos = 7;
-                                    Farbe="#ffff4d00";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 19:
-                                    Status = "Ware benötigt";
-                                    DropPos = 8;
-                                    Farbe="#ffffffff";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 20:
-                                    Status = "installiert";
-                                    DropPos = 9;
-                                    Farbe="#FF0000";
-                                    imgid= mContext.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-                                    break;
-                                case 99:
-                                    Status = "Eskalation";
-                                    DropPos = 10;
-                                    imgid= mContext.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                    break;
-
-                            }
-
-                            String Modell = c.getString("Modell");
-
-                            String Strasse = c.getString("Straße");
-                            String Plz = c.getString("Plz");
-                            String Ort = c.getString("Ort");
-
-                            String ort = Plz + " " + Ort;
-
-                            String Fehler = c.getString("Stoerung");
-
-                            ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
-                            int hintergrundid ;
-                             String Termintag = c.getString("terminTag");
-                            Log.e("terminTag",":"+Termintag);
-                            String finalTermin;
-
-                            if(Termintag.equals("null"))
-                            {
-                                Termintag="---";
-                                finalTermin="";
-
-                                hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                            }else
-                           {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
-                               Terminsdf = sdf.parse(Termintag);
-                               SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
-                               finalTermin = edf.format(Terminsdf);
-                               finalTermin="Termin: "+finalTermin;
-
-                                Functions Function = new Functions();
-
-                                boolean isheute =Function.isTerminheute(Terminsdf);
-
-                                if (isheute){
-                                    System.out.println("yay");
-                                    hintergrundid= mContext.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
-
-                                }
-                                else{
-                                    hintergrundid= mContext.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                                }
-
-                            }
-
-                            String auanr = c.getString("Auftragtkd");
-
-
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put("Firma", Firma);
-                            map.put("Status", Status);
-                            map.put("Termin", finalTermin);
-                            map.put("AuaNr", auanr);
-                            map.put("Model",Modell);
-                            map.put("Adresse",Strasse);
-                            map.put("Ort",ort);
-                            map.put("Fehler",Fehler);
-                            map.put("Farbe",Farbe);
-                            map.put("Status_ic",String.valueOf(imgid));
-                            map.put("Hintergrund",String.valueOf(hintergrundid));
-                            Log.e("Statusid",""+imgid);
-
-                            TheTickets.add(map);
-
-
-                        }
-                        System.out.println("Abfrage" + TheTickets);
-
-                    } else {
-
-
-                    }
-
-                } catch (JSONException | ParseException e) {
-                    e.printStackTrace();
-                }
-                setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                        new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
-                        new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
-            }else{ Toast.makeText(mContext, "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
-
-                Fragment fragment = null;
-                fragment = new OfflineFragment();
-                if (fragment != null) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.frame_container, fragment).commit();
-
-
-
-                }
-            }
-            ListView lv = getListView();
-            ColorDrawable sage = new ColorDrawable(mContext.getResources().getColor(R.color.ticket_list_divider));
-            lv.setDivider(sage);
-            lv.setDividerHeight(10);
-           /* TODO: autoupdater
-           new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    Log.e("Autoreload","hat es geklappte:)?");
-                   // Toast.makeText(getActivity().getApplicationContext(), "AUTORELOAD! yaaayayay", Toast.LENGTH_LONG).show();
-                    new JSONMyTickets(mContext).execute();
-                }
-            }, 10*1000);// 5*60*1000*/
-        }
 
 
     }

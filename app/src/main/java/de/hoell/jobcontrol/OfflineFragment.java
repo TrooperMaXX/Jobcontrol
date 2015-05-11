@@ -232,7 +232,14 @@ public class OfflineFragment extends ListFragment {
 
 
 
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ListView lv = getListView();
+        ColorDrawable sage = new ColorDrawable(getActivity().getApplicationContext().getResources().getColor(R.color.ticket_list_divider));
+        lv.setDivider(sage);
+        lv.setDividerHeight(10);
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -328,6 +335,9 @@ public class OfflineFragment extends ListFragment {
 
             String wvnr = extra.getString("wvt");
             intent.putExtra("value_wvnr", wvnr);
+
+            String fleet = extra.getString("fleet");
+            intent.putExtra("value_fleet", fleet);
 
             String Annahmekue = extra.getString("annahmedurch");
             String Annahme = null;

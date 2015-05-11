@@ -47,6 +47,9 @@ import de.hoell.jobcontrol.MainActivity;
         private static String saveinfo_tag = "saveinfo";
         private static String info_tag = "info";
         private static String saveesk_tag = "saveesk";
+        private static String gebiet_tag = "gebiet";
+        private static String gebtech_tag = "gebtech";
+        private static String verschieben_tag = "verschieben";
 
     // constructor
         public Functions(){
@@ -259,6 +262,56 @@ import de.hoell.jobcontrol.MainActivity;
         Log.e("SAVEESK", json.toString());
         // return json
         return json;
+    }
+
+    public JSONObject Gebiet(String user) {
+
+
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag", gebiet_tag));
+            params.add(new BasicNameValuePair("user", user));
+
+            System.out.println("user" + user);
+            // getting JSON Object
+            JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+            Log.e("gebietJSON", json.toString());
+            // return json
+            return json;
+
+
+
+
+    }
+
+    public JSONObject GebTech(String gebiet,String user) {
+
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", gebtech_tag));
+        params.add(new BasicNameValuePair("gebiet", gebiet));
+        params.add(new BasicNameValuePair("user", user));
+
+        System.out.println("gebiet" + gebiet);
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("gebietJSON", json.toString());
+        return json;
+    }
+
+    public JSONObject Verschieben(String id, String techniker,String user) {
+   // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", verschieben_tag));
+        params.add(new BasicNameValuePair("techniker", techniker));
+        params.add(new BasicNameValuePair("id", id));
+        params.add(new BasicNameValuePair("user", user));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        Log.e("VERSCHIEBENJSON", json.toString());
+        // return json
+        return json;
+
     }
 }
 

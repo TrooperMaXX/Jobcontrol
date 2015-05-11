@@ -15,7 +15,6 @@ android {
         applicationId 'de.hoell.jobcontrol'
         minSdkVersion 14
         targetSdkVersion 19
-        versionName '1.0 FINAL RELEASE'
         signingConfig signingConfigs.config
     }
     buildTypes {

@@ -17,6 +17,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
@@ -29,9 +31,9 @@ public class Start extends Activity {
     EditText InputPass;
     CheckBox InputCheck;
     public static String user;
-    private  String password;
+    private  String password,gebiet;
     SessionManager session;
-    TicketDetailsActivity online = new TicketDetailsActivity();
+
 
 
 
@@ -138,12 +140,23 @@ public class Start extends Activity {
 
                         System.out.println("Checkbox is gesetz daten werden gespeichert ");
 
+
                         session.saveSession(user);
+
+
                     }
                     else{
                         System.out.println("Checkbox is leer daten werden NICHT gespeichert");
                     }
+                    JSONObject gebiet_json = new JSONGebiet(user).execute().get();
+                    int g_success = gebiet_json.getInt(TAG_SUCCESS);
+                    if (g_success == 1) {
+                        JSONObject c = gebiet_json.getJSONObject("gebiet");
+                        gebiet= c.getString("Gebiet");
+                        System.out.print("Gebiet von " +user +" :"+ gebiet);
+                        session.saveGebiet(gebiet);
 
+                    }
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(i);
 
@@ -153,16 +166,31 @@ public class Start extends Activity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Falscher Login-Name / Falsches Passwort!!!", Toast.LENGTH_SHORT).show();
                 }
-            } catch (JSONException e) {
+            } catch (JSONException | InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        }
+            }
         }
     }
 
 
 
+    private class JSONGebiet extends AsyncTask<Integer, Integer, JSONObject> {
+        private String mUser;
+        public JSONGebiet(String user) {
+            mUser =user;
+        }
 
+        @Override
+        protected JSONObject doInBackground(Integer... params) {
+            Functions Function = new Functions();
+            JSONObject json_gebiet = Function.Gebiet(user);
+
+            return json_gebiet;
+        }
+    }
 
 
 

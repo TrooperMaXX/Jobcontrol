@@ -21,7 +21,9 @@
 
         import de.hoell.jobcontrol.adapter.NavDrawerListAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
+        import de.hoell.jobcontrol.query.Functions;
         import de.hoell.jobcontrol.session.SessionManager;
+        import de.hoell.jobcontrol.ticketlist.InfoActivity;
 
         public class
                 MainActivity extends Activity implements TicketFragment.OnTicketInteractionListener {
@@ -153,7 +155,15 @@
 
                     case R.id.action_refresh:
                         Toast.makeText(getApplicationContext(), "Refresh...", Toast.LENGTH_SHORT).show();
-                        displayView(0);
+
+
+                        Functions Function = new Functions();
+                        if( Function.isNetworkOnline(MainActivity.this)) {
+                            displayView(0);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
+                        }
                         return true;
 
                     case R.id.action_logout:

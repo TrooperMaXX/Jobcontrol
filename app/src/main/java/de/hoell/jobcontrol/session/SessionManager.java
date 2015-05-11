@@ -12,8 +12,7 @@ public class SessionManager {
 
 
 
-
-        // Shared Preferences reference
+    // Shared Preferences reference
         SharedPreferences pref;
 
         // Editor reference for Shared preferences
@@ -32,6 +31,9 @@ public class SessionManager {
         private static final String IS_USER_LOGIN = "IsUserLoggedIn";
 
         // All Shared Preferences Keys
+        private static final String IS_USER_GEBIET = "IsUserGebiet";
+
+        // All Shared Preferences Keys
         private static final String IS_OFFLINEMODE = "IsOfflineOn";
 
         // User name (make variable public to access from outside)
@@ -39,6 +41,9 @@ public class SessionManager {
 
         // Email address (make variable public to access from outside)
         public static final String KEY_PWD = "pwd";
+
+        // Email address (make variable public to access from outside)
+        private static final String KEY_GEBIET = "gebiet";
 
         // Email address (make variable public to access from outside)
         public static final String KEY_JSON = "json";
@@ -65,6 +70,19 @@ public class SessionManager {
             editor.commit();
             System.out.println("Daten gespeichert:"+user);
         }
+
+    public void saveGebiet(String gebiet) {
+        // Storing login value as TRUE
+        editor.putBoolean(IS_USER_GEBIET, true);
+
+        // Storing user in pref
+        editor.putString(KEY_GEBIET, gebiet);
+
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+gebiet);
+    }
 
         public void saveJSON(String jsonstring){
             // Storing login value as TRUE
@@ -108,6 +126,14 @@ public class SessionManager {
         // return user
         return user;
     }
+    public String getGebiet(){
+
+        // Get user name
+        String gebiet = pref.getString(KEY_GEBIET, "null");
+
+        // return user
+        return gebiet;
+    }
 
     public String getJstring(){
 
@@ -139,6 +165,8 @@ public class SessionManager {
         public boolean isJSONsaved(){
             return pref.getBoolean(IS_OFFLINEMODE, false);
         }
+
+
 }
 
 

@@ -1,6 +1,8 @@
 package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,34 +12,38 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
+
 import de.hoell.jobcontrol.historie.Historie_Activity;
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.session.SessionManager;
 
 public class TicketDetailsActivity extends Activity {
 
- String Statusnum;
+ String Statusnum,user,gebiet;
 static String ID;
 private static final String TAG_SUCCESS = "success";
 
+    AlertDialog.Builder builderSingle;
+    ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -64,12 +70,13 @@ private static final String TAG_SUCCESS = "success";
         String Termin = getIntent().getStringExtra("value_termin");
         String Auftragsnr = getIntent().getStringExtra("value_auftragnr");
         String Wvnr = getIntent().getStringExtra("value_wvnr");
+        String Fleet = getIntent().getStringExtra("value_fleet");
         String Annahme = getIntent().getStringExtra("value_annahme");
         final String uri = getIntent().getStringExtra("value_uri");
         Statusnum = getIntent().getStringExtra("value_statusnum");
         ID = getIntent().getStringExtra("value_id");
 
-        Log.d("INTENTEXTRA:", Status+" "+ DropPos +" "+ Adresse +" "+Standort+" "+Modell+" "+Serienummer+" "+Stoerung+" "+Ansprechpartner+" "+Telefonnummer+" "+Termin+" "+ Annahme);
+        Log.d("INTENTEXTRA:", Status + " " + DropPos + " " + Adresse + " " + Standort + " " + Modell + " " + Serienummer + " " + Stoerung + " " + Ansprechpartner + " " + Telefonnummer + " " + Termin + " " + Annahme);
 
         Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner);
         spinnerStatus.setSelection(DropPos);
@@ -113,6 +120,10 @@ private static final String TAG_SUCCESS = "success";
         TextView textViewWvnr = (TextView) findViewById(R.id.textViewContentWvnr);
         if(Wvnr.equals("null")){Wvnr=" ";}
         textViewWvnr.setText(Wvnr);
+
+        TextView textViewFleet = (TextView) findViewById(R.id.textViewContentFleet);
+        if(Fleet.equals("null")){Fleet=" ";}
+        textViewFleet.setText(Fleet);
 
         TextView textViewAnnahme = (TextView) findViewById(R.id.textViewContentAnnahme);
         textViewAnnahme.setText(Annahme);
@@ -160,14 +171,13 @@ private static final String TAG_SUCCESS = "success";
             public void onClick(View view) {
 
 
-
-                TextView textViewFirma =  (TextView) findViewById(R.id.textViewContentFirma);
+                TextView textViewFirma = (TextView) findViewById(R.id.textViewContentFirma);
                 String Firma = textViewFirma.getText().toString();
-                TextView textViewModel =  (TextView) findViewById(R.id.textViewContentModell);
+                TextView textViewModel = (TextView) findViewById(R.id.textViewContentModell);
                 String Model = textViewModel.getText().toString();
-                TextView textViewStoerung =  (TextView) findViewById(R.id.textViewContentStoerung);
+                TextView textViewStoerung = (TextView) findViewById(R.id.textViewContentStoerung);
                 String Stoerung = textViewStoerung.getText().toString();
-                TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
+                TextView textViewAnsprechpartner = (TextView) findViewById(R.id.textViewContentAnsprechpartner);
                 String Ansprechpartner = textViewAnsprechpartner.getText().toString();
 
                 Intent i = new Intent(getApplicationContext(), Rueckmeldung.class);
@@ -187,32 +197,30 @@ private static final String TAG_SUCCESS = "success";
             @Override
             public void onClick(View view) {
                 Functions Function = new Functions();
-                    if( Function.isNetworkOnline(TicketDetailsActivity.this)) {
+                if (Function.isNetworkOnline(TicketDetailsActivity.this)) {
 
-                        Intent i = new Intent(getApplicationContext(), InfoActivity.class);
-                        i.putExtra("value_id", ID);
-                        startActivity(i);
-                    }
-                    else{
-                            Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
-                        }
-
+                    Intent i = new Intent(getApplicationContext(), InfoActivity.class);
+                    i.putExtra("value_id", ID);
+                    startActivity(i);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
                 }
-            });
+
+            }
+        });
 
         Button_eskalation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-
-                TextView textViewFirma =  (TextView) findViewById(R.id.textViewContentFirma);
+                TextView textViewFirma = (TextView) findViewById(R.id.textViewContentFirma);
                 String Firma = textViewFirma.getText().toString();
-                TextView textViewModel =  (TextView) findViewById(R.id.textViewContentModell);
+                TextView textViewModel = (TextView) findViewById(R.id.textViewContentModell);
                 String Model = textViewModel.getText().toString();
-                TextView textViewStoerung =  (TextView) findViewById(R.id.textViewContentStoerung);
+                TextView textViewStoerung = (TextView) findViewById(R.id.textViewContentStoerung);
                 String Stoerung = textViewStoerung.getText().toString();
-                TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
+                TextView textViewAnsprechpartner = (TextView) findViewById(R.id.textViewContentAnsprechpartner);
                 String Ansprechpartner = textViewAnsprechpartner.getText().toString();
 
                 Intent i = new Intent(getApplicationContext(), Eskalation.class);
@@ -227,7 +235,20 @@ private static final String TAG_SUCCESS = "success";
 
             }
         });
+      builderSingle = new AlertDialog.Builder(
+                TicketDetailsActivity.this);
+        builderSingle.setIcon(R.drawable.ic_launcher);
+        builderSingle.setTitle("Select One Name:-");
+       arrayAdapter = new ArrayAdapter<String>(
+                TicketDetailsActivity.this,
+                android.R.layout.select_dialog_singlechoice);
+        SessionManager session = new SessionManager(this);
+        gebiet ="null";
+                gebiet=session.getGebiet();
+        user=session.getUser();
+
     }
+
 
 
 
@@ -250,6 +271,117 @@ private static final String TAG_SUCCESS = "success";
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_verschieben) {
+
+            if (!gebiet.equals("null")){
+
+
+                try {
+                    JSONObject gebietstech = new JSONGebTech(gebiet,user).execute().get();
+                    int g_success = gebietstech.getInt(TAG_SUCCESS);
+                    if (g_success == 1) {
+                        JSONArray gebtech = gebietstech.getJSONArray("gebtech");
+                        for (int i = 0; i < gebtech.length(); i++) {
+                            JSONObject c = gebtech.getJSONObject(i);
+                            String techniker= c.getString("kuerzel");
+                            arrayAdapter.add(techniker);
+                        }
+
+                    }
+
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                builderSingle.setNegativeButton("cancel",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builderSingle.setAdapter(arrayAdapter,
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String strName = arrayAdapter.getItem(which);
+                                AlertDialog.Builder builderInner = new AlertDialog.Builder(
+                                        TicketDetailsActivity.this);
+
+                                Functions Function = new Functions();
+
+                                if( Function.isNetworkOnline(TicketDetailsActivity.this)){
+                                    try {
+                                        JSONObject verschoben=new JSONVerschieben(ID,strName,user).execute().get();
+
+                                        try {
+
+                                            int success = verschoben.getInt(TAG_SUCCESS);
+
+                                            if (success == 1) {
+                                                System.out.println("LOL gehtb sofort"+ success);
+
+
+                                                builderInner.setMessage("Ticket an " + strName + " verschoben");
+                                                builderInner.setTitle("Ticket Verschoben");
+                                                builderInner.setPositiveButton("Ok",
+                                                        new DialogInterface.OnClickListener() {
+
+                                                            @Override
+                                                            public void onClick(
+                                                                    DialogInterface dialog,
+                                                                    int which) {
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                                builderInner.show();
+
+                                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                                startActivity(i);
+
+
+                                            }
+                                            else{
+
+                                                System.out.println("Y U NOT FUNCTION...");
+
+                                            }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
+
+                            }
+                        });
+            }else{
+                Toast.makeText(getApplicationContext(), "Keine anderen Techniker in deinem Gebiet Verfügbar", Toast.LENGTH_SHORT).show();}
+
+            builderSingle.show();
+
+
+
+    /*        Functions Function = new Functions();
+
+            if( Function.isNetworkOnline(TicketDetailsActivity.this)){
+                new JSONSaveDetails().execute();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
+    */
         }
 
         return super.onOptionsItemSelected(item);
@@ -373,6 +505,37 @@ private static final String TAG_SUCCESS = "success";
     }
 
 
+    private class JSONGebTech extends AsyncTask<Integer, Integer, JSONObject> {
+        private String mGebiet,mUser;
+        public JSONGebTech(String gebiet,String user) {
+            mGebiet =gebiet;
+            mUser = user;
+        }
 
+        @Override
+        protected JSONObject doInBackground(Integer... params) {
+            Functions Function = new Functions();
+            JSONObject json_gebtech = Function.GebTech(mGebiet,mUser);
+
+            return json_gebtech;
+        }
+    }
+
+    private class JSONVerschieben extends AsyncTask<Integer, Integer, JSONObject> {
+        private String mID ,mTechniker,mUser;
+        public JSONVerschieben(String ID,String techniker,String user) {
+            mID=ID;
+            mTechniker=techniker;
+            mUser=user;
+        }
+
+        @Override
+        protected JSONObject doInBackground(Integer... params) {
+            Functions Function = new Functions();
+            JSONObject json_gebtech = Function.Verschieben(mID, mTechniker,mUser);
+
+            return json_gebtech;
+        }
+    }
 
 }

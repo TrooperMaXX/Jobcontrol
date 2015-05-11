@@ -107,5 +107,6 @@
     <string name="button_eskalation">Eskalation</string>
     <string name="eskalation_caps">ESKALATION</string>
     <string name="title_activity_eskalation">Eskalation</string>
+    <string name="fleet">Fleet</string>
 
 </resources>

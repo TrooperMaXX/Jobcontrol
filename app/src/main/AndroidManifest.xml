@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.hoell.jobcontrol" >
+    package="de.hoell.jobcontrol"
+
+    android:versionCode="3"
+    android:versionName="1.2"
+    ><!--TODO:  VersionCode: immer +1 bei neuer Version
+         TODO:  VersionName: String den der User sieht-->
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

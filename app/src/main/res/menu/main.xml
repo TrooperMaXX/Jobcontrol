@@ -17,5 +17,8 @@
         android:icon="@drawable/ic_action_info"
         android:orderInCategory="100"
         android:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_zeit"
+        android:title="Update Intervall"/>
 </menu>
 

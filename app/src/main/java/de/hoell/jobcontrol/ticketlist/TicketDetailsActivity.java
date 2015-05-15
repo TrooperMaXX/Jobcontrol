@@ -268,10 +268,7 @@ private static final String TAG_SUCCESS = "success";
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         if (id == R.id.action_verschieben) {
 
             if (!gebiet.equals("null")){

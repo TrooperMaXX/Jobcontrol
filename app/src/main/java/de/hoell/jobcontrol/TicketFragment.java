@@ -4,21 +4,28 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ListFragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,12 +34,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
+
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
 import de.hoell.jobcontrol.ticketlist.Tickets;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class TicketFragment extends ListFragment {
@@ -53,15 +68,13 @@ public class TicketFragment extends ListFragment {
 
 
 
+
+
     private OnTicketInteractionListener mListener;
 
 
-     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public TicketFragment() {
-    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +82,7 @@ public class TicketFragment extends ListFragment {
 
         try {
             Functions Function = new Functions();
+
             if( Function.isNetworkOnline(getActivity().getApplicationContext())) {
                 JSONObject json = new JSONMyTickets(getActivity().getApplicationContext()).execute().get();
                 if (json != null) {
@@ -114,7 +128,7 @@ public class TicketFragment extends ListFragment {
                                         Status = "offen";
                                         DropPos = 3;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 15:
                                         Status = "Erledigt";
@@ -137,7 +151,7 @@ public class TicketFragment extends ListFragment {
                                         Status = "Ware da";
                                         DropPos = 7;
                                         Farbe="#ffff4d00";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 19:
                                         Status = "Ware benötigt";
@@ -254,18 +268,17 @@ public class TicketFragment extends ListFragment {
                 }
             }
 //
-          /*/  TODO: autoupdater
-           new Handler().postDelayed(new Runnable() {
-                @Override
+          /*/  TODO: autoupdater*/
+          ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+            SessionManager session=new SessionManager(MainActivity.context);
+            int zeit=session.getZeit();
+            System.out.println("UpdateTimer auf " + zeit + " gesetzt");
+// This schedule a runnable task every 15 minutes
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
-
-                    Log.e("Autoreload","hat es geklappte:)?");
-                   // Toast.makeText(getActivity().getApplicationContext(), "AUTORELOAD! yaaayayay", Toast.LENGTH_LONG).show();
-                    new JSONMyTickets(getActivity().getApplicationContext()).execute();
+                    new JSONMyTickets(MainActivity.context).execute();
                 }
-            }, 10*1000);// 5*60*1000*/
-
-
+            }, 0, zeit, TimeUnit.MINUTES);
 
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -274,6 +287,8 @@ public class TicketFragment extends ListFragment {
 
 
     }
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -518,6 +533,9 @@ public class TicketFragment extends ListFragment {
         }
     }
 
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -567,8 +585,8 @@ public class TicketFragment extends ListFragment {
 
                JSONObject json = Function.MyTickets(user);
 
-
-            System.out.println("is JSON null?" +json);
+            neueTickets(json);
+            System.out.println("is JSON null?" + json);
             SessionManager session = new SessionManager(mContext);
 
 
@@ -589,6 +607,150 @@ public class TicketFragment extends ListFragment {
 
     }
 
+    private void neueTickets(JSONObject neuJson) {
+        SessionManager session = new SessionManager(MainActivity.context);
+        ArrayList <Integer> old = new ArrayList <Integer> ();
+        ArrayList <Integer> neu = new ArrayList <Integer> ();
+        ArrayList <Integer> neueTickets = new ArrayList<Integer>();
+
+        if (session.isJSONsaved()) {
+
+            String jstring = session.getJstring();
+                //********ALTE TICKETS**************
+            if (jstring != null) {
+                try {
+                    JSONObject jsonData = new JSONObject(jstring);
+                    int success = jsonData.getInt(TAG_SUCCESS);
+
+
+                    if (success == 1) {
+
+                        Ticketliste = jsonData.getJSONArray("tickets");
+                        for (int i = 0; i < Ticketliste.length(); i++) {
+                            JSONObject c = Ticketliste.getJSONObject(i);
+                            int ID = c.getInt("ID");
+                            old.add(ID);
+
+                        }
+                    }
+                    //********NEUE TICKETS**************
+                    if (neuJson != null) {
+
+
+                            success = neuJson.getInt(TAG_SUCCESS);
+
+                            if (success == 1) {
+
+                                Ticketliste = neuJson.getJSONArray("tickets");
+                                for (int i = 0; i < Ticketliste.length(); i++) {
+                                    JSONObject c = Ticketliste.getJSONObject(i);
+                                    int ID = c.getInt("ID");
+                                    neu.add(ID);
+                                }
+                            }
+
+                    }else{
+                        Log.e("ERROR","Abgleich fehlgeschlagen weil JSON null");
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                Log.e("ERROR","Abgleich fehlgeschlagen weil string null");
+            }
+
+
+
+            for (int j = 0; j < neu.size(); j++){
+
+                if (!old.contains(neu.get(j))){
+
+                    neueTickets.add(neu.get(j));
+                }
+
+            }
+            if (neueTickets.size()>0){
+
+                createNotification();
+                Log.e("FINALEEOLEEE",neueTickets.toString());
+
+            }else{
+                Log.e("FINALEEOLEEE","NULL");
+            }
+
+
+
+
+
+        }
+    }
+
+    private void createNotification() {
+        // BEGIN_INCLUDE(notificationCompat)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        // END_INCLUDE(notificationCompat)
+
+        // BEGIN_INCLUDE(intent)
+        //Create Intent to launch this Activity again if the notification is clicked.
+        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+        // END_INCLUDE(intent)
+
+        // BEGIN_INCLUDE(ticker)
+        // Sets the ticker text
+        builder.setTicker(getResources().getString(R.string.custom_notification));
+
+        // Sets the small icon for the ticker
+        builder.setSmallIcon(R.drawable.ic_stat_custom);
+        // END_INCLUDE(ticker)
+
+        // BEGIN_INCLUDE(buildNotification)
+        // Cancel the notification when clicked
+        builder.setAutoCancel(true);
+
+        // Build the notification
+        Notification notification = builder.build();
+        // END_INCLUDE(buildNotification)
+
+        // BEGIN_INCLUDE(customLayout)
+        // Inflate the notification layout as RemoteViews
+        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification);
+
+        // Set text on a TextView in the RemoteViews programmatically.
+        final String time = DateFormat.getTimeInstance().format(new Date()).toString();
+        final String text = getResources().getString(R.string.collapsed, time);
+        contentView.setTextViewText(R.id.textView_not, text);
+
+        /* Workaround: Need to set the content view here directly on the notification.
+         * NotificationCompatBuilder contains a bug that prevents this from working on platform
+         * versions HoneyComb.
+         * See https://code.google.com/p/android/issues/detail?id=30495
+         */
+        notification.contentView = contentView;
+
+        // Add a big content view to the notification if supported.
+        // Support for expanded notifications was added in API level 16.
+        // (The normal contentView is shown when the notification is collapsed, when expanded the
+        // big content view set here is displayed.)
+        if (Build.VERSION.SDK_INT >= 16) {
+            // Inflate and set the layout for the expanded notification view
+            RemoteViews expandedView =
+                    new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_expanded);
+            notification.bigContentView = expandedView;
+        }
+        // END_INCLUDE(customLayout)
+
+        // START_INCLUDE(notify)
+        // Use the NotificationManager to show the notification
+        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(0, notification);
+        // END_INCLUDE(notify)
+    }
 
 
     public String getStatus(int Statusnum){

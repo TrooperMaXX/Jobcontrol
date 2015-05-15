@@ -1,9 +1,13 @@
         package de.hoell.jobcontrol;
 
         import android.app.Activity;
+        import android.app.AlertDialog;
         import android.app.Fragment;
         import android.app.FragmentManager;
+        import android.content.Context;
+        import android.content.DialogInterface;
         import android.content.Intent;
+        import android.content.pm.PackageInfo;
         import android.content.res.Configuration;
         import android.content.res.TypedArray;
         import android.os.Bundle;
@@ -15,7 +19,9 @@
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.ListView;
+        import android.widget.NumberPicker;
         import android.widget.Toast;
+        import android.content.pm.PackageManager.NameNotFoundException;
 
         import java.util.ArrayList;
 
@@ -23,14 +29,14 @@
         import de.hoell.jobcontrol.model.NavDrawerItem;
         import de.hoell.jobcontrol.query.Functions;
         import de.hoell.jobcontrol.session.SessionManager;
-        import de.hoell.jobcontrol.ticketlist.InfoActivity;
+
 
         public class
                 MainActivity extends Activity implements TicketFragment.OnTicketInteractionListener {
             private DrawerLayout mDrawerLayout;
             private ListView mDrawerList;
             private ActionBarDrawerToggle mDrawerToggle;
-
+            public static Context context;
             // nav drawer title
             private CharSequence mDrawerTitle;
 
@@ -44,6 +50,7 @@
             private ArrayList<NavDrawerItem> navDrawerItems;
             private NavDrawerListAdapter adapter;
             SessionManager session;
+            public String versionName;
 
             @Override
             protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,7 @@
                 setContentView(R.layout.activity_main);
                 session = new SessionManager(this);
                 mTitle = mDrawerTitle = getTitle();
-
+                context=this;
                 // load slide menu items
                 navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
@@ -73,7 +80,13 @@
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
 
 
-
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                } catch (NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+               versionName = pInfo.versionName;
 
                 // Recycle the typed array
                 navMenuIcons.recycle();
@@ -147,10 +160,57 @@
                 // Handle action bar actions click
                 switch (item.getItemId()) {
                     case R.id.action_info:
-                        Toast.makeText(getApplicationContext(), "Version 0.9.9", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), versionName, Toast.LENGTH_SHORT).show();
                         return true;
 
+                    case R.id.action_zeit:
 
+
+
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                        final NumberPicker np = new NumberPicker(MainActivity.this);
+
+                        alert.setTitle("Select the value: ");
+                        alert.setView(np);
+
+                        Integer[] nums = new Integer[100];
+                        for(int i=1; i<nums.length; i++)
+                        {
+                            nums[i] = i;
+
+
+                        }
+
+                        np.setMinValue(1);
+                        np.setMaxValue(nums.length - 1);
+                        np.setWrapSelectorWheel(true);
+                        ///np.setDisplayedValues(nums);
+                        np.setValue(15);
+
+                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Do something with value!
+                                int value = np.getValue();
+                                session.saveZeit(value);
+                            }
+                        });
+
+                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Cancel.
+                            }
+                        });
+
+                        alert.show();
+
+
+
+
+
+
+
+
+                        return true;
 
 
                     case R.id.action_refresh:

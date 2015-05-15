@@ -36,6 +36,9 @@ public class SessionManager {
         // All Shared Preferences Keys
         private static final String IS_OFFLINEMODE = "IsOfflineOn";
 
+        // All Shared Preferences Keys
+        private static final String IS_ZEIT = "IsZeitOn";
+
         // User name (make variable public to access from outside)
         public static final String KEY_USER = "user";
 
@@ -47,6 +50,9 @@ public class SessionManager {
 
         // Email address (make variable public to access from outside)
         public static final String KEY_JSON = "json";
+
+        // Email address (make variable public to access from outside)
+        public static final String KEY_ZEIT = "zeit";
 
         // Constructor
         public SessionManager(Context context){
@@ -71,7 +77,7 @@ public class SessionManager {
             System.out.println("Daten gespeichert:"+user);
         }
 
-    public void saveGebiet(String gebiet) {
+       public void saveGebiet(String gebiet) {
         // Storing login value as TRUE
         editor.putBoolean(IS_USER_GEBIET, true);
 
@@ -81,7 +87,7 @@ public class SessionManager {
 
         // commit changes
         editor.commit();
-        System.out.println("Daten gespeichert:"+gebiet);
+        System.out.println("Daten gespeichert:" + gebiet);
     }
 
         public void saveJSON(String jsonstring){
@@ -95,6 +101,18 @@ public class SessionManager {
             editor.commit();
             System.out.println("Daten gespeichert:"+jsonstring);
         }
+
+    public void saveZeit(int zeit){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_ZEIT, true);
+
+        // Storing jsonstring in pref
+        editor.putInt(KEY_ZEIT, zeit);
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+zeit);
+    }
 
 
         /**
@@ -134,11 +152,19 @@ public class SessionManager {
         // return user
         return gebiet;
     }
+    public Integer getZeit(){
+
+        // Get user name
+        int zeit = pref.getInt(KEY_ZEIT, 15);
+
+        // return user
+        return zeit;
+    }
 
     public String getJstring(){
 
         // Get user name
-        String jstring = pref.getString(KEY_JSON, null);
+        String jstring = pref.getString(KEY_JSON, "null");
 
         // return user
         return jstring;

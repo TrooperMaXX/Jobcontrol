@@ -3,6 +3,7 @@ package de.hoell.jobcontrol;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
-import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
+import android.content.pm.PackageManager.NameNotFoundException;
 
 
 public class Start extends Activity {
@@ -33,6 +34,7 @@ public class Start extends Activity {
     public static String user;
     private  String password,gebiet;
     SessionManager session;
+    public String versionName;
 
 
 
@@ -48,6 +50,12 @@ public class Start extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         Functions Function = new Functions();
 
@@ -210,7 +218,7 @@ public class Start extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_info) {
-            Toast.makeText(getApplicationContext(), "Version 0.0.6", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), versionName, Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

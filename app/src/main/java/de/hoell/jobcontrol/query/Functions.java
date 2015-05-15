@@ -80,6 +80,7 @@ import de.hoell.jobcontrol.MainActivity;
                     List<NameValuePair> params = new ArrayList<NameValuePair>();
                     params.add(new BasicNameValuePair("tag", mytickets_tag));
                 params.add(new BasicNameValuePair("user", user));
+
                     // getting JSON Object
                     JSONObject json = jsonParser.getJSONFromUrl(URL, params);
                     // return json

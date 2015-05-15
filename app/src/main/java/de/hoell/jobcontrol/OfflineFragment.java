@@ -95,7 +95,7 @@ public class OfflineFragment extends ListFragment {
                                     Status = "offen";
                                     DropPos = 3;
 
-                                    imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 15:
                                     Status = "Erledigt";
@@ -118,7 +118,7 @@ public class OfflineFragment extends ListFragment {
                                     Status = "Ware da";
                                     DropPos = 7;
 
-                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                    imgid= this.getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                     break;
                                 case 19:
                                     Status = "Ware benötigt";

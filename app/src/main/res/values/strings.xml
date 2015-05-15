@@ -64,7 +64,9 @@
     </string-array>
 
 
-
+    <string name="collapsed">I\'m the collapsed notification.\nCreated at: %s</string>
+    <string name="custom_notification">I\'m a custom notification.</string>
+    <string name="expanded">I\'m the expanded notification.\nCollapse me!</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>

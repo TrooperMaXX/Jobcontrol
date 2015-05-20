@@ -107,24 +107,25 @@ import de.hoell.jobcontrol.MainActivity;
         }
 
 
-        public boolean isTerminheute(Date termin) {
+        public boolean isTerminheute(Date Dtermin) {
 
-            Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 
-            int year_today = cal.get(Calendar.YEAR);
-            int month_today = cal.get(Calendar.MONTH) + 1;
-            int day_today = cal.get(Calendar.DATE);
-            String date_today = year_today + "-" + month_today + "-" + day_today;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
-            Date heute = null;
-            try {
-                heute = sdf.parse(date_today);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            boolean ja=heute.equals(termin);
 
-            System.out.println("date_today" + heute + " termin" + termin + " ja" + ja);
+            Date dt = new Date();
+
+            // set format for date
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            // parse it like
+
+            String check = dateFormat.format(dt);
+            String termin;
+
+            termin = dateFormat.format(Dtermin);
+            boolean ja=check.equals(termin);
+
+            Log.e("date_today!!!!!!" , check + " termin" + termin + " ja" + ja);
             if (ja){
                 return true;
             }

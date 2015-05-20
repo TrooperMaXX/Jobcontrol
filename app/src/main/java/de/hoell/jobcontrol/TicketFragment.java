@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -47,7 +48,7 @@ import de.hoell.jobcontrol.session.SessionManager;
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
 import de.hoell.jobcontrol.ticketlist.Tickets;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+
 
 
 public class TicketFragment extends ListFragment {
@@ -58,13 +59,16 @@ public class TicketFragment extends ListFragment {
 
     String Status = "Unbearbeitet";
     public int DropPos= 0;
-    public  Date Terminsdf;
+    public  Date Terminsdf,Terminsdfend;
     ArrayList<HashMap<String, String>> TheTickets = new ArrayList<HashMap<String, String>>();
+
 
     List<Tickets> ticketsList = new ArrayList<Tickets>();
 
     public JSONArray Ticketliste = null;
-
+    public JSONArray Ticketliste_neu = null;
+    public JSONArray Ticketliste_old = null;
+    final Context moinContext = MainActivity.context;
 
 
 
@@ -97,7 +101,7 @@ public class TicketFragment extends ListFragment {
                                 JSONObject c = Ticketliste.getJSONObject(i);
                                 String Farbe="#ffffffff";
 
-                                int imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                int imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
 
 
                                 String Firma = c.getString("Firma");
@@ -186,26 +190,63 @@ public class TicketFragment extends ListFragment {
                                 ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
                                 int hintergrundid ;
                                 String Termintag = c.getString("terminTag");
+                                String Terminende = c.getString("terminEnde");
+                                int Termintyp = c.getInt("terminTyp");
                                 Log.e("terminTag",":"+Termintag);
-                                String finalTermin;
+                                String formated_termintag="",formated_terminende;
+                                String finalTermin="";
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
 
-                                if(Termintag.equals("null"))
-                                {
-                                    Termintag="---";
-                                    finalTermin="";
+                                boolean isheute=false;
+                                switch (Termintyp){
 
-                                    hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                                }else
-                                {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
-                                    Terminsdf = sdf.parse(Termintag);
-                                    SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
-                                    finalTermin = edf.format(Terminsdf);
-                                    finalTermin="Termin: "+finalTermin;
+                                    case 0:
+
+                                        Terminsdf = sdf.parse(Termintag);
+                                        formated_termintag = edf.format(Terminsdf);
+                                        finalTermin="Termin: "+formated_termintag;
 
 
+                                        isheute =Function.isTerminheute(Terminsdf);
+                                        break;
+                                    case 1:
 
-                                    boolean isheute =Function.isTerminheute(Terminsdf);
+                                        Terminsdf = sdf.parse(Termintag);
+                                        formated_termintag = edf.format(Terminsdf);
+                                        Terminsdfend = sdf.parse(Terminende);
+                                        formated_terminende = edf.format(Terminsdfend);
+                                        finalTermin="Ab "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                        isheute =Function.isTerminheute(Terminsdf);
+                                        break;
+                                    case 2:
+                                        Terminsdf = sdf.parse(Termintag);
+                                        formated_termintag = edf.format(Terminsdf);
+                                        Terminsdfend = sdf.parse(Terminende);
+                                        formated_terminende = edf.format(Terminsdfend);
+                                        finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                        isheute =Function.isTerminheute(Terminsdf);
+                                        break;
+                                    case 3:
+
+                                        Terminsdf = sdf.parse(Termintag);
+                                        formated_termintag = edf.format(Terminsdf);
+                                        finalTermin="Termin: "+formated_termintag;
+
+
+                                        isheute =Function.isTerminheute(Terminsdf);
+                                        break;
+                                }
+
+
+
+
+
+
 
                                     if (isheute){
                                         System.out.println("yay");
@@ -216,7 +257,7 @@ public class TicketFragment extends ListFragment {
                                         hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                     }
 
-                                }
+
 
                                 String auanr = c.getString("Auftragtkd");
 
@@ -370,45 +411,67 @@ public class TicketFragment extends ListFragment {
 
             String Telefonnummer = extra.getString("telnummer");
             intent.putExtra("value_telefonnummer", Telefonnummer);
-
-            String Termintag = extra.getString("terminTag");
-            String Terminende = extra.getString("terminEnde");
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
             SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
 
-
-
-
-
-            String Angenommen = extra.getString("Datum");
+           String Angenommen = extra.getString("Datum");
             Date angenomensdf = sdf.parse(Angenommen);
             String finalAngenommen = edf.format(angenomensdf);
+              intent.putExtra("value_angenommen", finalAngenommen);
 
 
-            intent.putExtra("value_angenommen", finalAngenommen);
+            String Termintag = extra.getString("terminTag");
+            String Terminende = extra.getString("terminEnde");
+            int Termintyp = extra.getInt("terminTyp");
+            String Termin="";
+
+            Log.e("terminTag",":"+Termintag);
+            String formated_termintag="",formated_terminende;
 
 
-            String Termin ="";
-            String finalTermin="";
-             if(Termintag.equals("null"))
-            {
 
-                Termin = "---";
+            switch (Termintyp){
+
+                case 0:
+
+                    Terminsdf = sdf.parse(Termintag);
+                    formated_termintag = edf.format(Terminsdf);
+                    Termin="Termin: "+formated_termintag;
+
+
+
+                    break;
+                case 1:
+
+                    Terminsdf = sdf.parse(Termintag);
+                    formated_termintag = edf.format(Terminsdf);
+                    Terminsdfend = sdf.parse(Terminende);
+                    formated_terminende = edf.format(Terminsdfend);
+                    Termin="Ab "+formated_termintag+" bis "+ formated_terminende;
+
+
+
+                    break;
+                case 2:
+                    Terminsdf = sdf.parse(Termintag);
+                    formated_termintag = edf.format(Terminsdf);
+                    Terminsdfend = sdf.parse(Terminende);
+                    formated_terminende = edf.format(Terminsdfend);
+                    Termin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+                    break;
+                case 3:
+
+                    Terminsdf = sdf.parse(Termintag);
+                    formated_termintag = edf.format(Terminsdf);
+                    Termin="Termin: "+formated_termintag;
+
+
+
+                    break;
             }
-            else if (Terminende.equals("null") && !Termintag.equals("null")){
 
-                 Date Terminsdf = sdf.parse(Termintag);
-                 finalTermin = edf.format(Terminsdf);
 
-                 Termin = finalTermin;
-            }
-            else{
-                Date Terminendesdf=sdf.parse(Terminende);
-                String finalTerminende = edf.format(Terminendesdf);
-            Termin = "Zwischen " + finalTermin + " und " + finalTerminende;
-
-            }
 
             intent.putExtra("value_termin", Termin);
 
@@ -424,6 +487,7 @@ public class TicketFragment extends ListFragment {
 
             String Annahmekue = extra.getString("annahmedurch");
             String Annahme = null;
+
           if (Annahmekue.equals("mt")){
                Annahme="Thomas Mersch";
             }else if(Annahmekue.equals("am")){
@@ -578,16 +642,32 @@ public class TicketFragment extends ListFragment {
 
             String user;
 
-            user = de.hoell.jobcontrol.Start.user;
+
 
             Functions Function = new Functions();
-
+            SessionManager session = new SessionManager(mContext);
+            user = session.getUser();
 
                JSONObject json = Function.MyTickets(user);
+                if(json!=null){
 
-            neueTickets(json);
+
+                    int success = 0;
+                    try {
+                        success = json.getInt(TAG_SUCCESS);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (success == 1) {
+                            neueTickets(json);
+                    }
+
+
+                }
+
             System.out.println("is JSON null?" + json);
-            SessionManager session = new SessionManager(mContext);
+
 
 
 
@@ -608,10 +688,14 @@ public class TicketFragment extends ListFragment {
     }
 
     private void neueTickets(JSONObject neuJson) {
-        SessionManager session = new SessionManager(MainActivity.context);
+
+        SessionManager session = new SessionManager(moinContext);
         ArrayList <Integer> old = new ArrayList <Integer> ();
         ArrayList <Integer> neu = new ArrayList <Integer> ();
         ArrayList <Integer> neueTickets = new ArrayList<Integer>();
+        ArrayList <Integer> Ticketpos = new ArrayList<Integer>();
+
+
 
         if (session.isJSONsaved()) {
 
@@ -625,9 +709,9 @@ public class TicketFragment extends ListFragment {
 
                     if (success == 1) {
 
-                        Ticketliste = jsonData.getJSONArray("tickets");
-                        for (int i = 0; i < Ticketliste.length(); i++) {
-                            JSONObject c = Ticketliste.getJSONObject(i);
+                        Ticketliste_old = jsonData.getJSONArray("tickets");
+                        for (int i = 0; i < Ticketliste_old.length(); i++) {
+                            JSONObject c = Ticketliste_old.getJSONObject(i);
                             int ID = c.getInt("ID");
                             old.add(ID);
 
@@ -641,9 +725,9 @@ public class TicketFragment extends ListFragment {
 
                             if (success == 1) {
 
-                                Ticketliste = neuJson.getJSONArray("tickets");
-                                for (int i = 0; i < Ticketliste.length(); i++) {
-                                    JSONObject c = Ticketliste.getJSONObject(i);
+                                Ticketliste_neu = neuJson.getJSONArray("tickets");
+                                for (int i = 0; i < Ticketliste_neu.length(); i++) {
+                                    JSONObject c = Ticketliste_neu.getJSONObject(i);
                                     int ID = c.getInt("ID");
                                     neu.add(ID);
                                 }
@@ -668,16 +752,18 @@ public class TicketFragment extends ListFragment {
                 if (!old.contains(neu.get(j))){
 
                     neueTickets.add(neu.get(j));
+                    Ticketpos.add (j);
+
                 }
 
             }
             if (neueTickets.size()>0){
 
-                createNotification();
+                createNotification(Ticketpos,Ticketliste_neu);
                 Log.e("FINALEEOLEEE",neueTickets.toString());
 
             }else{
-                Log.e("FINALEEOLEEE","NULL");
+                Log.e("KEINEN NEUEN TICKETS","NULL");
             }
 
 
@@ -687,7 +773,77 @@ public class TicketFragment extends ListFragment {
         }
     }
 
-    private void createNotification() {
+    private void createNotification(ArrayList<Integer> ticketpos, JSONArray ticketliste_neu) {
+
+        String gesamtMeldung="";
+        String termin="";
+
+        for (int j = 0; j < ticketpos.size(); j++){
+
+            try {
+                JSONObject c = ticketliste_neu.getJSONObject(ticketpos.get(j));
+                String Firma = c.getString("Firma");
+                String Modell = c.getString("Modell");
+                String Fehler = c.getString("Stoerung");
+                String Termintag = c.getString("terminTag");
+                String Terminende = c.getString("terminEnde");
+                int Termintyp = c.getInt("terminTyp");
+                Log.e("terminTag",":"+Termintag);
+                String formated_termintag="",formated_terminende;
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+
+                switch (Termintyp){
+
+                    case 0:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        termin="Termin: "+formated_termintag;
+
+
+
+                        break;
+                    case 1:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        Terminsdfend = sdf.parse(Terminende);
+                        formated_terminende = edf.format(Terminsdfend);
+                        termin="Ab "+formated_termintag+" bis "+ formated_terminende;
+
+
+
+                        break;
+                    case 2:
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        Terminsdfend = sdf.parse(Terminende);
+                        formated_terminende = edf.format(Terminsdfend);
+                        termin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+                        break;
+                    case 3:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        termin="Termin: "+formated_termintag;
+
+
+
+                        break;
+                }
+
+
+                gesamtMeldung=Firma+" "+Modell+" "+Fehler;
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
         // BEGIN_INCLUDE(notificationCompat)
         NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
         // END_INCLUDE(notificationCompat)
@@ -706,12 +862,16 @@ public class TicketFragment extends ListFragment {
         builder.setTicker(getResources().getString(R.string.custom_notification));
 
         // Sets the small icon for the ticker
-        builder.setSmallIcon(R.drawable.ic_stat_custom);
+        builder.setSmallIcon(R.drawable.ic_launcher);
         // END_INCLUDE(ticker)
 
         // BEGIN_INCLUDE(buildNotification)
         // Cancel the notification when clicked
         builder.setAutoCancel(true);
+
+
+        // SET SOUND
+        builder.setDefaults(Notification.DEFAULT_SOUND);
 
         // Build the notification
         Notification notification = builder.build();
@@ -722,9 +882,10 @@ public class TicketFragment extends ListFragment {
         RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification);
 
         // Set text on a TextView in the RemoteViews programmatically.
-        final String time = DateFormat.getTimeInstance().format(new Date()).toString();
-        final String text = getResources().getString(R.string.collapsed, time);
+       // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
+        String text = gesamtMeldung;
         contentView.setTextViewText(R.id.textView_not, text);
+        contentView.setTextViewText(R.id.termin_not, termin);
 
         /* Workaround: Need to set the content view here directly on the notification.
          * NotificationCompatBuilder contains a bug that prevents this from working on platform
@@ -737,12 +898,7 @@ public class TicketFragment extends ListFragment {
         // Support for expanded notifications was added in API level 16.
         // (The normal contentView is shown when the notification is collapsed, when expanded the
         // big content view set here is displayed.)
-        if (Build.VERSION.SDK_INT >= 16) {
-            // Inflate and set the layout for the expanded notification view
-            RemoteViews expandedView =
-                    new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_expanded);
-            notification.bigContentView = expandedView;
-        }
+
         // END_INCLUDE(customLayout)
 
         // START_INCLUDE(notify)

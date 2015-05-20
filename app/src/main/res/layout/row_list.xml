@@ -144,8 +144,7 @@
         android:textColor="#ffff0000"
         android:background="#ffbfbfbf"
         android:layout_below="@+id/FEHLER_CELL"
-        android:layout_toLeftOf="@+id/ORT_CELL"
-        android:layout_toStartOf="@+id/ORT_CELL" />
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

@@ -40,7 +40,7 @@ public class OfflineFragment extends ListFragment {
     String Status = "Unbearbeitet";
     int DropPos= 0;
     private OnTicketInteractionListener mListener;
-    public  Date Terminsdf;
+    public  Date Terminsdf,Terminsdfend;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,36 +153,68 @@ public class OfflineFragment extends ListFragment {
                             ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
                             int hintergrundid ;
                             String Termintag = c.getString("terminTag");
+                            String Terminende = c.getString("terminEnde");
+                            int Termintyp = c.getInt("terminTyp");
+
                             Log.e("terminTag", ":" + Termintag);
-                            String finalTermin;
+                            String formated_termintag="",formated_terminende;
+                            String finalTermin="";
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                            SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+                            Functions Function = new Functions();
+                            boolean isheute=false;
+                            switch (Termintyp){
 
-                            if(Termintag.equals("null"))
-                            {
-                                Termintag="---";
-                                finalTermin="";
+                                case 0:
 
+                                    Terminsdf = sdf.parse(Termintag);
+                                    formated_termintag = edf.format(Terminsdf);
+                                    finalTermin="Termin: "+formated_termintag;
+
+
+                                    isheute =Function.isTerminheute(Terminsdf);
+                                    break;
+                                case 1:
+
+                                    Terminsdf = sdf.parse(Termintag);
+                                    formated_termintag = edf.format(Terminsdf);
+                                    Terminsdfend = sdf.parse(Terminende);
+                                    formated_terminende = edf.format(Terminsdfend);
+                                    finalTermin="Ab "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                    isheute =Function.isTerminheute(Terminsdf);
+                                    break;
+                                case 2:
+                                    Terminsdf = sdf.parse(Termintag);
+                                    formated_termintag = edf.format(Terminsdf);
+                                    Terminsdfend = sdf.parse(Terminende);
+                                    formated_terminende = edf.format(Terminsdfend);
+                                    finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                    isheute =Function.isTerminheute(Terminsdf);
+                                    break;
+                                case 3:
+
+                                    Terminsdf = sdf.parse(Termintag);
+                                    formated_termintag = edf.format(Terminsdf);
+                                    finalTermin="Termin: "+formated_termintag;
+
+
+                                    isheute =Function.isTerminheute(Terminsdf);
+                                    break;
+                            }
+
+
+
+                            if (isheute){
+                                System.out.println("yay");
+                                hintergrundid= this.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+
+                            }
+                            else{
                                 hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                            }else
-                            {
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
-                                Terminsdf = sdf.parse(Termintag);
-                                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
-                                finalTermin = edf.format(Terminsdf);
-                                finalTermin="Termin: "+finalTermin;
-
-                                Functions Function = new Functions();
-
-                                boolean isheute =Function.isTerminheute(Terminsdf);
-
-                                if (isheute){
-                                    System.out.println("yay");
-                                    hintergrundid= this.getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
-
-                                }
-                                else{
-                                    hintergrundid= this.getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                                }
-
                             }
 
                             String auanr = c.getString("Auftragtkd");

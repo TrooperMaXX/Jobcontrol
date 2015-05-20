@@ -8,18 +8,55 @@
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+
+    </FrameLayout>
 
     <!-- Listview to display slider menu -->
     <!--TODO: Farbe ändern list_background_-->
-    <ListView
-        android:id="@+id/list_slidermenu"
+    <LinearLayout
+        android:id="@+id/layout_slidermenu"
+        android:orientation="vertical"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/list_background"
+        >
+    <ListView
+        android:id="@+id/list_slidermenu"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:choiceMode="singleChoice"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
         android:listSelector="@drawable/list_selector"
         android:background="@color/list_background"/>
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/switch_verfuegbar_text"
+            android:id="@+id/switch_verfuegbar"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp" />
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView3" >
+
+            <ListView
+                android:id="@+id/techniker_list"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@color/list_divider"
+                android:dividerHeight="1dp"
+                android:listSelector="@drawable/list_selector"
+                android:background="@color/list_background"
+                android:entries="@array/status_array" />
+        </ScrollView>
+
+    </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

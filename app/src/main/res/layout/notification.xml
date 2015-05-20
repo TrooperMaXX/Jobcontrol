@@ -23,18 +23,33 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal">
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/NotificationContent"
-        android:id="@+id/textView_not"
-        android:gravity="center" />
+        android:layout_height="wrap_content">
 
-    <ImageView
+        <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/robot" />
+        android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_not"
+            android:gravity="center"
+            android:text="LALALALALLALALALALALALLALALALALALALALALALALLALA" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/termin_not"
+        android:gravity="center"
+        android:text="Termin"
+        android:textColor="#ffff0000" />
 
 
 </LinearLayout>

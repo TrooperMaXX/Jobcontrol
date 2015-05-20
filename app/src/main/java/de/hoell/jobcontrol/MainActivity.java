@@ -18,6 +18,7 @@
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
+        import android.widget.LinearLayout;
         import android.widget.ListView;
         import android.widget.NumberPicker;
         import android.widget.Toast;
@@ -35,8 +36,10 @@
                 MainActivity extends Activity implements TicketFragment.OnTicketInteractionListener {
             private DrawerLayout mDrawerLayout;
             private ListView mDrawerList;
+            private LinearLayout mDrawer;
             private ActionBarDrawerToggle mDrawerToggle;
-            public static Context context;
+
+            public static Context context = null;
             // nav drawer title
             private CharSequence mDrawerTitle;
 
@@ -58,7 +61,7 @@
                 setContentView(R.layout.activity_main);
                 session = new SessionManager(this);
                 mTitle = mDrawerTitle = getTitle();
-                context=this;
+                 context=this;
                 // load slide menu items
                 navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
@@ -68,6 +71,7 @@
 
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+                mDrawer = (LinearLayout) findViewById(R.id.layout_slidermenu);
 
                 navDrawerItems = new ArrayList<NavDrawerItem>();
 
@@ -249,7 +253,7 @@
             @Override
             public boolean onPrepareOptionsMenu(Menu menu) {
                 // if nav drawer is opened, hide the action items
-                boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+                boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawer);
 
                 menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
                 menu.findItem(R.id.action_logout).setVisible(drawerOpen);
@@ -286,7 +290,7 @@
                     mDrawerList.setItemChecked(position, true);
                     mDrawerList.setSelection(position);
                     setTitle(navMenuTitles[position]);
-                    mDrawerLayout.closeDrawer(mDrawerList);
+                    mDrawerLayout.closeDrawer(mDrawer);
                 } else {
                     // error in creating fragment
                     Log.e("MainActivity", "Error in creating fragment");

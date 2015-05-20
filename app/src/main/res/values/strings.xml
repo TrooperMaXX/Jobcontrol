@@ -64,15 +64,15 @@
     </string-array>
 
 
-    <string name="collapsed">I\'m the collapsed notification.\nCreated at: %s</string>
-    <string name="custom_notification">I\'m a custom notification.</string>
+    <string name="collapsed">Neues Ticket!</string>
+    <string name="custom_notification">Neues Ticket!</string>
     <string name="expanded">I\'m the expanded notification.\nCollapse me!</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
     <string name="title_activity_slidermenu">Menü</string>
     <string name="action_settings">Settings</string>
-    <string name="loading">loading...</string>
+    <string name="loading">loading…</string>
     <string name="keeplogin">Angemeldet bleiben?</string>
     <string name="title_activity_ticket_details">TicketDetails</string>
     <string name="hello_world">Hello world!</string>
@@ -110,5 +110,6 @@
     <string name="eskalation_caps">ESKALATION</string>
     <string name="title_activity_eskalation">Eskalation</string>
     <string name="fleet">Fleet</string>
+    <string name="switch_verfuegbar_text">Verfügbar</string>
 
 </resources>

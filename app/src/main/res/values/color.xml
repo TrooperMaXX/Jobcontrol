@@ -4,10 +4,11 @@
     <!-- NAvigations Colors  -->
     <color name="counter_text_bg">#FF0000</color>
     <color name="list_background_pressed">#808080</color>
-    <color name="list_background">#727272</color>
+    <color name="list_background">#ff383838</color>
     <color name="list_divider">#FFFFFF</color>
     <color name="list_item_title">#FFFF0F</color>
     <color name="counter_text_color">#123456</color>
+    <color name="tech_list_item">#ffffffff</color>
 
     <!-- list Colors  -->
     <color name="kein_termin">#FFFFFF</color>

@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -50,7 +52,9 @@ import de.hoell.jobcontrol.MainActivity;
         private static String gebiet_tag = "gebiet";
         private static String gebtech_tag = "gebtech";
         private static String verschieben_tag = "verschieben";
-
+        private static String techniker_tag = "techniker";
+        private static String saveswitch_tag = "saveswitch";
+        private static String oeffnungs_tag = "oeffnung";
     // constructor
         public Functions(){
             jsonParser = new JSONParser();
@@ -175,7 +179,7 @@ import de.hoell.jobcontrol.MainActivity;
         params.add(new BasicNameValuePair("tag", datech_tag));
         params.add(new BasicNameValuePair("auanr", auanr));
 
-        System.out.println("auanr"+auanr);
+        System.out.println("auanr" + auanr);
         // getting JSON Object
         JSONObject json = jsonParser.getJSONFromUrl(URL, params);
         Log.e("datechJSON", json.toString());
@@ -233,22 +237,7 @@ import de.hoell.jobcontrol.MainActivity;
         return json;
     }
 
-    public static void registerAlarm(Context context) {
-        Intent i = new Intent(context, Refresh.class);
 
-        PendingIntent sender = PendingIntent.getBroadcast(context,0, i, 0);
-
-        // We want the alarm to go off 3 seconds from now.
-        long firstTime = SystemClock.elapsedRealtime();
-        firstTime += 3 * 1000;//start 3 seconds after first register.
-        Log.e("refreshalarm ", "bis hier gehts");
-        // Schedule the alarm!
-        AlarmManager am = (AlarmManager) context
-                .getSystemService(Context.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime,
-                3000, sender);//10min interval
-
-    }
 
     public JSONObject SaveEsk(String id, String ansprech, String info, String user) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -314,6 +303,50 @@ import de.hoell.jobcontrol.MainActivity;
         // return json
         return json;
 
+    }
+
+    public JSONObject Techniker(String user) {
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", techniker_tag));
+        params.add(new BasicNameValuePair("user", user));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        // return json
+        return json;
+    }
+
+
+
+    public JSONObject SaveSwitch(int status,String user) {
+
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag", saveswitch_tag));
+            params.add(new BasicNameValuePair("status", String.valueOf(status)));
+            params.add(new BasicNameValuePair("user", user));
+
+            System.out.println("status" + status);
+            // getting JSON Object
+            JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+            Log.e("TROLJSON", json.toString());
+            // return json
+            return json;
+
+
+    }
+
+    public JSONObject Oeffnung(String gernr) {
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", oeffnungs_tag));
+        params.add(new BasicNameValuePair("gernr", gernr));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        // return json
+        return json;
     }
 }
 

@@ -68,6 +68,7 @@ private static final String TAG_SUCCESS = "success";
         String Telefonnummer = getIntent().getStringExtra("value_telefonnummer");
         String Angenommen = getIntent().getStringExtra("value_angenommen");
         String Termin = getIntent().getStringExtra("value_termin");
+        String Oeffnung = getIntent().getStringExtra("value_oeffnung");
         String Auftragsnr = getIntent().getStringExtra("value_auftragnr");
         String Wvnr = getIntent().getStringExtra("value_wvnr");
         String Fleet = getIntent().getStringExtra("value_fleet");
@@ -112,6 +113,11 @@ private static final String TAG_SUCCESS = "success";
 
         TextView textViewTermin = (TextView) findViewById(R.id.textViewContentTermin);
         textViewTermin.setText(Termin);
+
+        TextView textViewOeffnung = (TextView) findViewById(R.id.textViewContentOeffnung);
+        if(Oeffnung==null){Oeffnung=" ";}
+        textViewOeffnung.setText(Oeffnung);
+
 
         TextView textViewAuftragsnr = (TextView) findViewById(R.id.textViewContentAuftragsnr);
         if(Auftragsnr == null){Auftragsnr=" ";}

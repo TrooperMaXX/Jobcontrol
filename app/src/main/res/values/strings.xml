@@ -111,5 +111,6 @@
     <string name="title_activity_eskalation">Eskalation</string>
     <string name="fleet">Fleet</string>
     <string name="switch_verfuegbar_text">Verfügbar</string>
+    <string name="oeffnung">Öffnungszeiten</string>
 
 </resources>

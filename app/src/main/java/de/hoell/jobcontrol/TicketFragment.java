@@ -290,6 +290,7 @@ public class TicketFragment extends ListFragment {
                     } catch (JSONException | ParseException e) {
                         e.printStackTrace();
                     }
+
                     setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
                             new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
                             new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
@@ -411,6 +412,11 @@ public class TicketFragment extends ListFragment {
 
             String Telefonnummer = extra.getString("telnummer");
             intent.putExtra("value_telefonnummer", Telefonnummer);
+
+            String Oeffnung = extra.getString("oeffnung");
+            intent.putExtra("value_oeffnung", Oeffnung);
+
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
             SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
 
@@ -661,6 +667,7 @@ public class TicketFragment extends ListFragment {
 
                     if (success == 1) {
                             neueTickets(json);
+
                     }
 
 

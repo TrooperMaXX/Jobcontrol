@@ -54,6 +54,9 @@ public class SessionManager {
         // Email address (make variable public to access from outside)
         public static final String KEY_ZEIT = "zeit";
 
+        // Email address (make variable public to access from outside)
+        public static final String KEY_SWITCH = "switch";
+
         // Constructor
         public SessionManager(Context context){
             this._context = context;
@@ -192,7 +195,21 @@ public class SessionManager {
             return pref.getBoolean(IS_OFFLINEMODE, false);
         }
 
+    public void saveSwitchstatus(boolean status){
 
+        // Storing jsonstring in pref
+        editor.putBoolean(KEY_SWITCH, status);
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+status);
+    }
+
+    public boolean getSwitchstatus() {
+
+        return pref.getBoolean(KEY_SWITCH, true);
+
+    }
 }
 
 

@@ -326,6 +326,9 @@ public class OfflineFragment extends ListFragment {
             String Telefonnummer = extra.getString("telnummer");
             intent.putExtra("value_telefonnummer", Telefonnummer);
 
+            String Oeffnung = extra.getString("oeffnung");
+            intent.putExtra("value_oeffnung", Oeffnung);
+
             String Termintag = extra.getString("terminTag");
             String Terminende = extra.getString("terminEnde");
 
@@ -469,6 +472,8 @@ public class OfflineFragment extends ListFragment {
             }
 
             intent.putExtra("value_annahme", Annahme);
+
+
 
             getActivity().startActivity(intent);
 

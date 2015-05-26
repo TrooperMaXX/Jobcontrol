@@ -10,6 +10,8 @@
         import android.content.pm.PackageInfo;
         import android.content.res.Configuration;
         import android.content.res.TypedArray;
+        import android.net.Uri;
+        import android.os.AsyncTask;
         import android.os.Bundle;
         import android.support.v4.app.ActionBarDrawerToggle;
         import android.support.v4.widget.DrawerLayout;
@@ -21,12 +23,20 @@
         import android.widget.LinearLayout;
         import android.widget.ListView;
         import android.widget.NumberPicker;
+        import android.widget.Switch;
         import android.widget.Toast;
         import android.content.pm.PackageManager.NameNotFoundException;
 
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
+
         import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.concurrent.ExecutionException;
 
         import de.hoell.jobcontrol.adapter.NavDrawerListAdapter;
+        import de.hoell.jobcontrol.adapter.SpecialAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
         import de.hoell.jobcontrol.query.Functions;
         import de.hoell.jobcontrol.session.SessionManager;
@@ -37,6 +47,7 @@
             private DrawerLayout mDrawerLayout;
             private ListView mDrawerList;
             private LinearLayout mDrawer;
+            private Switch mSwitch;
             private ActionBarDrawerToggle mDrawerToggle;
 
             public static Context context = null;
@@ -55,13 +66,19 @@
             SessionManager session;
             public String versionName;
 
+
+            private static final String TAG_SUCCESS = "success";
+            public JSONArray Technikerliste = null;
+            ArrayList<HashMap<String, String>> TheTechniker = new ArrayList<HashMap<String, String>>();
+            private ListView mTechList;
+
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
                 session = new SessionManager(this);
                 mTitle = mDrawerTitle = getTitle();
-                 context=this;
+                 context=getApplicationContext();
                 // load slide menu items
                 navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
@@ -72,6 +89,8 @@
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
                 mDrawer = (LinearLayout) findViewById(R.id.layout_slidermenu);
+                mTechList = (ListView) findViewById(R.id.techniker_list);
+                mSwitch = (Switch) findViewById(R.id.switch_verfuegbar);
 
                 navDrawerItems = new ArrayList<NavDrawerItem>();
 
@@ -96,6 +115,11 @@
                 navMenuIcons.recycle();
 
                 mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+                mTechList.setOnItemClickListener(new TechListClickListener());
+                mSwitch.setOnClickListener(new SwitchClickListener());
+
+                boolean switchstatus = session.getSwitchstatus();
+                mSwitch.setChecked(switchstatus);
 
                 // setting the nav drawer list adapter
                 adapter = new NavDrawerListAdapter(getApplicationContext(),
@@ -129,6 +153,90 @@
                     // on first time display view for first nav item
                     displayView(0);
                 }
+
+
+
+
+
+
+
+
+
+                try {
+                Functions Function = new Functions();
+
+                if( Function.isNetworkOnline(this)) {
+                    JSONObject json = new JSONTechniker(this).execute().get();
+                    Log.e("JSONTECH",json.toString());
+                    if (json != null) {
+                        try {
+
+                            int success = json.getInt(TAG_SUCCESS);
+
+                            if (success == 1) {
+
+                                Technikerliste = json.getJSONArray("techniker");
+
+                                for (int i = 0; i < Technikerliste.length(); i++) {
+                                    JSONObject c = Technikerliste.getJSONObject(i);
+
+                                    String Techniker = c.getString("user_name");
+                                    int verfuegbar = c.getInt("Verfuegbar");
+                                    String Gebiet = c.getString("Gebiet");
+                                    String kuerzel = c.getString("kuerzel");
+                                    String Tel = c.getString("Telefon");
+
+
+                                    int imgid;
+
+                                    if(verfuegbar>0){
+                                        imgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
+                                    }else{
+                                        imgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                    }
+
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put("Techniker", Techniker);
+
+                                    map.put("Gebiet", Gebiet);
+                                    map.put("Kuerzel", kuerzel);
+                                    map.put("Tel", Tel);
+
+                                    map.put("Verfuegbar_ic", String.valueOf(imgid)); //verfuegbar
+
+                                    TheTechniker.add(map);
+
+
+                                }
+
+                                System.out.println("TEchnikerabfrage" + TheTechniker);
+
+                            } else {
+
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        mTechList.setAdapter(new SpecialAdapter(this,TheTechniker,R.layout.row_tech,
+                                new String[] {"Verfuegbar_ic", "Techniker"},
+                                new int[] {R.id.Verfuegbar_img,R.id.TECHNIKER}));
+                    }
+                }
+                else{
+
+                    Toast.makeText(this, "Keine Internet verbindung", Toast.LENGTH_LONG).show();
+
+
+
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
             }
 
             @Override
@@ -146,6 +254,29 @@
                                         long id) {
                     // display view for selected nav drawer item
                     displayView(position);
+                }
+            }
+            private class TechListClickListener implements
+                    ListView.OnItemClickListener {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position,
+                                        long id) {
+                    Functions Funktion =new Functions();
+                    // Call Techniker
+                    try {
+                        JSONObject c = Technikerliste.getJSONObject(position);
+
+                        String Tel = c.getString("Telefon");
+
+
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", Tel, null));
+                        startActivity(intent);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
             }
 
@@ -322,4 +453,87 @@
                 mDrawerToggle.onConfigurationChanged(newConfig);
             }
 
+
+
+            public class JSONTechniker extends AsyncTask<String, String, JSONObject> {
+
+                private Context mContext;
+
+
+                public JSONTechniker (Context context){
+                    mContext = context;
+                }
+
+
+
+
+                @Override
+                protected JSONObject doInBackground(String... args) {
+
+
+                    String user;
+
+
+
+                    Functions Function = new Functions();
+                    SessionManager session = new SessionManager(mContext);
+                    user = session.getUser();
+
+                    JSONObject json = Function.Techniker(user);
+
+                    return json;
+
+                }
+
+
+
+            }
+
+
+            private class SwitchClickListener implements View.OnClickListener {
+
+                @Override
+                public void onClick(View v) {
+                    Functions Function =new Functions();
+                    if( Function.isNetworkOnline(MainActivity.this)){
+                       int switch_st;
+
+
+                    if (mSwitch.isChecked())
+                    {
+                        session.saveSwitchstatus(true);
+                        switch_st=1;
+                    }
+                    else
+                    {
+                        session.saveSwitchstatus(false);
+                        switch_st=0;
+                    }
+                        new JSONSaveSwitch(switch_st).execute();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
+
+
+                }
+            }
+
+
+
+            private class JSONSaveSwitch extends AsyncTask<Integer, Integer, JSONObject> {
+                private int mStatus;
+                public JSONSaveSwitch(int status) {
+                    mStatus=status;
+                }
+
+                @Override
+                protected JSONObject doInBackground(Integer... params) {
+                    Functions Function = new Functions();
+                    SessionManager session = new SessionManager(MainActivity.this);
+                     String user = session.getUser();
+                    JSONObject json_saveswitch = Function.SaveSwitch(mStatus,user);
+
+                    return json_saveswitch;
+                }
+            }
         }

@@ -10,17 +10,21 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 
+import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.TicketFragment;
 
 public class SpecialAdapter extends SimpleAdapter {
-    private int[] colors = new int[] { 0x30FF0000, 0x300000FF };
+
 
     public SpecialAdapter(Context context, List<HashMap<String, String>> items, int resource, String[] from, int[] to) {
         super(context, items, resource, from, to);
+
+
     }
 
     @Override

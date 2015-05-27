@@ -96,11 +96,11 @@ import de.hoell.jobcontrol.MainActivity;
 
 
 
-        public JSONObject SaveDetails(String Status ,String ID){
+        public JSONObject SaveDetails(int Status ,String ID){
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("tag", savedetails_tag));
-            params.add(new BasicNameValuePair("status", Status));
+            params.add(new BasicNameValuePair("status", String.valueOf(Status)));
             params.add(new BasicNameValuePair("id", ID));
             System.out.println("status" + Status);
             // getting JSON Object

@@ -68,7 +68,7 @@ public class OfflineFragment extends ListFragment {
 
                             String Firma = c.getString("Firma");
                             int Statusnum = c.getInt("Status");
-
+                            boolean eskalation=false;
 
 
                             switch (Statusnum) {
@@ -76,6 +76,7 @@ public class OfflineFragment extends ListFragment {
                                 case 10:
                                     Status = "Unbearbeitet";
                                     DropPos = 0;
+
 
                                     imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
@@ -132,11 +133,25 @@ public class OfflineFragment extends ListFragment {
 
                                     imgid= this.getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                     break;
-                                case 39:
+                                case 99:
                                     Status = "Eskalation";
-                                    DropPos = 10;
+                                    DropPos = 0;
+                                    eskalation=true;
                                     imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                     break;
+                                case 100:
+                                    Status = "Eskalation";
+                                    DropPos = 1;
+                                    eskalation=true;
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                    break;
+                                case 101:
+                                    Status = "Eskalation";
+                                    DropPos = 2;
+                                    eskalation=true;
+                                    imgid= this.getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                    break;
+
 
                             }
 
@@ -220,6 +235,18 @@ public class OfflineFragment extends ListFragment {
                             String auanr = c.getString("Auftragtkd");
 
 
+                            String Oeffnung = c.getString("oeffnung");
+                            int imgsichtbar=0;
+                            boolean sichtbar=false;
+                            if(Oeffnung.equals("")){
+                                Log.e("WARUNG","unsichtbar");
+                                sichtbar=false;
+                            }
+                            else{
+                                Log.e("WARUNG", "sichtbar");
+                                sichtbar=true;
+                                imgsichtbar= getActivity().getApplicationContext().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
+                            }
 
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put("Firma", Firma);
@@ -230,7 +257,7 @@ public class OfflineFragment extends ListFragment {
                             map.put("Adresse",Strasse);
                             map.put("Ort",ort);
                             map.put("Fehler",Fehler);
-
+                            map.put("Sichtbar",String.valueOf(imgsichtbar));
                             map.put("Status_ic",String.valueOf(imgid));
                             map.put("Hintergrund",String.valueOf(hintergrundid));
                             Log.e("Statusid",""+imgid);
@@ -247,8 +274,8 @@ public class OfflineFragment extends ListFragment {
                 }
 
             setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
-                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
+                    new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
+                    new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
 
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
@@ -287,7 +314,7 @@ public class OfflineFragment extends ListFragment {
             String StringStatusnum = extra.getString("Status");
             Status= getStatus(Statusnum);
             DropPos= getDropPos(Statusnum);
-            intent.putExtra("value_statusnum", StringStatusnum);
+            intent.putExtra("value_statusnum", Statusnum);
 
 
 
@@ -548,7 +575,11 @@ public class OfflineFragment extends ListFragment {
                 break;
             case 99:
                 Status = "Eskalation";
-                DropPos = 10;
+                DropPos = 0;
+                break;
+            case 100:
+                Status = "Eskalation";
+                DropPos = 1;
                 break;
 
         }
@@ -602,7 +633,11 @@ public class OfflineFragment extends ListFragment {
                 break;
             case 99:
                 Status = "Eskalation";
-                DropPos = 10;
+                DropPos = 0;
+                break;
+            case 100:
+                Status = "Eskalation in arbeit";
+                DropPos = 1;
                 break;
 
         }

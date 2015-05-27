@@ -62,6 +62,13 @@
         <item>installiert</item>    <!-- 9 -->
         <item>Eskalation</item>       <!-- 10 -->
     </string-array>
+    <string-array name="status_array_eskalation">
+        <item>Eskalation</item>   <!-- 0  -->
+        <item>Eskalation in arbeit</item>          <!-- 1  -->
+        <item>Eskalation erledigt</item>      <!-- 2  -->
+        <item>Eskalation abgeschlossen</item>          <!-- 3  -->
+
+    </string-array>
 
 
     <string name="collapsed">Neues Ticket!</string>

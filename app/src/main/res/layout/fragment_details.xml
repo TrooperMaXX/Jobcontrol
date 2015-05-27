@@ -31,7 +31,20 @@
             android:gravity="center"
              android:textAlignment="center"
              android:layout_span="4"
-             android:layout_weight="1" />
+             android:layout_weight="1"
+             android:visibility="gone"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/status_spinner_eskalation"
+            android:spinnerMode="dropdown"
+            android:entries="@array/status_array_eskalation"
+            android:longClickable="false"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:layout_span="4"
+            android:layout_weight="1"
+            android:visibility="gone"/>
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"

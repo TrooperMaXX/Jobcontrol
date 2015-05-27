@@ -35,7 +35,8 @@ import de.hoell.jobcontrol.session.SessionManager;
 
 public class TicketDetailsActivity extends Activity {
 
- String Statusnum,user,gebiet;
+ String user,gebiet;
+    public static  int Statusnum;
 static String ID;
 private static final String TAG_SUCCESS = "success";
 
@@ -74,14 +75,25 @@ private static final String TAG_SUCCESS = "success";
         String Fleet = getIntent().getStringExtra("value_fleet");
         String Annahme = getIntent().getStringExtra("value_annahme");
         final String uri = getIntent().getStringExtra("value_uri");
-        Statusnum = getIntent().getStringExtra("value_statusnum");
+        Statusnum = getIntent().getIntExtra("value_statusnum",0);
         ID = getIntent().getStringExtra("value_id");
 
         Log.d("INTENTEXTRA:", Status + " " + DropPos + " " + Adresse + " " + Standort + " " + Modell + " " + Serienummer + " " + Stoerung + " " + Ansprechpartner + " " + Telefonnummer + " " + Termin + " " + Annahme);
+        Log.e("Statusnum",String.valueOf(Statusnum));
+       if (Statusnum<90){
+            Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner);
+            spinnerStatus.setSelection(DropPos);
+            spinnerStatus.setVisibility(View.VISIBLE);
+        }
+        else{
+           Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner_eskalation);
+         spinnerStatus.setSelection(DropPos);
+          spinnerStatus.setVisibility(View.VISIBLE);}
 
-        Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner);
-        spinnerStatus.setSelection(DropPos);
-        spinnerStatus.setSelection(DropPos);
+
+
+
+
 
         TextView textViewFirma = (TextView) findViewById(R.id.textViewContentFirma);
         textViewFirma.setText(Firma);
@@ -413,63 +425,100 @@ private static final String TAG_SUCCESS = "success";
         @Override
         protected JSONObject doInBackground(Integer... args) {
             Functions Function = new Functions();
-            Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner);
+            JSONObject json;
+            if (Statusnum<99){
+                Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner);
+                int selected = spinnerStatus.getSelectedItemPosition();
 
-            int selected = spinnerStatus.getSelectedItemPosition();
+                switch (selected){
 
-            switch (selected){
+                    case 0:
+                        // Status = "Unbearbeitet";
+                        Statusnum = 10;
+                        break;
+                    case 1:
+                        // Status = "Fahrt";
+                        Statusnum = 11;
+                        break;
+                    case 2:
+                        //  Status = "In arbeit";
+                        Statusnum = 12;
+                        break;
+                    case 3:
+                        //  Status = "offen";
+                        Statusnum = 13;
+                        break;
 
-                case 0:
-                    // Status = "Unbearbeitet";
-                    Statusnum = "10";
-                    break;
-                case 1:
-                    // Status = "Fahrt";
-                    Statusnum = "11";
-                    break;
-                case 2:
-                    //  Status = "In arbeit";
-                    Statusnum = "12";
-                    break;
-                case 3:
-                    //  Status = "offen";
-                    Statusnum = "13";
-                    break;
+                    case 4:
+                        //  Status = "Erledigt";
+                        Statusnum = 15;
+                        break;
+                    case 5:
+                        //  Status = "wartet";
+                        Statusnum = 16;
+                        break;
+                    case 6:
+                        //   Status = "Ware bestellt";
+                        Statusnum = 17;
+                        break;
+                    case 7:
+                        //  Status = "Ware da";
+                        Statusnum = 18;
+                        break;
+                    case 8:
+                        //  Status = "Ware benötigt";
+                        Statusnum = 19;
+                        break;
+                    case 9:
+                        //  Status = "installiert";
+                        Statusnum = 20;
+                        break;
+                    case 10:
+                        // Status = "Eskalation";
+                        Statusnum = 99;
+                        break;
 
-                case 4:
-                    //  Status = "Erledigt";
-                    Statusnum = "15";
-                    break;
-                case 5:
-                    //  Status = "wartet";
-                    Statusnum = "16";
-                    break;
-                case 6:
-                    //   Status = "Ware bestellt";
-                    Statusnum = "17";
-                    break;
-                case 7:
-                    //  Status = "Ware da";
-                    Statusnum = "18";
-                    break;
-                case 8:
-                    //  Status = "Ware benötigt";
-                    Statusnum = "19";
-                    break;
-                case 9:
-                    //  Status = "installiert";
-                    Statusnum = "20";
-                    break;
-                case 10:
-                    // Status = "Eskalation";
-                    Statusnum = "99";
-                    break;
+                }
+                // Log.d("Status",Statusnum);
+
+
+                json = Function.SaveDetails(Statusnum,ID);
 
             }
-            Log.d("Status",Statusnum);
+            else{
+                Spinner spinnerStatus = (Spinner) findViewById(R.id.status_spinner_eskalation);
+                int selected = spinnerStatus.getSelectedItemPosition();
+
+                switch (selected){
+
+                    case 0:
+                        // Status = "Unbearbeitet";
+                        Statusnum = 99;
+                        break;
+                    case 1:
+                        // Status = "Fahrt";
+                        Statusnum = 100;
+                        break;
+                    case 2:
+                        //  Status = "In arbeit";
+                        Statusnum = 101;
+                        break;
+                    case 3:
+                        //  Status = "offen";
+                        Statusnum = 102;
+                        break;
 
 
-            JSONObject json = Function.SaveDetails(Statusnum,ID);
+
+                }
+                // Log.d("Status",Statusnum);
+
+
+                json = Function.SaveDetails(Statusnum,ID);
+            }
+
+
+
 
             // check for login response
             // check log cat fro response

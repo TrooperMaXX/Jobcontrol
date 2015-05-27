@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -83,6 +84,7 @@ public class TicketFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         try {
             Functions Function = new Functions();
@@ -174,6 +176,11 @@ public class TicketFragment extends ListFragment {
                                         DropPos = 10;
                                         imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
+                                    case 100:
+                                        Status = "Eskalation in arbeit";
+                                        DropPos = 10;
+                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        break;
 
                                 }
 
@@ -189,6 +196,7 @@ public class TicketFragment extends ListFragment {
 
                                 ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
                                 int hintergrundid ;
+
                                 String Termintag = c.getString("terminTag");
                                 String Terminende = c.getString("terminEnde");
                                 int Termintyp = c.getInt("terminTyp");
@@ -257,7 +265,18 @@ public class TicketFragment extends ListFragment {
                                         hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                     }
 
-
+                                String Oeffnung = c.getString("oeffnung");
+                                int imgsichtbar=0;
+                                boolean sichtbar=false;
+                                if(Oeffnung.equals("")){
+                                    Log.e("WARUNG","unsichtbar");
+                                    sichtbar=false;
+                                }
+                                else{
+                                    Log.e("WARUNG", "sichtbar");
+                                    sichtbar=true;
+                                    imgsichtbar= getActivity().getApplicationContext().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
+                                }
 
                                 String auanr = c.getString("Auftragtkd");
 
@@ -272,8 +291,11 @@ public class TicketFragment extends ListFragment {
                                 map.put("Ort",ort);
                                 map.put("Fehler",Fehler);
                                 map.put("Farbe",Farbe);
+                                map.put("Sichtbar",String.valueOf(imgsichtbar));
                                 map.put("Status_ic",String.valueOf(imgid));
                                 map.put("Hintergrund",String.valueOf(hintergrundid));
+
+
                                 Log.e("Statusid",""+imgid);
 
                                 TheTickets.add(map);
@@ -292,8 +314,8 @@ public class TicketFragment extends ListFragment {
                     }
 
                     setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
-                            new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr"},
-                            new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL}));
+                            new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
+                            new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
                 }
             }
             else{
@@ -373,7 +395,7 @@ public class TicketFragment extends ListFragment {
             String StringStatusnum = extra.getString("Status");
             Status= getStatus(Statusnum);
             DropPos= getDropPos(Statusnum);
-            intent.putExtra("value_statusnum", StringStatusnum);
+            intent.putExtra("value_statusnum", Statusnum);
 
             String ID = extra.getString("ID");
             intent.putExtra("value_id", ID);
@@ -963,8 +985,15 @@ public class TicketFragment extends ListFragment {
 
             case 99:
                 Status = "Eskalation";
-                DropPos = 10;
+                DropPos = 0;
                 break;
+
+            case 100:
+                Status = "Eskalation in arbeit";
+                DropPos = 1;
+
+                break;
+
 
         }
 
@@ -1017,7 +1046,13 @@ public class TicketFragment extends ListFragment {
                 break;
             case 99:
                 Status = "Eskalation";
-                DropPos = 10;
+                DropPos = 0;
+                break;
+
+            case 100:
+                Status = "Eskalation in arbeit";
+                DropPos = 1;
+
                 break;
 
         }

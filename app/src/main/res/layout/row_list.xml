@@ -146,5 +146,12 @@
         android:layout_below="@+id/FEHLER_CELL"
         android:layout_centerHorizontal="true" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/img_warning"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
+
 
 </RelativeLayout>

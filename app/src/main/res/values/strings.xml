@@ -66,14 +66,15 @@
         <item>Eskalation</item>   <!-- 0  -->
         <item>Eskalation in arbeit</item>          <!-- 1  -->
         <item>Eskalation erledigt</item>      <!-- 2  -->
-        <item>Eskalation abgeschlossen</item>          <!-- 3  -->
+
 
     </string-array>
 
-
+    <!-- Notificcations -->
     <string name="collapsed">Neues Ticket!</string>
     <string name="custom_notification">Neues Ticket!</string>
-    <string name="expanded">I\'m the expanded notification.\nCollapse me!</string>
+    <string name="custom_notification_newtemin">Neuer Termin!!!</string>
+    <string name="custom_notification_newstatus">Ware Da!</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
@@ -119,5 +120,7 @@
     <string name="fleet">Fleet</string>
     <string name="switch_verfuegbar_text">Verfügbar</string>
     <string name="oeffnung">Öffnungszeiten</string>
+
+
 
 </resources>

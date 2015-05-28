@@ -492,21 +492,18 @@ private static final String TAG_SUCCESS = "success";
                 switch (selected){
 
                     case 0:
-                        // Status = "Unbearbeitet";
+                        // Status = "Eskalation";
                         Statusnum = 99;
                         break;
                     case 1:
-                        // Status = "Fahrt";
+                        // Status = "Eskalation in arbeit";
                         Statusnum = 100;
                         break;
                     case 2:
-                        //  Status = "In arbeit";
+                        //  Status = "Eskaltion erledigt";
                         Statusnum = 101;
                         break;
-                    case 3:
-                        //  Status = "offen";
-                        Statusnum = 102;
-                        break;
+
 
 
 

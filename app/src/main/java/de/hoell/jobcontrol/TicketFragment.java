@@ -9,16 +9,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -27,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,10 +30,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
@@ -639,7 +634,7 @@ public class TicketFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnTicketInteractionListener {
-        // TODO: Update argument type and name
+
         public void onTicketInteraction(String id);
     }
 
@@ -688,7 +683,7 @@ public class TicketFragment extends ListFragment {
                     }
 
                     if (success == 1) {
-                            neueTickets(json);
+                            neueTickets(json,mContext);
 
                     }
 
@@ -716,11 +711,13 @@ public class TicketFragment extends ListFragment {
 
     }
 
-    private void neueTickets(JSONObject neuJson) {
+    private void neueTickets(JSONObject neuJson,Context mContext) {
 
-        SessionManager session = new SessionManager(moinContext);
+        SessionManager session = new SessionManager(mContext);
         ArrayList <Integer> old = new ArrayList <Integer> ();
         ArrayList <Integer> neu = new ArrayList <Integer> ();
+        ArrayList <String> old_obj = new ArrayList <> ();
+        ArrayList <String> neu_obj = new ArrayList <> ();
         ArrayList <Integer> neueTickets = new ArrayList<Integer>();
         ArrayList <Integer> Ticketpos = new ArrayList<Integer>();
 
@@ -743,7 +740,7 @@ public class TicketFragment extends ListFragment {
                             JSONObject c = Ticketliste_old.getJSONObject(i);
                             int ID = c.getInt("ID");
                             old.add(ID);
-
+                            old_obj.add(c.toString());
                         }
                     }
                     //********NEUE TICKETS**************
@@ -759,6 +756,7 @@ public class TicketFragment extends ListFragment {
                                     JSONObject c = Ticketliste_neu.getJSONObject(i);
                                     int ID = c.getInt("ID");
                                     neu.add(ID);
+                                    neu_obj.add(c.toString());
                                 }
                             }
 
@@ -781,15 +779,46 @@ public class TicketFragment extends ListFragment {
                 if (!old.contains(neu.get(j))){
 
                     neueTickets.add(neu.get(j));
-                    Ticketpos.add (j);
+                    Ticketpos.add(j);
 
+                }else{
+
+
+                        try {JSONObject new_json = new JSONObject(neu_obj.get(j));
+                            JSONObject old_json;
+                            for (int k =0 ;k< old.size();k++) {
+
+                                old_json = new JSONObject(old_obj.get(k));
+                                if (old_json.getString("ID").equals(neu.get(j).toString())){
+                                    if (!old_json.getString("terminTag").equals(new_json.getString("terminTag"))) {
+                                        createNotificationTermin(new_json);
+                                        System.out.println("LOOOOOOOOLLLLLL TERMIN GEÄNDERT");
+
+                                    }//(old_json.getInt("Status")==19 ||old_json.getInt("Status")==17)
+                                    if (!(old_json.getInt("Status")==18)&&new_json.getInt("Status")==18) {
+                                        createNotificationStatus(new_json);
+                                        System.out.println("LOOOOOOOOLLLLLL Status GEÄNDERT");
+
+                                    }
+                                    break;
+
+                                }
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
 
             }
             if (neueTickets.size()>0){
 
-                createNotification(Ticketpos,Ticketliste_neu);
-                Log.e("FINALEEOLEEE",neueTickets.toString());
+                for (int k = 0; k < neueTickets.size(); k++) {
+                    createNotification(k, Ticketliste_neu);
+                    Log.e("FINALEEOLEEE", neueTickets.toString());
+                }
 
             }else{
                 Log.e("KEINEN NEUEN TICKETS","NULL");
@@ -800,17 +829,16 @@ public class TicketFragment extends ListFragment {
 
 
         }
-    }
 
-    private void createNotification(ArrayList<Integer> ticketpos, JSONArray ticketliste_neu) {
+
+    private void createNotification(int k, JSONArray ticketliste_neu) {
 
         String gesamtMeldung="";
         String termin="";
 
-        for (int j = 0; j < ticketpos.size(); j++){
 
             try {
-                JSONObject c = ticketliste_neu.getJSONObject(ticketpos.get(j));
+                JSONObject c = ticketliste_neu.getJSONObject(k);
                 String Firma = c.getString("Firma");
                 String Modell = c.getString("Modell");
                 String Fehler = c.getString("Stoerung");
@@ -870,7 +898,7 @@ public class TicketFragment extends ListFragment {
                 e.printStackTrace();
             }
 
-        }
+
 
 
         // BEGIN_INCLUDE(notificationCompat)
@@ -933,9 +961,239 @@ public class TicketFragment extends ListFragment {
         // START_INCLUDE(notify)
         // Use the NotificationManager to show the notification
         NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(0, notification);
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        nm.notify(m, notification);
         // END_INCLUDE(notify)
     }
+
+
+    private void createNotificationTermin(JSONObject c) {
+
+        String gesamtMeldung="";
+        String termin="";
+
+
+            try {
+
+                String Firma = c.getString("Firma");
+                String Modell = c.getString("Modell");
+
+                String Termintag = c.getString("terminTag");
+                String Terminende = c.getString("terminEnde");
+                int Termintyp = c.getInt("terminTyp");
+                Log.e("terminTag",":"+Termintag);
+                String formated_termintag="",formated_terminende;
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+
+                switch (Termintyp){
+
+                    case 0:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        termin="Termin: "+formated_termintag;
+
+
+
+                        break;
+                    case 1:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        Terminsdfend = sdf.parse(Terminende);
+                        formated_terminende = edf.format(Terminsdfend);
+                        termin="Ab "+formated_termintag+" bis "+ formated_terminende;
+
+
+
+                        break;
+                    case 2:
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        Terminsdfend = sdf.parse(Terminende);
+                        formated_terminende = edf.format(Terminsdfend);
+                        termin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+                        break;
+                    case 3:
+
+                        Terminsdf = sdf.parse(Termintag);
+                        formated_termintag = edf.format(Terminsdf);
+                        termin="Termin: "+formated_termintag;
+
+
+
+                        break;
+                }
+
+
+                gesamtMeldung="TERMIN GEÄNDERT!!\n"+Firma+" "+Modell;
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+
+        // BEGIN_INCLUDE(notificationCompat)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        // END_INCLUDE(notificationCompat)
+
+        // BEGIN_INCLUDE(intent)
+        //Create Intent to launch this Activity again if the notification is clicked.
+        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+        // END_INCLUDE(intent)
+
+        // BEGIN_INCLUDE(ticker)
+        // Sets the ticker text
+        builder.setTicker(getResources().getString(R.string.custom_notification_newtemin));
+
+        // Sets the small icon for the ticker
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        // END_INCLUDE(ticker)
+
+        // BEGIN_INCLUDE(buildNotification)
+        // Cancel the notification when clicked
+        builder.setAutoCancel(true);
+
+
+        // SET SOUND
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+
+        // Build the notification
+        Notification notification = builder.build();
+        // END_INCLUDE(buildNotification)
+
+        // BEGIN_INCLUDE(customLayout)
+        // Inflate the notification layout as RemoteViews
+        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_newtermin);
+
+        // Set text on a TextView in the RemoteViews programmatically.
+        // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
+        String text = gesamtMeldung;
+        contentView.setTextViewText(R.id.textView_not_newtermin, text);
+        contentView.setTextViewText(R.id.termin_not_new, termin);
+
+        /* Workaround: Need to set the content view here directly on the notification.
+         * NotificationCompatBuilder contains a bug that prevents this from working on platform
+         * versions HoneyComb.
+         * See https://code.google.com/p/android/issues/detail?id=30495
+         */
+        notification.contentView = contentView;
+
+        // Add a big content view to the notification if supported.
+        // Support for expanded notifications was added in API level 16.
+        // (The normal contentView is shown when the notification is collapsed, when expanded the
+        // big content view set here is displayed.)
+
+        // END_INCLUDE(customLayout)
+
+        // START_INCLUDE(notify)
+        // Use the NotificationManager to show the notification
+        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        nm.notify(m, notification);
+        // END_INCLUDE(notify)
+    }
+
+    private void createNotificationStatus(JSONObject c) {
+
+        String gesamtMeldung="";
+        String Statusstring="";
+
+
+        try {
+
+            String Firma = c.getString("Firma");
+            String Modell = c.getString("Modell");
+
+            int Statusnum = c.getInt("Status");
+           Statusstring= getStatus(Statusnum);
+
+
+
+            gesamtMeldung="STATUS GEÄNDERT!!\n"+Firma+" "+Modell;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        // BEGIN_INCLUDE(notificationCompat)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        // END_INCLUDE(notificationCompat)
+
+        // BEGIN_INCLUDE(intent)
+        //Create Intent to launch this Activity again if the notification is clicked.
+        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+        // END_INCLUDE(intent)
+
+        // BEGIN_INCLUDE(ticker)
+        // Sets the ticker text
+        builder.setTicker(getResources().getString(R.string.custom_notification_newstatus));
+
+        // Sets the small icon for the ticker
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        // END_INCLUDE(ticker)
+
+        // BEGIN_INCLUDE(buildNotification)
+        // Cancel the notification when clicked
+        builder.setAutoCancel(true);
+
+
+        // SET SOUND
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+
+        // Build the notification
+        Notification notification = builder.build();
+        // END_INCLUDE(buildNotification)
+
+        // BEGIN_INCLUDE(customLayout)
+        // Inflate the notification layout as RemoteViews
+        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_newstatus);
+
+        // Set text on a TextView in the RemoteViews programmatically.
+        // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
+        String text = gesamtMeldung;
+        contentView.setTextViewText(R.id.textView_not_newstatus, text);
+        contentView.setTextViewText(R.id.status_not_new, Statusstring);
+
+        /* Workaround: Need to set the content view here directly on the notification.
+         * NotificationCompatBuilder contains a bug that prevents this from working on platform
+         * versions HoneyComb.
+         * See https://code.google.com/p/android/issues/detail?id=30495
+         */
+        notification.contentView = contentView;
+
+        // Add a big content view to the notification if supported.
+        // Support for expanded notifications was added in API level 16.
+        // (The normal contentView is shown when the notification is collapsed, when expanded the
+        // big content view set here is displayed.)
+
+        // END_INCLUDE(customLayout)
+
+        // START_INCLUDE(notify)
+        // Use the NotificationManager to show the notification
+        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        nm.notify(m, notification);
+        // END_INCLUDE(notify)
+    }
+
 
 
     public String getStatus(int Statusnum){

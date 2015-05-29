@@ -21,9 +21,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
 import de.hoell.jobcontrol.historie.Historie_Activity;
 
 public class SrnSuche extends Fragment {

@@ -167,8 +167,8 @@
 
                 if( Function.isNetworkOnline(this)) {
                     JSONObject json = new JSONTechniker(this).execute().get();
-                    Log.e("JSONTECH",json.toString());
-                    if (json != null) {
+
+                    if (json != null) {  Log.e("JSONTECH",json.toString());
                         try {
 
                             int success = json.getInt(TAG_SUCCESS);

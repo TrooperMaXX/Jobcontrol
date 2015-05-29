@@ -12,18 +12,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
 
 import de.hoell.jobcontrol.MainActivity;
@@ -32,6 +33,9 @@ import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.historie.Historie_Activity;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
+
+
+
 
 public class TicketDetailsActivity extends Activity {
 
@@ -58,11 +62,12 @@ private static final String TAG_SUCCESS = "success";
         Button Button_info = (Button) findViewById(R.id.button_info);
         Button Button_eskalation = (Button) findViewById(R.id.button_eskalation);
 
+
         int DropPos = getIntent().getIntExtra("value_droppos",0);
-        String Firma = getIntent().getStringExtra("value_firma");
-        String Adresse = getIntent().getStringExtra("value_adresse");
+        final String Firma = getIntent().getStringExtra("value_firma");
+        final String Adresse = getIntent().getStringExtra("value_adresse");
         String Standort = getIntent().getStringExtra("value_standort");
-        String Modell = getIntent().getStringExtra("value_modell");//Gerät
+        final String Modell = getIntent().getStringExtra("value_modell");//Gerät
         final String Serienummer = getIntent().getStringExtra("value_serienummer");
         String Stoerung = getIntent().getStringExtra("value_stoerung");
         String Ansprechpartner = getIntent().getStringExtra("value_ansprechpartner");
@@ -153,6 +158,9 @@ private static final String TAG_SUCCESS = "success";
                 showMap(Uri.parse(uri));
             }
         });
+
+
+
 
 
 
@@ -266,7 +274,6 @@ private static final String TAG_SUCCESS = "success";
         user=session.getUser();
 
     }
-
 
 
 
@@ -586,5 +593,10 @@ private static final String TAG_SUCCESS = "success";
             return json_gebtech;
         }
     }
+
+
+
+
+
 
 }

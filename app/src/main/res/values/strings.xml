@@ -120,7 +120,7 @@
     <string name="fleet">Fleet</string>
     <string name="switch_verfuegbar_text">Verfügbar</string>
     <string name="oeffnung">Öffnungszeiten</string>
-
+    <string name="button_pdf">PDF</string>
 
 
 </resources>

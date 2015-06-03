@@ -5,8 +5,8 @@
     android:icon="@drawable/ic_launcher"
     android:label="@string/app_name"
 
-    android:versionCode="10"
-    android:versionName="1.10.0"
+    android:versionCode="12"
+    android:versionName="1.10.2"
     ><!--TODO:  VersionCode: immer +1 bei neuer Version
          TODO:  VersionName: String den der User sieht-->
 

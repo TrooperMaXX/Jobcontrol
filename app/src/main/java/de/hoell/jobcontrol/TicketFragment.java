@@ -64,7 +64,7 @@ public class TicketFragment extends ListFragment {
     public JSONArray Ticketliste = null;
     public JSONArray Ticketliste_neu = null;
     public JSONArray Ticketliste_old = null;
-    final Context moinContext = MainActivity.context;
+
 
 
 
@@ -816,7 +816,7 @@ public class TicketFragment extends ListFragment {
             if (neueTickets.size()>0){
 
                 for (int k = 0; k < neueTickets.size(); k++) {
-                    createNotification(k, Ticketliste_neu);
+                    createNotification(Ticketpos.get(k), Ticketliste_neu);
                     Log.e("FINALEEOLEEE", neueTickets.toString());
                 }
 

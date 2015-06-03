@@ -320,7 +320,7 @@
                         np.setMaxValue(nums.length - 1);
                         np.setWrapSelectorWheel(true);
                         ///np.setDisplayedValues(nums);
-                        np.setValue(15);
+                        np.setValue(session.getZeit());
 
                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {

@@ -50,7 +50,7 @@
             private Switch mSwitch;
             private ActionBarDrawerToggle mDrawerToggle;
 
-            public static Context context = null;
+            public static Context context;
             // nav drawer title
             private CharSequence mDrawerTitle;
 

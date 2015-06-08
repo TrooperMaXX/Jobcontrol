@@ -181,7 +181,7 @@ public class TicketFragment extends ListFragment {
 
                                 String Modell = c.getString("Modell");
 
-                                String Strasse = c.getString("Straße");
+                                String Strasse = c.getString("Strasse");
                                 String Plz = c.getString("Plz");
                                 String Ort = c.getString("Ort");
 
@@ -401,7 +401,7 @@ public class TicketFragment extends ListFragment {
             String Firma = extra.getString("Firma");
             intent.putExtra("value_firma", Firma);
 
-            String Strasse = extra.getString("Straße");
+            String Strasse = extra.getString("Strasse");
             String Plz = extra.getString("Plz");
             String Ort = extra.getString("Ort");
 

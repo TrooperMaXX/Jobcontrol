@@ -4,21 +4,24 @@
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:title="@string/action_refresh"
-        android:showAsAction="ifRoom" />
+        />
 
 
     <item android:id="@+id/action_logout"
         android:icon="@drawable/ic_action_logout"
         android:title="@string/action_logout"
-        android:showAsAction="ifRoom" />
+        />
 
     <item android:id="@+id/action_info"
         android:title="@string/action_info"
         android:icon="@drawable/ic_action_info"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom" />
+        />
 
     <item android:id="@+id/action_zeit"
         android:title="Update Intervall"/>
+
+    <!--item android:id="@+id/action_bug"
+        android:title="Feedback"/-->
 </menu>
 

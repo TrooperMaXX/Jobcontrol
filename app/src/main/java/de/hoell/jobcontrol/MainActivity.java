@@ -13,10 +13,11 @@
         import android.net.Uri;
         import android.os.AsyncTask;
         import android.os.Bundle;
-        import android.support.v4.app.ActionBarDrawerToggle;
+        import android.support.v7.app.ActionBarDrawerToggle;
         import android.support.v4.widget.DrawerLayout;
         import android.util.Log;
         import android.view.Menu;
+        import android.view.MenuInflater;
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
@@ -131,7 +132,7 @@
                 getActionBar().setHomeButtonEnabled(true);
 
                 mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                        R.drawable.ic_drawer, //nav menu toggle icon
+                       // R.drawable.ic_drawer, //nav menu toggle icon
                         R.string.title_activity_slidermenu, // nav drawer open - description for accessibility
                         R.string.title_activity_slidermenu // nav drawer close - description for accessibility
                 ) {
@@ -282,8 +283,9 @@
 
             @Override
             public boolean onCreateOptionsMenu(Menu menu) {
-                getMenuInflater().inflate(R.menu.main, menu);
-                return true;
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.main, menu);
+                return super.onCreateOptionsMenu(menu);
             }
 
             @Override

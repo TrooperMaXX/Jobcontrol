@@ -1,21 +1,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity" >
+    xmlns:jobcontrol="http://schemas.android.com/apk/res-auto"
+
+    >
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:title="@string/action_refresh"
+        jobcontrol:showAsAction="ifRoom"
         />
 
 
     <item android:id="@+id/action_logout"
         android:icon="@drawable/ic_action_logout"
         android:title="@string/action_logout"
+        jobcontrol:showAsAction="ifRoom"
+
         />
 
     <item android:id="@+id/action_info"
         android:title="@string/action_info"
         android:icon="@drawable/ic_action_info"
         android:orderInCategory="100"
+        jobcontrol:showAsAction="ifRoom"
         />
 
     <item android:id="@+id/action_zeit"

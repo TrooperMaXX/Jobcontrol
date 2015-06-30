@@ -178,6 +178,9 @@ public class OfflineFragment extends ListFragment {
                             SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
                             Functions Function = new Functions();
                             boolean isheute=false;
+                            if (!Termintag.equals("null")){
+
+
                             switch (Termintyp){
 
                                 case 0:
@@ -219,6 +222,7 @@ public class OfflineFragment extends ListFragment {
 
                                     isheute =Function.isTerminheute(Terminsdf);
                                     break;
+                            }
                             }
 
 

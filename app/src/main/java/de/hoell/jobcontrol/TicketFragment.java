@@ -202,6 +202,9 @@ public class TicketFragment extends ListFragment {
                                 SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
 
                                 boolean isheute=false;
+                                if (!Termintag.equals("null")){
+
+
                                 switch (Termintyp){
 
                                     case 0:
@@ -246,7 +249,7 @@ public class TicketFragment extends ListFragment {
                                 }
 
 
-
+                                }
 
 
 

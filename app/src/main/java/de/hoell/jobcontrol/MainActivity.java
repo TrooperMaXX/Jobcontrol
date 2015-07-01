@@ -51,7 +51,7 @@
             private Switch mSwitch;
             private ActionBarDrawerToggle mDrawerToggle;
 
-            public static Context context;
+
             // nav drawer title
             private CharSequence mDrawerTitle;
 
@@ -79,7 +79,7 @@
                 setContentView(R.layout.activity_main);
                 session = new SessionManager(this);
                 mTitle = mDrawerTitle = getTitle();
-                 context=getApplicationContext();
+
                 // load slide menu items
                 navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 

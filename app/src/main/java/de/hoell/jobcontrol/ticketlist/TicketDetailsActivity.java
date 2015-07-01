@@ -489,7 +489,7 @@ private static final String TAG_SUCCESS = "success";
                 // Log.d("Status",Statusnum);
 
 
-                json = Function.SaveDetails(Statusnum,ID);
+                json = Function.SaveDetails(Statusnum,ID,user);
 
             }
             else{
@@ -518,7 +518,7 @@ private static final String TAG_SUCCESS = "success";
                 // Log.d("Status",Statusnum);
 
 
-                json = Function.SaveDetails(Statusnum,ID);
+                json = Function.SaveDetails(Statusnum,ID,user);
             }
 
 

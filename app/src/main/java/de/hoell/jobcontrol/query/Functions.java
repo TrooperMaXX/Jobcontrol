@@ -62,12 +62,12 @@ import de.hoell.jobcontrol.MainActivity;
 
         /**
          * function make Login Request
-         * @param user
-         * @param pwd
+         * @param user user
+         * @param pwd user
          * */
             public JSONObject loginUser(String user, String pwd){
                 // Building Parameters
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("tag", login_tag));
                 params.add(new BasicNameValuePair("user", user));
                 params.add(new BasicNameValuePair("pwd", pwd));
@@ -81,7 +81,7 @@ import de.hoell.jobcontrol.MainActivity;
 
           public JSONObject MyTickets(String user){
                     // Building Parameters
-                    List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair("tag", mytickets_tag));
                 params.add(new BasicNameValuePair("user", user));
 
@@ -96,12 +96,13 @@ import de.hoell.jobcontrol.MainActivity;
 
 
 
-        public JSONObject SaveDetails(int Status ,String ID){
+        public JSONObject SaveDetails(int Status ,String ID,String user){
             // Building Parameters
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("tag", savedetails_tag));
             params.add(new BasicNameValuePair("status", String.valueOf(Status)));
             params.add(new BasicNameValuePair("id", ID));
+            params.add(new BasicNameValuePair("user", user));
             System.out.println("status" + Status);
             // getting JSON Object
             JSONObject json = jsonParser.getJSONFromUrl(URL, params);

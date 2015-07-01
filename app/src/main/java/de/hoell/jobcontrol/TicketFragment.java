@@ -332,13 +332,13 @@ public class TicketFragment extends ListFragment {
 //
           /*/  TODO: autoupdater*/
           ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-            SessionManager session=new SessionManager(MainActivity.context);
+            SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
             int zeit=session.getZeit();
             System.out.println("UpdateTimer auf " + zeit + " gesetzt");
 // This schedule a runnable task every 15 minutes
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
-                    new JSONMyTickets(MainActivity.context).execute();
+                    new JSONMyTickets(Jobcontrol.getAppCtx()).execute();
                 }
             }, 0, zeit, TimeUnit.MINUTES);
 
@@ -905,14 +905,14 @@ public class TicketFragment extends ListFragment {
 
 
         // BEGIN_INCLUDE(notificationCompat)
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(Jobcontrol.getAppCtx());
         // END_INCLUDE(notificationCompat)
 
         // BEGIN_INCLUDE(intent)
         //Create Intent to launch this Activity again if the notification is clicked.
-        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+        PendingIntent intent = PendingIntent.getActivity(Jobcontrol.getAppCtx(), 0, i,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
         // END_INCLUDE(intent)
@@ -939,7 +939,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(customLayout)
         // Inflate the notification layout as RemoteViews
-        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification);
+        RemoteViews contentView = new RemoteViews(Jobcontrol.getAppCtx().getPackageName(), R.layout.notification);
 
         // Set text on a TextView in the RemoteViews programmatically.
        // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
@@ -963,7 +963,7 @@ public class TicketFragment extends ListFragment {
 
         // START_INCLUDE(notify)
         // Use the NotificationManager to show the notification
-        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager) Jobcontrol.getAppCtx().getSystemService(Context.NOTIFICATION_SERVICE);
         Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
         nm.notify(m, notification);
@@ -1042,14 +1042,14 @@ public class TicketFragment extends ListFragment {
 
 
         // BEGIN_INCLUDE(notificationCompat)
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(Jobcontrol.getAppCtx());
         // END_INCLUDE(notificationCompat)
 
         // BEGIN_INCLUDE(intent)
         //Create Intent to launch this Activity again if the notification is clicked.
-        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+        PendingIntent intent = PendingIntent.getActivity(Jobcontrol.getAppCtx(), 0, i,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
         // END_INCLUDE(intent)
@@ -1076,7 +1076,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(customLayout)
         // Inflate the notification layout as RemoteViews
-        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_newtermin);
+        RemoteViews contentView = new RemoteViews(Jobcontrol.getAppCtx().getPackageName(), R.layout.notification_newtermin);
 
         // Set text on a TextView in the RemoteViews programmatically.
         // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
@@ -1100,7 +1100,7 @@ public class TicketFragment extends ListFragment {
 
         // START_INCLUDE(notify)
         // Use the NotificationManager to show the notification
-        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager) Jobcontrol.getAppCtx().getSystemService(Context.NOTIFICATION_SERVICE);
         Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
         nm.notify(m, notification);
@@ -1132,14 +1132,14 @@ public class TicketFragment extends ListFragment {
 
 
         // BEGIN_INCLUDE(notificationCompat)
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(Jobcontrol.getAppCtx());
         // END_INCLUDE(notificationCompat)
 
         // BEGIN_INCLUDE(intent)
         //Create Intent to launch this Activity again if the notification is clicked.
-        Intent i = new Intent(MainActivity.context, MainActivity.class);
+        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(MainActivity.context, 0, i,
+        PendingIntent intent = PendingIntent.getActivity(Jobcontrol.getAppCtx(), 0, i,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(intent);
         // END_INCLUDE(intent)
@@ -1166,7 +1166,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(customLayout)
         // Inflate the notification layout as RemoteViews
-        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_newstatus);
+        RemoteViews contentView = new RemoteViews(Jobcontrol.getAppCtx().getPackageName(), R.layout.notification_newstatus);
 
         // Set text on a TextView in the RemoteViews programmatically.
         // final String time = DateFormat.getTimeInstance().format(new Date()).toString();
@@ -1190,7 +1190,7 @@ public class TicketFragment extends ListFragment {
 
         // START_INCLUDE(notify)
         // Use the NotificationManager to show the notification
-        NotificationManager nm = (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager) Jobcontrol.getAppCtx().getSystemService(Context.NOTIFICATION_SERVICE);
         Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
         nm.notify(m, notification);

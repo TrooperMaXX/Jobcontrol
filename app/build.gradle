@@ -9,12 +9,12 @@ android {
             storePassword 'Yeah!666'
         }
     }
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "20.0.0"
     defaultConfig {
         applicationId 'de.hoell.jobcontrol'
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion 21
+        targetSdkVersion 21
         signingConfig signingConfigs.config
     }
     buildTypes {

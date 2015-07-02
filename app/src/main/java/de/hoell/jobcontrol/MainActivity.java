@@ -21,10 +21,12 @@
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.AdapterView;
+        import android.widget.ImageView;
         import android.widget.LinearLayout;
         import android.widget.ListView;
         import android.widget.NumberPicker;
         import android.widget.Switch;
+        import android.widget.TextView;
         import android.widget.Toast;
         import android.content.pm.PackageManager.NameNotFoundException;
 
@@ -50,7 +52,8 @@
             private LinearLayout mDrawer;
             private Switch mSwitch;
             private ActionBarDrawerToggle mDrawerToggle;
-
+            private TextView mIch;
+            private ImageView mIchStatus;
 
             // nav drawer title
             private CharSequence mDrawerTitle;
@@ -92,6 +95,9 @@
                 mDrawer = (LinearLayout) findViewById(R.id.layout_slidermenu);
                 mTechList = (ListView) findViewById(R.id.techniker_list);
                 mSwitch = (Switch) findViewById(R.id.switch_verfuegbar);
+                mIch = (TextView) findViewById(R.id.textIch);
+                mIchStatus = (ImageView) findViewById(R.id.imageStatusIch);
+
 
                 navDrawerItems = new ArrayList<NavDrawerItem>();
 
@@ -177,6 +183,20 @@
                             if (success == 1) {
 
                                 Technikerliste = json.getJSONArray("techniker");
+                                JSONObject Ich = json.getJSONObject("ich");
+                                int Ich_verfuegbar = Ich.getInt("Verfuegbar");
+                                String ICH = Ich.getString("user_name");
+                                mIch.setText(ICH);
+                                int ichimgid;
+
+                                if(Ich_verfuegbar>0){
+                                    ichimgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
+                                }else{
+                                    ichimgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                }
+                                mIchStatus.setImageResource(ichimgid);
+
+
 
                                 for (int i = 0; i < Technikerliste.length(); i++) {
                                     JSONObject c = Technikerliste.getJSONObject(i);
@@ -195,6 +215,7 @@
                                     }else{
                                         imgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
                                     }
+
 
                                     HashMap<String, String> map = new HashMap<String, String>();
                                     map.put("Techniker", Techniker);
@@ -262,7 +283,7 @@
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position,
                                         long id) {
-                    Functions Funktion =new Functions();
+
                     // Call Techniker
                     try {
                         JSONObject c = Technikerliste.getJSONObject(position);

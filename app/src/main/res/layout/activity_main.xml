@@ -23,7 +23,8 @@
         android:layout_gravity="start"
         android:background="@color/list_background"
         >
-    <ListView
+
+        <ListView
         android:id="@+id/list_slidermenu"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -32,6 +33,32 @@
         android:dividerHeight="1dp"
         android:listSelector="@drawable/list_selector"
         android:background="@color/list_background"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ich Ichnach"
+                android:id="@+id/textIch"
+                android:textColor="#ffffff" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageStatusIch"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/ic_status_orange"
+                android:maxWidth="18dp"
+                android:maxHeight="18dp"
+                android:adjustViewBounds="true"
+                android:background="@color/list_background"
+                android:layout_marginLeft="3dp" />
+        </LinearLayout>
 
         <Switch
             android:layout_width="wrap_content"

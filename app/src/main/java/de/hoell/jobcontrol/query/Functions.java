@@ -37,7 +37,7 @@ import de.hoell.jobcontrol.MainActivity;
         private JSONParser jsonParser;
 
 
-        private static String URL = "http://85.115.30.22/job/android/index.php";
+        private static String URL = "http://5.158.136.15/job/android/index.php";
 
 
         private static String login_tag = "login";

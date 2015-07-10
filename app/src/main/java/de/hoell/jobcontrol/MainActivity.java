@@ -129,7 +129,7 @@
                 mSwitch.setChecked(switchstatus);
 
                 // setting the nav drawer list adapter
-                adapter = new NavDrawerListAdapter(getApplicationContext(),
+                adapter = new NavDrawerListAdapter(Jobcontrol.getAppCtx(),
                         navDrawerItems);
                 mDrawerList.setAdapter(adapter);
 
@@ -318,7 +318,7 @@
                 // Handle action bar actions click
                 switch (item.getItemId()) {
                     case R.id.action_info:
-                        Toast.makeText(getApplicationContext(), versionName, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Jobcontrol.getAppCtx(), versionName, Toast.LENGTH_SHORT).show();
                         return true;
 
                     case R.id.action_zeit:
@@ -372,24 +372,24 @@
 
 
                     case R.id.action_refresh:
-                        Toast.makeText(getApplicationContext(), "Refresh...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Jobcontrol.getAppCtx(), "Refresh...", Toast.LENGTH_SHORT).show();
 
 
                         Functions Function = new Functions();
-                        if( Function.isNetworkOnline(MainActivity.this)) {
+                        if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
                             displayView(0);
                         }
                         else{
-                            Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Jobcontrol.getAppCtx(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
                         }
                         return true;
 
                     case R.id.action_logout:
-                        Toast.makeText(getApplicationContext(), "Ausloggen...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Jobcontrol.getAppCtx(), "Ausloggen...", Toast.LENGTH_SHORT).show();
 
                         session.logoutUser();
 
-                        Intent i = new Intent(getApplicationContext(), Start.class);
+                        Intent i = new Intent(Jobcontrol.getAppCtx(), Start.class);
                         startActivity(i);
 
                         // closing this screen
@@ -535,7 +535,7 @@
                         new JSONSaveSwitch(switch_st).execute();
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
+                        Toast.makeText(Jobcontrol.getAppCtx(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
 
 
                 }

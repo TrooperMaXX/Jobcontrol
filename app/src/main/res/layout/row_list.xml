@@ -38,14 +38,16 @@
         android:text="                             "
 
         android:textSize="15dp"
-        android:background="#ffbfbfbf" />
+        android:background="#ffbfbfbf"
+        android:textColor="#000000" />
 
     <TextView android:id="@+id/FIRMA_CELL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="HIER KOMMT DIE FIRMA HIN"
         android:textSize="20dp"
-        android:background="#ff9f9f9f" />
+        android:background="#ff9f9f9f"
+        android:textColor="#000000" />
 
 
     <TextView
@@ -56,7 +58,8 @@
         android:textSize="15dp"
         android:background="#ff9f9f9f"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/MODEL_CELL"
@@ -67,7 +70,8 @@
         android:textSize="15dp"
         android:background="#ffbfbfbf"
         android:layout_marginRight="29dp"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textColor="#000000" />
 
     <TextView
     android:id="@+id/STATUS_CELL"
@@ -82,7 +86,7 @@
         android:layout_marginRight="29dp"
          android:layout_alignParentRight="true"
 
-       />
+        android:textColor="#000000" />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,7 +111,8 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="22dp"
         android:text="HIER DIE ADDRESSE"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:textColor="#000000" />
 
 
     <TextView
@@ -120,7 +125,8 @@
         android:textSize="15dp"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="8dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:textColor="#000000" />
 
 
     <TextView
@@ -133,7 +139,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="55dp" />
+        android:layout_marginTop="55dp"
+        android:textColor="#000000" />
     <TextView
         android:id="@+id/TERMIN_CELL"
         android:layout_width="wrap_content"

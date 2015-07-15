@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
@@ -84,7 +86,12 @@ public class Start extends Activity {
             {
 
 
-                new JSONLogin().execute();
+                try {
+                    new JSONLogin().execute().get(30000, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+
 
             }
         });
@@ -158,7 +165,7 @@ public class Start extends Activity {
                     else{
                         System.out.println("Checkbox is leer daten werden NICHT gespeichert");
                     }
-                    JSONObject gebiet_json = new JSONGebiet(user).execute().get();
+                    JSONObject gebiet_json = new JSONGebiet(user).execute().get(30000, TimeUnit.MILLISECONDS);
                     int g_success = gebiet_json.getInt(TAG_SUCCESS);
                     if (g_success == 1) {
                         JSONObject c = gebiet_json.getJSONObject("gebiet");
@@ -176,9 +183,7 @@ public class Start extends Activity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Falscher Login-Name / Falsches Passwort!!!", Toast.LENGTH_SHORT).show();
                 }
-            } catch (JSONException | InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (JSONException | InterruptedException | TimeoutException | ExecutionException e) {
                 e.printStackTrace();
             }
             }

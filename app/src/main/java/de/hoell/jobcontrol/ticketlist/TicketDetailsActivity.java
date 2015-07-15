@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
@@ -170,7 +172,13 @@ private static final String TAG_SUCCESS = "success";
                 Functions Function = new Functions();
 
                 if( Function.isNetworkOnline(TicketDetailsActivity.this)){
-                    new JSONSaveDetails().execute();
+                    try {
+                        new JSONSaveDetails().execute().get(30000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}
@@ -300,7 +308,7 @@ private static final String TAG_SUCCESS = "success";
 
 
                 try {
-                    JSONObject gebietstech = new JSONGebTech(gebiet,user).execute().get();
+                    JSONObject gebietstech = new JSONGebTech(gebiet,user).execute().get(30000, TimeUnit.MILLISECONDS);
                     int g_success = gebietstech.getInt(TAG_SUCCESS);
                     if (g_success == 1) {
                         JSONArray gebtech = gebietstech.getJSONArray("gebtech");
@@ -313,9 +321,7 @@ private static final String TAG_SUCCESS = "success";
                     }
 
 
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (InterruptedException | ExecutionException | TimeoutException | JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -341,7 +347,7 @@ private static final String TAG_SUCCESS = "success";
 
                                 if( Function.isNetworkOnline(TicketDetailsActivity.this)){
                                     try {
-                                        JSONObject verschoben=new JSONVerschieben(ID,strName,user).execute().get();
+                                        JSONObject verschoben=new JSONVerschieben(ID,strName,user).execute().get(30000, TimeUnit.MILLISECONDS);
 
                                         try {
 
@@ -380,7 +386,7 @@ private static final String TAG_SUCCESS = "success";
                                             e.printStackTrace();
                                         }
 
-                                    } catch (InterruptedException | ExecutionException e) {
+                                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
                                         e.printStackTrace();
                                     }
                                 }

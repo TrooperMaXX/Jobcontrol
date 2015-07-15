@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
@@ -84,8 +85,8 @@ public class TicketFragment extends ListFragment {
         try {
             Functions Function = new Functions();
 
-            if( Function.isNetworkOnline(getActivity().getApplicationContext())) {
-                JSONObject json = new JSONMyTickets(getActivity().getApplicationContext()).execute().get();
+            if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
+                JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
                 if (json != null) {
                     try {
 
@@ -98,7 +99,7 @@ public class TicketFragment extends ListFragment {
                                 JSONObject c = Ticketliste.getJSONObject(i);
                                 String Farbe="#ffffffff";
 
-                                int imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                int imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
 
 
                                 String Firma = c.getString("Firma");
@@ -111,25 +112,25 @@ public class TicketFragment extends ListFragment {
                                         Status = "Unbearbeitet";
                                         DropPos = 0;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 11:
                                         Status = "Fahrt";
                                         DropPos = 1;
                                         Farbe="#ffff4d00";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 12:
                                         Status = "In arbeit";
                                         DropPos = 2;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 13:
                                         Status = "offen";
                                         DropPos = 3;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 15:
                                         Status = "Erledigt";
@@ -140,41 +141,41 @@ public class TicketFragment extends ListFragment {
                                         Status = "wartet";
                                         DropPos = 5;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 17:
                                         Status = "Ware bestellt";
                                         DropPos = 6;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 18:
                                         Status = "Ware da";
                                         DropPos = 7;
                                         Farbe="#ffff4d00";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 19:
                                         Status = "Ware benötigt";
                                         DropPos = 8;
                                         Farbe="#ffffffff";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 20:
                                         Status = "installiert";
                                         DropPos = 9;
                                         Farbe="#FF0000";
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 99:
                                         Status = "Eskalation";
                                         DropPos = 10;
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
                                     case 100:
                                         Status = "Eskalation in arbeit";
                                         DropPos = 10;
-                                        imgid= getActivity().getApplicationContext().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
                                         break;
 
                                 }
@@ -256,11 +257,11 @@ public class TicketFragment extends ListFragment {
 
                                     if (isheute){
                                         System.out.println("yay");
-                                        hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
 
                                     }
                                     else{
-                                        hintergrundid= getActivity().getApplicationContext().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
                                     }
 
                                 String Oeffnung = c.getString("oeffnung");
@@ -273,7 +274,7 @@ public class TicketFragment extends ListFragment {
                                 else{
                                     Log.e("WARUNG", "sichtbar");
                                     sichtbar=true;
-                                    imgsichtbar= getActivity().getApplicationContext().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
+                                    imgsichtbar= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
                                 }
 
                                 String auanr = c.getString("Auftragtkd");
@@ -314,11 +315,23 @@ public class TicketFragment extends ListFragment {
                     setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
                             new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
                             new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
+                } else{
+
+                    Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                    Fragment fragment = null;
+                    fragment = new OfflineFragment();
+                    if (fragment != null) {
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.frame_container, fragment).commit();
+
+                    }
                 }
             }
             else{
 
-             Toast.makeText(getActivity().getApplicationContext(), "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+             Toast.makeText(Jobcontrol.getAppCtx(), "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                 Fragment fragment = null;
                 fragment = new OfflineFragment();
@@ -338,14 +351,21 @@ public class TicketFragment extends ListFragment {
 // This schedule a runnable task every 15 minutes
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
-                    new JSONMyTickets(Jobcontrol.getAppCtx()).execute();
+                    try {
+                       new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, 0, zeit, TimeUnit.MINUTES);
 
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
         }
-
 
 
     }
@@ -356,7 +376,7 @@ public class TicketFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ListView lv = getListView();
-        ColorDrawable sage = new ColorDrawable(getActivity().getApplicationContext().getResources().getColor(R.color.ticket_list_divider));
+        ColorDrawable sage = new ColorDrawable(Jobcontrol.getAppCtx().getResources().getColor(R.color.ticket_list_divider));
         lv.setDivider(sage);
         lv.setDividerHeight(10);
     }

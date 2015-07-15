@@ -37,6 +37,8 @@
         import java.util.ArrayList;
         import java.util.HashMap;
         import java.util.concurrent.ExecutionException;
+        import java.util.concurrent.TimeUnit;
+        import java.util.concurrent.TimeoutException;
 
         import de.hoell.jobcontrol.adapter.NavDrawerListAdapter;
         import de.hoell.jobcontrol.adapter.SpecialAdapter;
@@ -173,7 +175,7 @@
                 Functions Function = new Functions();
 
                 if( Function.isNetworkOnline(this)) {
-                    JSONObject json = new JSONTechniker(this).execute().get();
+                    JSONObject json = new JSONTechniker(this).execute().get(30000, TimeUnit.MILLISECONDS);
 
                     if (json != null) {  Log.e("JSONTECH",json.toString());
                         try {
@@ -255,7 +257,7 @@
 
                 }
 
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 e.printStackTrace();
             }
 
@@ -532,7 +534,11 @@
                         session.saveSwitchstatus(false);
                         switch_st=0;
                     }
-                        new JSONSaveSwitch(switch_st).execute();
+                        try {
+                            new JSONSaveSwitch(switch_st).execute().get(30000, TimeUnit.MILLISECONDS);
+                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            e.printStackTrace();
+                        }
                     }
                     else {
                         Toast.makeText(Jobcontrol.getAppCtx(), "Keine INternet verbindung", Toast.LENGTH_SHORT).show();}

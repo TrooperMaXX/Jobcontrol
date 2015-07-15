@@ -14,6 +14,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.Start;
@@ -60,7 +64,16 @@ public class Eskalation extends Activity {
                 TextView editTextInfo =  (TextView) findViewById(R.id.Info_Content);
                 String editInfo = editTextInfo.getText().toString();
 
-                new JSONSaveEsk(ID,editAnsprech,editInfo, user).execute();}  else {
+                    try {
+                        new JSONSaveEsk(ID,editAnsprech,editInfo, user).execute().get(30000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                    ;}  else {
                     Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();}
 
 

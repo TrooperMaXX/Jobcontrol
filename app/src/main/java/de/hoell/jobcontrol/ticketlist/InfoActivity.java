@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
@@ -46,7 +48,16 @@ public class InfoActivity extends ListActivity {
 
         ID = getIntent().getStringExtra("value_id");
 
-        new JSONInfo(ID).execute();
+        try {
+            new JSONInfo(ID).execute().get(30000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        ;
 
         Button Button_newinfo = (Button) findViewById(R.id.button_newinfo);
 

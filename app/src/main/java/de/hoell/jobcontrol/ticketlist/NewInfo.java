@@ -14,6 +14,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.query.Functions;
@@ -43,7 +47,14 @@ public class NewInfo extends Activity {
                     TextView editTextInfo =  (TextView) findViewById(R.id.Info_Info_ontent);
                     String editInfoInfo = editTextInfo.getText().toString();
 
-                    new JSONSaveInfo(ID,editInfoAnsprech,editInfoInfo, user).execute();}  else {
+                    try {
+                        new JSONSaveInfo(ID,editInfoAnsprech,editInfoInfo, user).execute().get(30000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                }  else {
                     Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();}
 
 

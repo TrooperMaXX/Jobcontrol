@@ -2,8 +2,12 @@ package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,19 +16,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.ortiz.touch.TouchImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -63,9 +75,10 @@ private static final String TAG_SUCCESS = "success";
         Button Button_rueck = (Button) findViewById(R.id.button_rueck);
         Button Button_info = (Button) findViewById(R.id.button_info);
         Button Button_eskalation = (Button) findViewById(R.id.button_eskalation);
+        Button Button_img = (Button) findViewById(R.id.button_img);
+        TouchImageView img = (TouchImageView) findViewById(R.id.img);
 
-
-        int DropPos = getIntent().getIntExtra("value_droppos",0);
+        int DropPos = getIntent().getIntExtra("value_droppos", 0);
         final String Firma = getIntent().getStringExtra("value_firma");
         final String Adresse = getIntent().getStringExtra("value_adresse");
         String Standort = getIntent().getStringExtra("value_standort");
@@ -81,6 +94,7 @@ private static final String TAG_SUCCESS = "success";
         String Wvnr = getIntent().getStringExtra("value_wvnr");
         String Fleet = getIntent().getStringExtra("value_fleet");
         String Annahme = getIntent().getStringExtra("value_annahme");
+        int bogenverfuegbar = getIntent().getIntExtra("value_bogenverfuegbar",0);
         final String uri = getIntent().getStringExtra("value_uri");
         Statusnum = getIntent().getIntExtra("value_statusnum",0);
         ID = getIntent().getStringExtra("value_id");
@@ -99,7 +113,11 @@ private static final String TAG_SUCCESS = "success";
 
 
 
-
+        if (bogenverfuegbar>0){
+            Button_img.setVisibility(View.VISIBLE);
+        }else{
+            Button_img.setVisibility(View.GONE);
+        }
 
 
         TextView textViewFirma = (TextView) findViewById(R.id.textViewContentFirma);
@@ -161,6 +179,22 @@ private static final String TAG_SUCCESS = "success";
             }
         });
 
+        Button_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showImage();
+            }
+        });
+
+        img.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(getBaseContext(), "Long Clicked", Toast.LENGTH_SHORT).show();
+                deshowImage();
+                return true;
+            }
+        });
 
 
 
@@ -600,8 +634,59 @@ private static final String TAG_SUCCESS = "success";
         }
     }
 
+    public void showImage() {
+
+        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+        img.setVisibility(View.VISIBLE);
+        //ImageView imageView = new ImageView(this);
+        try {
+
+            InputStream in = new URL("http://85.115.30.22/job/android/test/bild.php?id="+ID).openStream();
+            Bitmap bmp = BitmapFactory.decodeStream(in);
+            in.close();
+
+            img.setImageBitmap(bmp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        img.resetZoom();
+       /** Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+        //ImageView imageView = new ImageView(this);
+        try {
+
+            InputStream in = new URL("http://85.115.30.22/job/android/test/bild.php?id=30837").openStream();
+            Bitmap bmp = BitmapFactory.decodeStream(in);
+
+            img.setImageBitmap(bmp);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        builder.addContentView(img, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();**/
+    }
 
 
+    public void deshowImage() {
+
+        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+        img.setVisibility(View.GONE);
+
+    }
 
 
 

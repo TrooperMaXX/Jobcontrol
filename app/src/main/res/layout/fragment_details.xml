@@ -3,6 +3,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <com.ortiz.touch.TouchImageView
+    android:id="@+id/img"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:longClickable="true"
+        android:visibility="gone" />
+
     <ScrollView
         android:id="@+id/layout"
         android:layout_height="match_parent"
@@ -12,13 +19,15 @@
         android:scrollbarStyle="outsideInset"
         android:fillViewport="true">
 
+
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="de.hoell.jobcontrol.ticketlist.DetailsFragment"
     android:id="@+id/DetailsTabelle"
         android:layout_marginTop="0dip">
-    <TableRow android:id="@+id/Status"
+
+        <TableRow android:id="@+id/Status"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
          <Spinner
@@ -58,8 +67,12 @@
             android:id="@+id/button_maps"
             android:text="@string/button_map" />
 
-
-
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_img"
+            android:text="Bogen" />
 
 
     </TableRow>
@@ -528,5 +541,8 @@
 
     </TableLayout>
     </ScrollView>
-    </LinearLayout>
+
+
+
+</LinearLayout>
 

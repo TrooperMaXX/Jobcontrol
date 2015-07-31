@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v7.internal.widget.TintImageView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,11 +17,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -29,10 +37,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class Start extends Activity {
 
-    Button btnLogin;
+    Button btnLogin,btnIMG;
     EditText InputName;
     EditText InputPass;
     CheckBox InputCheck;
+    ImageView IMG_View;
     public static String user;
     private  String password,gebiet;
     SessionManager session;
@@ -58,6 +67,8 @@ public class Start extends Activity {
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Functions Function = new Functions();
 

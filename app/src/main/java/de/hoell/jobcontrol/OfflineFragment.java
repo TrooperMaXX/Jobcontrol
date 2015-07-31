@@ -360,6 +360,9 @@ public class OfflineFragment extends ListFragment {
             String Oeffnung = extra.getString("oeffnung");
             intent.putExtra("value_oeffnung", Oeffnung);
 
+            int Bogenverfuegbar = extra.getInt("bogen_verfuegbar");
+            intent.putExtra("value_bogenverfuegbar", Bogenverfuegbar);
+
             String Termintag = extra.getString("terminTag");
             String Terminende = extra.getString("terminEnde");
 

@@ -311,10 +311,18 @@ public class TicketFragment extends ListFragment {
                     } catch (JSONException | ParseException e) {
                         e.printStackTrace();
                     }
+                        Activity activity = getActivity();
+                    if (activity != null){
 
-                    setListAdapter(new SpecialAdapter(getActivity(),TheTickets,R.layout.row_list,
+
+                    setListAdapter(new SpecialAdapter(activity,TheTickets,R.layout.row_list,
                             new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
                             new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
+                    }else{
+                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                        Toast.makeText(Jobcontrol.getAppCtx(), "Error selfrestatr :/", Toast.LENGTH_SHORT).show();
+                        startActivity(i);
+                    }
                 } else{
 
                     Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
@@ -405,7 +413,7 @@ public class TicketFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        Intent intent = new Intent(getActivity(), TicketDetailsActivity.class);
+        Intent intent = new Intent(Jobcontrol.getAppCtx(), TicketDetailsActivity.class);
         try {
             JSONObject extra = Ticketliste.getJSONObject(position);
 
@@ -455,6 +463,9 @@ public class TicketFragment extends ListFragment {
 
             String Oeffnung = extra.getString("oeffnung");
             intent.putExtra("value_oeffnung", Oeffnung);
+
+            int Bogenverfuegbar = extra.getInt("bogen_verfuegbar");
+            intent.putExtra("value_bogenverfuegbar", Bogenverfuegbar);
 
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
@@ -932,8 +943,13 @@ public class TicketFragment extends ListFragment {
         //Create Intent to launch this Activity again if the notification is clicked.
         Intent i = new Intent(Jobcontrol.getAppCtx(), Jobcontrol.class);
         i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+
         PendingIntent intent = PendingIntent.getActivity(Jobcontrol.getAppCtx(), 0, i,
                 PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         builder.setContentIntent(intent);
         // END_INCLUDE(intent)
 

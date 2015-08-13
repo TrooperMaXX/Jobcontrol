@@ -121,6 +121,8 @@
     <string name="switch_verfuegbar_text">Verfügbar</string>
     <string name="oeffnung">Öffnungszeiten</string>
     <string name="button_pdf">PDF</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>

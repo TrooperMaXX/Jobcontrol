@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.preference.PreferenceManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -353,25 +355,26 @@ public class TicketFragment extends ListFragment {
 //
           /*/  TODO: autoupdater*/
           ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-            SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
-            int zeit=session.getZeit();
+            //SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
+            //int zeit=session.getZeit();
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Jobcontrol.getAppCtx());
+// then you use
+            int zeit= Integer.parseInt(prefs.getString("update_list", "15"));
+
             System.out.println("UpdateTimer auf " + zeit + " gesetzt");
 // This schedule a runnable task every 15 minutes
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
                     try {
                        new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         e.printStackTrace();
                     }
                 }
             }, 0, zeit, TimeUnit.MINUTES);
 
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
 

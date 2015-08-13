@@ -40,6 +40,7 @@
         import java.util.concurrent.TimeUnit;
         import java.util.concurrent.TimeoutException;
 
+        import de.hoell.jobcontrol.preference.SettingsActivity;
         import de.hoell.jobcontrol.adapter.NavDrawerListAdapter;
         import de.hoell.jobcontrol.adapter.SpecialAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
@@ -82,6 +83,7 @@
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
+                boolean offline =getIntent().getBooleanExtra("offline",false);
                 session = new SessionManager(this);
                 mTitle = mDrawerTitle = getTitle();
 
@@ -160,106 +162,23 @@
 
                 if (savedInstanceState == null) {
                     // on first time display view for first nav item
-                    displayView(0);
-                }
-
-
-
-
-
-
-
-
-
-                try {
-                Functions Function = new Functions();
-
-                if( Function.isNetworkOnline(this)) {
-                    JSONObject json = new JSONTechniker(this).execute().get(30000, TimeUnit.MILLISECONDS);
-
-                    if (json != null) {  Log.e("JSONTECH",json.toString());
-                        try {
-
-                            int success = json.getInt(TAG_SUCCESS);
-
-                            if (success == 1) {
-
-                                Technikerliste = json.getJSONArray("techniker");
-                                JSONObject Ich = json.getJSONObject("ich");
-                                int Ich_verfuegbar = Ich.getInt("Verfuegbar");
-                                String ICH = Ich.getString("user_name");
-                                mIch.setText(ICH);
-                                int ichimgid;
-
-                                if(Ich_verfuegbar>0){
-                                    ichimgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
-                                }else{
-                                    ichimgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
-                                }
-                                mIchStatus.setImageResource(ichimgid);
-
-
-
-                                for (int i = 0; i < Technikerliste.length(); i++) {
-                                    JSONObject c = Technikerliste.getJSONObject(i);
-
-                                    String Techniker = c.getString("user_name");
-                                    int verfuegbar = c.getInt("Verfuegbar");
-                                    String Gebiet = c.getString("Gebiet");
-                                    String kuerzel = c.getString("kuerzel");
-                                    String Tel = c.getString("Telefon");
-
-
-                                    int imgid;
-
-                                    if(verfuegbar>0){
-                                        imgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
-                                    }else{
-                                        imgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
-                                    }
-
-
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put("Techniker", Techniker);
-
-                                    map.put("Gebiet", Gebiet);
-                                    map.put("Kuerzel", kuerzel);
-                                    map.put("Tel", Tel);
-
-                                    map.put("Verfuegbar_ic", String.valueOf(imgid)); //verfuegbar
-
-                                    TheTechniker.add(map);
-
-
-                                }
-
-                                System.out.println("TEchnikerabfrage" + TheTechniker);
-
-                            } else {
-
-
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        mTechList.setAdapter(new SpecialAdapter(this,TheTechniker,R.layout.row_tech,
-                                new String[] {"Verfuegbar_ic", "Techniker"},
-                                new int[] {R.id.Verfuegbar_img,R.id.TECHNIKER}));
+                    if (!offline){
+                        displayView(0);
+                        executeTech();
+                    }else{
+                        displayView(1);
                     }
-                }
-                else{
-
-                    Toast.makeText(this, "Keine Internet verbindung", Toast.LENGTH_LONG).show();
-
-
 
                 }
 
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                e.printStackTrace();
-            }
+
+
+
+
+
+
+
+
 
             }
 
@@ -323,54 +242,6 @@
                         Toast.makeText(Jobcontrol.getAppCtx(), versionName, Toast.LENGTH_SHORT).show();
                         return true;
 
-                    case R.id.action_zeit:
-
-
-
-                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                        final NumberPicker np = new NumberPicker(MainActivity.this);
-
-                        alert.setTitle("Select the value: ");
-                        alert.setView(np);
-
-                        Integer[] nums = new Integer[100];
-                        for(int i=1; i<nums.length; i++)
-                        {
-                            nums[i] = i;
-
-
-                        }
-
-                        np.setMinValue(1);
-                        np.setMaxValue(nums.length - 1);
-                        np.setWrapSelectorWheel(true);
-                        ///np.setDisplayedValues(nums);
-                        np.setValue(session.getZeit());
-
-                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Do something with value!
-                                int value = np.getValue();
-                                session.saveZeit(value);
-                            }
-                        });
-
-                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Cancel.
-                            }
-                        });
-
-                        alert.show();
-
-
-
-
-
-
-
-
-                        return true;
 
 
                     case R.id.action_refresh:
@@ -384,6 +255,12 @@
                         else{
                             Toast.makeText(Jobcontrol.getAppCtx(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();
                         }
+                        return true;
+                    case R.id.action_settings:
+
+                        Intent intent = new Intent(this, SettingsActivity.class);
+                        startActivity(intent);
+
                         return true;
 
                     case R.id.action_logout:
@@ -425,6 +302,7 @@
                 switch (position) {
                     case 0:
                         fragment = new TicketFragment();
+                        executeTech();
                         break;
                     case 1:
                         fragment = new OfflineFragment();
@@ -476,6 +354,101 @@
                 super.onConfigurationChanged(newConfig);
                 // Pass any configuration change to the drawer toggls
                 mDrawerToggle.onConfigurationChanged(newConfig);
+            }
+
+
+
+            public void executeTech(){
+
+                try {
+                    Functions Function = new Functions();
+
+                    if( Function.isNetworkOnline(this)) {
+                        JSONObject json = new JSONTechniker(this).execute().get(30000, TimeUnit.MILLISECONDS);
+
+                        if (json != null) {  Log.e("JSONTECH",json.toString());
+                            try {
+
+                                int success = json.getInt(TAG_SUCCESS);
+
+                                if (success == 1) {
+
+                                    Technikerliste = json.getJSONArray("techniker");
+                                    JSONObject Ich = json.getJSONObject("ich");
+                                    int Ich_verfuegbar = Ich.getInt("Verfuegbar");
+                                    String ICH = Ich.getString("user_name");
+                                    mIch.setText(ICH);
+                                    int ichimgid;
+
+                                    if(Ich_verfuegbar>0){
+                                        ichimgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
+                                    }else{
+                                        ichimgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                    }
+                                    mIchStatus.setImageResource(ichimgid);
+
+
+
+                                    for (int i = 0; i < Technikerliste.length(); i++) {
+                                        JSONObject c = Technikerliste.getJSONObject(i);
+
+                                        String Techniker = c.getString("user_name");
+                                        int verfuegbar = c.getInt("Verfuegbar");
+                                        String Gebiet = c.getString("Gebiet");
+                                        String kuerzel = c.getString("kuerzel");
+                                        String Tel = c.getString("Telefon");
+
+
+                                        int imgid;
+
+                                        if(verfuegbar>0){
+                                            imgid= this.getResources().getIdentifier("ic_status_green", "mipmap", "de.hoell.jobcontrol");
+                                        }else{
+                                            imgid= this.getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                        }
+
+
+                                        HashMap<String, String> map = new HashMap<String, String>();
+                                        map.put("Techniker", Techniker);
+
+                                        map.put("Gebiet", Gebiet);
+                                        map.put("Kuerzel", kuerzel);
+                                        map.put("Tel", Tel);
+
+                                        map.put("Verfuegbar_ic", String.valueOf(imgid)); //verfuegbar
+
+                                        TheTechniker.add(map);
+
+
+                                    }
+
+                                    System.out.println("TEchnikerabfrage" + TheTechniker);
+
+                                } else {
+
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            mTechList.setAdapter(new SpecialAdapter(this,TheTechniker,R.layout.row_tech,
+                                    new String[] {"Verfuegbar_ic", "Techniker"},
+                                    new int[] {R.id.Verfuegbar_img,R.id.TECHNIKER}));
+                        }
+                    }
+                    else{
+
+                        Toast.makeText(this, "Keine Internet verbindung", Toast.LENGTH_LONG).show();
+
+
+
+                    }
+
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
             }
 
 

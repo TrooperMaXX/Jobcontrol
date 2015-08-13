@@ -3,12 +3,14 @@ package de.hoell.jobcontrol;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v7.internal.widget.TintImageView;
 import android.util.Log;
 import android.view.Menu;
@@ -110,13 +112,23 @@ public class Start extends Activity {
 
 
         if (session.isUserLoggedIn()){
-
-
             user = session.getUser();
 
-            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(i);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Jobcontrol.getAppCtx());
+            if(prefs.getBoolean("offline_checkbox", false)){
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                i.putExtra("offline",true);
+                startActivity(i);
 
+            }else{
+
+
+
+
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+             i.putExtra("offline",false);
+            startActivity(i);
+        }
             // closing this screen
             finish();
 

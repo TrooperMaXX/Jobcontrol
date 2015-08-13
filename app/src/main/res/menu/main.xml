@@ -23,9 +23,13 @@
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
         />
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        />
 
-    <item android:id="@+id/action_zeit"
-        android:title="Update Intervall"/>
 
     <!--item android:id="@+id/action_bug"
         android:title="Feedback"/-->

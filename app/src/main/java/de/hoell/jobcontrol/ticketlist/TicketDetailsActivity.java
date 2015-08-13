@@ -3,6 +3,7 @@ package de.hoell.jobcontrol.ticketlist;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +35,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -190,7 +194,7 @@ private static final String TAG_SUCCESS = "success";
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(getBaseContext(), "Long Clicked", Toast.LENGTH_SHORT).show();
+
                 deshowImage();
                 return true;
             }
@@ -499,6 +503,13 @@ private static final String TAG_SUCCESS = "success";
                     case 4:
                         //  Status = "Erledigt";
                         Statusnum = 15;
+                        String filePath= String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/"+ID+".png"));
+                        File file = new File(filePath);
+                        if(file.exists()){
+                            if(!(file.delete())){
+                                Toast.makeText(getApplicationContext(), "Bild löschen fehlgeschlagen :(", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                         break;
                     case 5:
                         //  Status = "wartet";
@@ -638,46 +649,37 @@ private static final String TAG_SUCCESS = "success";
 
         TouchImageView img = (TouchImageView) findViewById(R.id.img);
         img.setVisibility(View.VISIBLE);
-        //ImageView imageView = new ImageView(this);
-        try {
 
-            InputStream in = new URL("http://85.115.30.22/job/android/test/bild.php?id="+ID).openStream();
-            Bitmap bmp = BitmapFactory.decodeStream(in);
-            in.close();
 
-            img.setImageBitmap(bmp);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Bitmap bmp= null;
+        String filePath= String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/"+ID+".png"));
+        File file = new File(filePath);
+        if(file.exists()){
+            bmp=BitmapFactory.decodeFile(filePath);
+            System.out.println("Datei von speicher gelesen");
         }
+        else{
+            try {
+                bmp = new AsyncIMG(ID,getApplicationContext()).execute().get();
+            } catch (InterruptedException | ExecutionException e) {
 
-        img.resetZoom();
-       /** Dialog builder = new Dialog(this);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
+                e.printStackTrace();
             }
-        });
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
-        //ImageView imageView = new ImageView(this);
-        try {
+        }
+        if (bmp != null) {
 
-            InputStream in = new URL("http://85.115.30.22/job/android/test/bild.php?id=30837").openStream();
-            Bitmap bmp = BitmapFactory.decodeStream(in);
+            if((bmp.getWidth() <=4096)&&(bmp.getHeight() <=4096)){
 
-            img.setImageBitmap(bmp);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+                img.setImageBitmap(bmp);
+
+
+                img.resetZoom();
+            }else{
+                Toast.makeText(getApplicationContext(), "Bild ist zu groß Bitte im Downloadordner seperat anschauen", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        builder.addContentView(img, new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        builder.show();**/
+
     }
 
 
@@ -686,6 +688,55 @@ private static final String TAG_SUCCESS = "success";
         TouchImageView img = (TouchImageView) findViewById(R.id.img);
         img.setVisibility(View.GONE);
 
+    }
+
+    private class AsyncIMG extends AsyncTask<Integer, Integer, Bitmap> {
+        private String mID;
+        private  Bitmap mbmp;
+        private Context mContext;
+        public AsyncIMG(String ID,Context context) {
+            mID=ID;
+            mContext = context;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Integer... params) {
+            InputStream in = null;
+            try {
+                in = new URL("http://5.158.136.15/job/android/test/bild.php?id="+mID).openStream();
+
+            mbmp = BitmapFactory.decodeStream(in);
+            in.close();
+                /**SAVE IMG AS PNG**/
+                FileOutputStream out = null;
+                File dir= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                String PATH = dir.toString()+"/Jobcontrol/";
+                File PATHdir =new File(PATH);
+                PATHdir.mkdirs();
+                Log.e("PATH",PATH);
+
+                try {
+                    out = new FileOutputStream(dir+"/Jobcontrol/"+String.valueOf(mID)+".png");
+                    mbmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+                    // PNG is a lossless format, the compression factor (100) is ignored
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                } finally {
+                    try {
+                        if (out != null) {
+                            out.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+            return mbmp;
+        }
     }
 
 

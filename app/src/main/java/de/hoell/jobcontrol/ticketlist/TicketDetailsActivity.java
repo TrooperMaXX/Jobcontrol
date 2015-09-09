@@ -2,13 +2,11 @@ package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,12 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,20 +33,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 
-import de.hoell.jobcontrol.historie.Historie_Activity;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
-
-
+import de.hoell.jobcontrol.widget.WidgetProvider;
 
 
 public class TicketDetailsActivity extends Activity {
@@ -68,9 +60,11 @@ private static final String TAG_SUCCESS = "success";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        String test = getIntent().getStringExtra(WidgetProvider.EXTRA_WORD);
+        Log.e("TEEEEEEEEEEST",""+test);
         setContentView(R.layout.activity_ticket_details);
         String Status = getIntent().getStringExtra("value_status");
         Button Button_maps = (Button) findViewById(R.id.button_maps);
@@ -187,7 +181,7 @@ private static final String TAG_SUCCESS = "success";
             @Override
             public void onClick(View view) {
 
-                showImage();
+                getImgs(ID,0);
             }
         });
 
@@ -503,13 +497,7 @@ private static final String TAG_SUCCESS = "success";
                     case 4:
                         //  Status = "Erledigt";
                         Statusnum = 15;
-                        String filePath= String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/"+ID+".png"));
-                        File file = new File(filePath);
-                        if(file.exists()){
-                            if(!(file.delete())){
-                                Toast.makeText(getApplicationContext(), "Bild löschen fehlgeschlagen :(", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+
                         break;
                     case 5:
                         //  Status = "wartet";
@@ -639,33 +627,157 @@ private static final String TAG_SUCCESS = "success";
         @Override
         protected JSONObject doInBackground(Integer... params) {
             Functions Function = new Functions();
-            JSONObject json_gebtech = Function.Verschieben(mID, mTechniker,mUser);
+            JSONObject json_gebtech = Function.Verschieben(mID, mTechniker, mUser);
 
             return json_gebtech;
         }
     }
+       private class JSONFileNumbers extends AsyncTask<Integer, Integer, JSONObject> {
+           private String mID,mplaceholder="";
 
-    public void showImage() {
+           public JSONFileNumbers(String ID) {
+               mID=ID;
 
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
-        img.setVisibility(View.VISIBLE);
+           }
+
+           @Override
+           protected JSONObject doInBackground(Integer... params) {
+               Functions Function = new Functions();
+               JSONObject json_filenumbers = Function.getFilenumbers(mID, mplaceholder);
+
+               return json_filenumbers;
+           }
+       }
+
+    public void getImgs(String TicketID, int current_img) {
+        //Log.e("get bis getImgs","1");
+        int length = 1;
+        Bitmap bmp=null;
+        JSONArray Files=null ;
+        Functions Function = new Functions();
+        JSONObject json_filenumbers = null;
+       if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
+
+            try {//Log.e("get bis getImgs","1.2");
+                json_filenumbers = new JSONFileNumbers(TicketID).execute().get(30000, TimeUnit.MILLISECONDS);
+               // Log.e("get bis nach json","2");
+                int success = json_filenumbers.getInt(TAG_SUCCESS);
 
 
-        Bitmap bmp= null;
-        String filePath= String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/"+ID+".png"));
+                if (success == 1) {
+                  //  Log.e("get bis success","3");
+                    length = json_filenumbers.getInt("length");
+                    Files=json_filenumbers.getJSONArray("FileNumbers");
+                }else {
+                    length=1;
+                    Files=null;
+                }
+            } catch (JSONException | InterruptedException | ExecutionException | TimeoutException e) {
+                e.printStackTrace();
+
+            }
+
+       // Log.e("get bis nach success","4");
+        }else{
+           Files=null;
+       }
+
+        File PATHdir =new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/" + TicketID+"/")));
+        PATHdir.mkdirs();
+       // Log.e("get bis PATH",PATHdir.toString());
+
+        String filePath= String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/"+TicketID+"/"+current_img+".png"));
         File file = new File(filePath);
+
         if(file.exists()){
             bmp=BitmapFactory.decodeFile(filePath);
-            System.out.println("Datei von speicher gelesen");
+            Log.e("yay","Datei vom speicher gelesen");
         }
         else{
             try {
-                bmp = new AsyncIMG(ID,getApplicationContext()).execute().get();
-            } catch (InterruptedException | ExecutionException e) {
+
+                    if (Files!=null) {
+
+
+                       // Log.e("get bis vor ASYNC", "5");
+                        System.out.println("AsyncIMG(Files.getString(" + String.valueOf(current_img) + ")," + TicketID + "," + String.valueOf(current_img) + ")");
+                        bmp = new AsyncIMG(Files.get(current_img).toString(), TicketID, String.valueOf(current_img)).execute().get();
+                       // Log.e("get bis nach ASYNC", "6");
+                    }
+
+
+            } catch (InterruptedException | ExecutionException | JSONException e) {
 
                 e.printStackTrace();
             }
+
         }
+      //  Log.e("get bis vor showIMG","7");
+        TouchImageView img = showImage(bmp);
+        //Log.e("get bis nach showIMG","8");
+
+
+        final String finalTicketID=TicketID;
+        final int next_img=current_img+1;
+        final boolean next;
+        if (next_img<length){
+            next=true;
+            }
+        else {
+            next=false;
+        }
+        final int prev_img=current_img-1;
+        final boolean prev;
+        if (prev_img>=0){
+            prev=true;
+        }
+        else {
+            prev=false;
+        }
+        img.setOnTouchListener(new SwipeDetect() {
+            //NextBild
+            public void onSwipeLeft() {
+
+
+                    if (next){
+                       getImgs(finalTicketID,next_img);
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Kein Weiteres Bild verfügbar", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                //Toast.makeText(getApplicationContext(), "onSwipeLeft", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            public void onSwipeRight() {
+
+
+                if (prev){
+                    getImgs(finalTicketID,prev_img);
+                }else {
+                    Toast.makeText(getApplicationContext(), "Kein Weiteres Bild verfügbar", Toast.LENGTH_SHORT).show();
+
+                }
+               // Toast.makeText(getApplicationContext(), "onSwipeRight", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
+
+
+    public TouchImageView showImage(Bitmap bmp) {
+
+        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+
+        img.setVisibility(View.VISIBLE);
+
+
+        System.out.println("Datei von speicher gelesen");
+
         if (bmp != null) {
 
             if((bmp.getWidth() <=4096)&&(bmp.getHeight() <=4096)){
@@ -675,12 +787,15 @@ private static final String TAG_SUCCESS = "success";
 
                 img.resetZoom();
             }else{
-                Toast.makeText(getApplicationContext(), "Bild ist zu groß Bitte im Downloadordner seperat anschauen", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Bild ist zu groß Bitte im Downloadordner seperat anschauen", Toast.LENGTH_LONG).show();
             }
         }
 
-
+        return img;
     }
+
+
+
 
 
     public void deshowImage() {
@@ -691,32 +806,33 @@ private static final String TAG_SUCCESS = "success";
     }
 
     private class AsyncIMG extends AsyncTask<Integer, Integer, Bitmap> {
-        private String mID;
+        private String mID,mTicketID, mName;
         private  Bitmap mbmp;
-        private Context mContext;
-        public AsyncIMG(String ID,Context context) {
+        public AsyncIMG(String ID,String TicketID,String Name) {
             mID=ID;
-            mContext = context;
+            mTicketID= TicketID;
+            mName= Name;
         }
 
         @Override
         protected Bitmap doInBackground(Integer... params) {
             InputStream in = null;
             try {
-                in = new URL("http://5.158.136.15/job/android/test/bild.php?id="+mID).openStream();
+                //TODO: Pfad ändern
+                in = new URL("http://5.158.136.15/job/android/bild.php?id="+mID).openStream();
 
             mbmp = BitmapFactory.decodeStream(in);
             in.close();
                 /**SAVE IMG AS PNG**/
                 FileOutputStream out = null;
                 File dir= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                String PATH = dir.toString()+"/Jobcontrol/";
+                String PATH = dir.toString()+"/Jobcontrol/"+mTicketID+"/";
                 File PATHdir =new File(PATH);
                 PATHdir.mkdirs();
                 Log.e("PATH",PATH);
 
                 try {
-                    out = new FileOutputStream(dir+"/Jobcontrol/"+String.valueOf(mID)+".png");
+                    out = new FileOutputStream(dir+"/Jobcontrol/"+mTicketID+"/"+mName+".png");
                     mbmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
                     // PNG is a lossless format, the compression factor (100) is ignored
                 } catch (Exception e) {

@@ -18,10 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import de.hoell.jobcontrol.historie.Historie_Activity;
+import de.hoell.jobcontrol.ticketlist.Historie_Activity;
 
 public class SrnSuche extends Fragment {
     Context context;

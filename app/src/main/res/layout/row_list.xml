@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:divider="@color/ticket_list_divider"
 
-    >
+    android:id="@+id/list_row">
     <!--TextView
     android:id="@+id/BACKGROUD_all"
     android:layout_width="fill_parent"

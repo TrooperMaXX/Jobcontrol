@@ -55,6 +55,7 @@ import de.hoell.jobcontrol.MainActivity;
         private static String techniker_tag = "techniker";
         private static String saveswitch_tag = "saveswitch";
         private static String oeffnungs_tag = "oeffnung";
+        private static String filenumbers_tag = "bogen";
     // constructor
         public Functions(){
             jsonParser = new JSONParser();
@@ -343,6 +344,19 @@ import de.hoell.jobcontrol.MainActivity;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", oeffnungs_tag));
         params.add(new BasicNameValuePair("gernr", gernr));
+
+        // getting JSON Object
+        JSONObject json = jsonParser.getJSONFromUrl(URL, params);
+        // return json
+        return json;
+    }
+
+    public JSONObject getFilenumbers(String Ticketid, String Adressid) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", filenumbers_tag));
+        params.add(new BasicNameValuePair("ticketid", Ticketid));
+        params.add(new BasicNameValuePair("adressid", Adressid));
+
 
         // getting JSON Object
         JSONObject json = jsonParser.getJSONFromUrl(URL, params);

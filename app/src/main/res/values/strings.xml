@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">.Jobcontrol</string>
+    <string name="app_name">Jobcontrol</string>
 
     <!-- Launch_Screen -->
     <string name="login_text">Jobcontrol</string>
@@ -123,6 +123,9 @@
     <string name="button_pdf">PDF</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="empty_string">isLEER</string>
+    <string name="button_nextimg">Next</string>
+    <string name="widget_name">Jobcontrol ALPHA</string>
 
 
 </resources>

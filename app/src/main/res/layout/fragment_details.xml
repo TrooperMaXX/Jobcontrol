@@ -3,6 +3,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+
+
     <com.ortiz.touch.TouchImageView
     android:id="@+id/img"
     android:layout_width="match_parent"

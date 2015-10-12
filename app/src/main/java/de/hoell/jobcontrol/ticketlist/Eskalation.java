@@ -18,10 +18,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.Start;
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.session.SessionManager;
 
 public class Eskalation extends Activity {
     private static final String TAG_SUCCESS = "success";
@@ -40,9 +42,9 @@ public class Eskalation extends Activity {
         final String Ansprechpartner = getIntent().getStringExtra("value_ansprechpartner");
        final String ID = getIntent().getStringExtra("value_id");
 
-        final String user;
 
-        user = Start.user;
+
+
 
         TextView textViewRueckFirma = (TextView) findViewById(R.id.textViewRueckFirma);
         textViewRueckFirma.setText(Firma);
@@ -63,6 +65,8 @@ public class Eskalation extends Activity {
                 String editAnsprech = editTextAnsprechpartner.getText().toString();
                 TextView editTextInfo =  (TextView) findViewById(R.id.Info_Content);
                 String editInfo = editTextInfo.getText().toString();
+                    SessionManager session =new SessionManager(Jobcontrol.getAppCtx());
+                    String user=session.getUser();
 
                     try {
                         new JSONSaveEsk(ID,editAnsprech,editInfo, user).execute().get(30000, TimeUnit.MILLISECONDS);

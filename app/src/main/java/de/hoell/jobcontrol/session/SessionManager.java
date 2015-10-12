@@ -31,6 +31,9 @@ public class SessionManager {
         private static final String IS_USER_LOGIN = "IsUserLoggedIn";
 
         // All Shared Preferences Keys
+        private static final String IS_TECH_NUM = "IsTechNumSaved";
+
+        // All Shared Preferences Keys
         private static final String IS_USER_GEBIET = "IsUserGebiet";
 
         // All Shared Preferences Keys
@@ -44,6 +47,9 @@ public class SessionManager {
 
         // Email address (make variable public to access from outside)
         public static final String KEY_PWD = "pwd";
+
+        // Email address (make variable public to access from outside)
+        private static final String KEY_TECH_NUM = "technum";
 
         // Email address (make variable public to access from outside)
         private static final String KEY_GEBIET = "gebiet";
@@ -67,18 +73,31 @@ public class SessionManager {
 
 
     //Create login session
-        public void saveSession(String user){
-            // Storing login value as TRUE
-            editor.putBoolean(IS_USER_LOGIN, true);
+    public void saveSession(String user){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_USER_LOGIN, true);
 
-            // Storing user in pref
-            editor.putString(KEY_USER, user);
+        // Storing user in pref
+        editor.putString(KEY_USER, user);
 
 
-            // commit changes
-            editor.commit();
-            System.out.println("Daten gespeichert:"+user);
-        }
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+user);
+    }
+    //Create login session
+    public void saveTechNum(int TechNum){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_TECH_NUM, true);
+
+        // Storing user in pref
+        editor.putInt(KEY_TECH_NUM, TechNum);
+
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+TechNum);
+    }
 
        public void saveGebiet(String gebiet) {
         // Storing login value as TRUE
@@ -147,6 +166,15 @@ public class SessionManager {
         // return user
         return user;
     }
+    public Integer getTechNum(){
+
+        // Get user name
+
+        int Nummer = pref.getInt(KEY_TECH_NUM, 0);
+
+        // return user
+        return Nummer;
+    }
     public String getGebiet(){
 
         // Get user name
@@ -155,6 +183,7 @@ public class SessionManager {
         // return user
         return gebiet;
     }
+
     public Integer getZeit(){
 
         // Get user name
@@ -188,6 +217,10 @@ public class SessionManager {
         // Check for login
         public boolean isUserLoggedIn(){
             return pref.getBoolean(IS_USER_LOGIN, false);
+        }
+        // Check for login
+        public boolean isTechNumsaved(){
+            return pref.getBoolean(IS_TECH_NUM, false);
         }
 
         // Check for offlinedata

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Seriennummer Suche"
+        android:text="Seriennummer? "
         android:id="@+id/textView9"
         android:layout_gravity="center_horizontal"
         />
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:id="@+id/editText_Suchen"
+        android:id="@+id/Serienummer_Eingabe"
         android:layout_gravity="center_horizontal"
         android:inputType="textCapCharacters" />
 
@@ -28,8 +28,8 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Suchen"
-        android:id="@+id/button_suchen"
+        android:text="Abgleichen"
+        android:id="@+id/button_abgleich"
         android:layout_gravity="center_horizontal" />
 
     <Button
@@ -37,16 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="QR-Scan"
-        android:id="@+id/button_scan"
+        android:id="@+id/button_abgleich_scan"
         android:layout_gravity="center_horizontal" />
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PDF-Fill"
-        android:id="@+id/button_pdf"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone" />
+
 
 
 </LinearLayout>

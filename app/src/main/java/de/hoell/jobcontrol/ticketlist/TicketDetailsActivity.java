@@ -2,6 +2,7 @@ package de.hoell.jobcontrol.ticketlist;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,11 +30,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -43,7 +47,9 @@ import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.schein.Arbeitsschein;
 import de.hoell.jobcontrol.session.SessionManager;
+import de.hoell.jobcontrol.schein.srnabgleich;
 import de.hoell.jobcontrol.widget.WidgetProvider;
 
 
@@ -181,7 +187,7 @@ private static final String TAG_SUCCESS = "success";
             @Override
             public void onClick(View view) {
 
-                getImgs(ID,0);
+                getImgs(ID,0,TicketDetailsActivity.this);
             }
         });
 
@@ -444,6 +450,15 @@ private static final String TAG_SUCCESS = "success";
     */
         }
 
+        if (id == R.id.action_arbeitsschein) {
+            TextView textViewSerienummer =  (TextView) findViewById(R.id.textViewContentSerienummer);
+            String Serienummer = textViewSerienummer.getText().toString();
+            Intent i = new Intent(getApplicationContext(), Arbeitsschein.class);
+            i.putExtra("value_seriennummer", Serienummer);
+            startActivity(i);
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -649,7 +664,7 @@ private static final String TAG_SUCCESS = "success";
            }
        }
 
-    public void getImgs(String TicketID, int current_img) {
+    public void getImgs(String TicketID, int current_img, final Context context) {
         //Log.e("get bis getImgs","1");
         int length = 1;
         Bitmap bmp=null;
@@ -714,6 +729,9 @@ private static final String TAG_SUCCESS = "success";
         }
       //  Log.e("get bis vor showIMG","7");
         TouchImageView img = showImage(bmp);
+        TextView BildAnz = (TextView) findViewById(R.id.textViewSeitenAnz);
+        BildAnz.setVisibility(View.VISIBLE);
+        BildAnz.setText((current_img+1) + "/"+ length);
         //Log.e("get bis nach showIMG","8");
 
 
@@ -740,7 +758,7 @@ private static final String TAG_SUCCESS = "success";
 
 
                     if (next){
-                       getImgs(finalTicketID,next_img);
+                       getImgs(finalTicketID,next_img,context);
                     }else {
                         Toast.makeText(getApplicationContext(), "Kein Weiteres Bild verfügbar", Toast.LENGTH_SHORT).show();
 
@@ -755,7 +773,7 @@ private static final String TAG_SUCCESS = "success";
 
 
                 if (prev){
-                    getImgs(finalTicketID,prev_img);
+                    getImgs(finalTicketID,prev_img,context);
                 }else {
                     Toast.makeText(getApplicationContext(), "Kein Weiteres Bild verfügbar", Toast.LENGTH_SHORT).show();
 
@@ -802,6 +820,8 @@ private static final String TAG_SUCCESS = "success";
 
         TouchImageView img = (TouchImageView) findViewById(R.id.img);
         img.setVisibility(View.GONE);
+        TextView BildAnz = (TextView) findViewById(R.id.textViewSeitenAnz);
+        BildAnz.setVisibility(View.GONE);
 
     }
 
@@ -821,8 +841,8 @@ private static final String TAG_SUCCESS = "success";
                 //TODO: Pfad ändern
                 in = new URL("http://5.158.136.15/job/android/bild.php?id="+mID).openStream();
 
-            mbmp = BitmapFactory.decodeStream(in);
-            in.close();
+                mbmp = BitmapFactory.decodeStream(in);
+                in.close();
                 /**SAVE IMG AS PNG**/
                 FileOutputStream out = null;
                 File dir= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -847,13 +867,16 @@ private static final String TAG_SUCCESS = "success";
                         e.printStackTrace();
                     }
                 }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             return mbmp;
         }
     }
+
+
+
 
 
 

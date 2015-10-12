@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/eskalation_caps"
-                android:id="@+id/Rueckmeldung"
+                android:id="@+id/Eskalation"
                 android:layout_gravity="center_horizontal" />
 
             <TableLayout

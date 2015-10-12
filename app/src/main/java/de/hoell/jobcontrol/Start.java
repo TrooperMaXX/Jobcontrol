@@ -44,8 +44,6 @@ public class Start extends Activity {
     EditText InputPass;
     CheckBox InputCheck;
     ImageView IMG_View;
-    public static String user;
-    private  String password,gebiet;
     SessionManager session;
     public String versionName;
 
@@ -92,6 +90,7 @@ public class Start extends Activity {
         btnLogin = (Button) findViewById(R.id.button);
         InputCheck = (CheckBox) findViewById(R.id.checkBox);
 
+
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -100,7 +99,9 @@ public class Start extends Activity {
 
 
                 try {
-                    new JSONLogin().execute().get(30000, TimeUnit.MILLISECONDS);
+                   String user = InputName.getText().toString();
+                    String password = InputPass.getText().toString();
+                    new JSONLogin(user,password).execute().get(30000, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     e.printStackTrace();
                 }
@@ -111,8 +112,8 @@ public class Start extends Activity {
 
 
 
-        if (session.isUserLoggedIn()){
-            user = session.getUser();
+        if (session.isUserLoggedIn()&&session.isTechNumsaved()){
+
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Jobcontrol.getAppCtx());
             if(prefs.getBoolean("offline_checkbox", false)){
@@ -141,6 +142,11 @@ public class Start extends Activity {
 
     private class JSONLogin extends AsyncTask<String, String, JSONObject> {
         private ProgressDialog pDialog;
+        private String mUser,mPassword;
+        JSONLogin(String user,String passwort){
+            mUser=user;
+            mPassword=passwort;
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -154,11 +160,10 @@ public class Start extends Activity {
         @Override
         protected JSONObject doInBackground(String... args) {
 
-            user = InputName.getText().toString();
-            password = InputPass.getText().toString();
+
 
             Functions Function = new Functions();
-            JSONObject json = Function.loginUser(user, password);
+            JSONObject json = Function.loginUser(mUser, mPassword);
 
             // check for login response
             // check log cat fro response
@@ -181,20 +186,22 @@ public class Start extends Activity {
                         System.out.println("Checkbox is gesetz daten werden gespeichert ");
 
 
-                        session.saveSession(user);
+                        session.saveSession(mUser);
 
 
                     }
                     else{
                         System.out.println("Checkbox is leer daten werden NICHT gespeichert");
                     }
-                    JSONObject gebiet_json = new JSONGebiet(user).execute().get(30000, TimeUnit.MILLISECONDS);
+                    JSONObject gebiet_json = new JSONGebiet(mUser).execute().get(30000, TimeUnit.MILLISECONDS);
                     int g_success = gebiet_json.getInt(TAG_SUCCESS);
                     if (g_success == 1) {
                         JSONObject c = gebiet_json.getJSONObject("gebiet");
-                        gebiet= c.getString("Gebiet");
-                        System.out.print("Gebiet von " +user +" :"+ gebiet);
+                       String gebiet= c.getString("Gebiet");
+                        int technum = c.getInt("Technr");
+                        System.out.print("Gebiet von " +mUser +" :"+ gebiet);
                         session.saveGebiet(gebiet);
+                        session.saveTechNum(technum);
 
                     }
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -224,7 +231,7 @@ public class Start extends Activity {
         @Override
         protected JSONObject doInBackground(Integer... params) {
             Functions Function = new Functions();
-            JSONObject json_gebiet = Function.Gebiet(user);
+            JSONObject json_gebiet = Function.Gebiet(mUser);
 
             return json_gebiet;
         }

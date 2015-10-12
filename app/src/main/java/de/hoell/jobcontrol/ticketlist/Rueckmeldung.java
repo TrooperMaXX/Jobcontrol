@@ -19,10 +19,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.Start;
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.session.SessionManager;
 
 public class Rueckmeldung extends Activity {
     private static final String TAG_SUCCESS = "success";
@@ -41,9 +43,8 @@ public class Rueckmeldung extends Activity {
         final String Ansprechpartner = getIntent().getStringExtra("value_ansprechpartner");
        final String ID = getIntent().getStringExtra("value_id");
 
-        final String user;
-
-        user = de.hoell.jobcontrol.Start.user;
+        SessionManager session =new SessionManager(Jobcontrol.getAppCtx());
+        final String user=session.getUser();
 
         TextView textViewRueckFirma = (TextView) findViewById(R.id.textViewRueckFirma);
         textViewRueckFirma.setText(Firma);

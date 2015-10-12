@@ -11,5 +11,7 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="fab" parent="@style/Theme.AppCompat.Light" />
+
 
 </resources>

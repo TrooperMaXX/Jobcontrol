@@ -8,17 +8,24 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.vision.CameraSource;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import java.io.File;
 
 import de.hoell.jobcontrol.ticketlist.Historie_Activity;
 
@@ -35,6 +42,7 @@ public class SrnSuche extends Fragment {
 
         Button Button_such = (Button) rootView.findViewById(R.id.button_suchen);
         Button Button_scan = (Button) rootView.findViewById(R.id.button_scan);
+       // Button Button_pdf = (Button) rootView.findViewById(R.id.button_pdf);
         context = rootView.getContext();
 
         Button_such.setOnClickListener(new View.OnClickListener() {
@@ -58,20 +66,55 @@ public class SrnSuche extends Fragment {
 
               /*  IntentIntegrator scanIntegrator = new IntentIntegrator(SrnSuche.this);
                 scanIntegrator.initiateScan();
-                */
+
 
                 Intent qrDroid = new Intent( "la.droid.qr.scan" );
-                qrDroid.putExtra( "la.droid.qr.complete" , true);
+                qrDroid.putExtra("la.droid.qr.complete", true);
                 try {
                 startActivityForResult(qrDroid, 0);
                     //ja=true;
                 } catch (ActivityNotFoundException activity) {
                   //  ja=false;
                     qrDroidRequired(getActivity());
-                }
+                }*/
+
+                BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).build();
+                CameraSource mCameraSource = new CameraSource.Builder(context,barcodeDetector)
+                        .setFacing(CameraSource.CAMERA_FACING_BACK)
+                        .setRequestedFps(15.0f)
+                        .build();
+
+
+
             }
         });
 
+       /** Button_pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                Intent intent = new Intent("biz.binarysolutions.fasp.FILL_AND_SIGN");
+                Uri data = Uri.fromFile(new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/eSchein.pdf"))));
+                intent.setData(data);
+
+                intent.setComponent(
+                        new ComponentName(
+                                "biz.binarysolutions.fasp",
+                                "biz.binarysolutions.fasp.Fill"
+                        )
+                );
+
+
+                startActivity(intent);
+
+
+
+       }
+
+        });
+    **/
         return rootView;
     }
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -94,24 +137,24 @@ public class SrnSuche extends Fragment {
             toast.show();
         }*/
 
-if (intent!= null){
-        String result = intent.getExtras().getString("la.droid.qr.result");
-        if (result != null) {
+        if (intent!= null){
+            String result = intent.getExtras().getString("la.droid.qr.result");
+            if (result != null) {
 
-            Toast toast = Toast.makeText(context,
-                    "SCAN THERE "+result, Toast.LENGTH_SHORT);
-            Intent i = new Intent(context, Historie_Activity.class);
-            i.putExtra("value_seriennummer", result);
-            startActivity(i);
-            toast.show();
+                Toast toast = Toast.makeText(context,
+                        "SCAN THERE "+result, Toast.LENGTH_SHORT);
+                Intent i = new Intent(context, Historie_Activity.class);
+                i.putExtra("value_seriennummer", result);
+                startActivity(i);
+                toast.show();
 
 
-        }else{
-            Toast toast = Toast.makeText(context,
-                    "No scan data received!", Toast.LENGTH_SHORT);
-            toast.show();
+            }else{
+                Toast toast = Toast.makeText(context,
+                        "No scan data received!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
-}
     }
 
 
@@ -132,4 +175,5 @@ if (intent!= null){
                 });
         builder.create().show();
     }
+
 }

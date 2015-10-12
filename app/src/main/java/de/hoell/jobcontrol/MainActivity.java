@@ -1,11 +1,9 @@
         package de.hoell.jobcontrol;
 
         import android.app.Activity;
-        import android.app.AlertDialog;
         import android.app.Fragment;
         import android.app.FragmentManager;
         import android.content.Context;
-        import android.content.DialogInterface;
         import android.content.Intent;
         import android.content.pm.PackageInfo;
         import android.content.res.Configuration;
@@ -24,7 +22,6 @@
         import android.widget.ImageView;
         import android.widget.LinearLayout;
         import android.widget.ListView;
-        import android.widget.NumberPicker;
         import android.widget.Switch;
         import android.widget.TextView;
         import android.widget.Toast;

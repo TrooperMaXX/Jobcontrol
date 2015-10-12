@@ -126,6 +126,7 @@
     <string name="empty_string">isLEER</string>
     <string name="button_nextimg">Next</string>
     <string name="widget_name">Jobcontrol ALPHA</string>
+    <string name="title_activity_arbeitsschein">Arbeitsschein</string>
 
 
 </resources>

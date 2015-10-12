@@ -103,7 +103,7 @@ public class TicketFragment extends ListFragment {
                                 String Farbe="#ffffffff";
 
                                 int imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
-
+                                int TicketID = c.getInt("ID");
 
                                 String Firma = c.getString("Firma");
                                 int Statusnum = c.getInt("Status");
@@ -206,54 +206,88 @@ public class TicketFragment extends ListFragment {
                                 SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
 
                                 boolean isheute=false;
-                                if (!Termintag.equals("null")){
 
 
-                                switch (Termintyp){
 
-                                    case 0:
+                                //TODO: Fehler einbauen!!!!!!!!
+                                switch (Termintyp ){
 
+                                    case 99://beliebig
+
+
+                                        finalTermin="";
+
+
+
+                                        break;
+                                    case 0://monat
+
+                                        if(!Termintag.equals("null")) {
+                                            Terminsdf = sdf.parse(Termintag);
+                                            formated_termintag = edf.format(Terminsdf);
+                                            finalTermin = "Termin: " + formated_termintag;
+
+
+                                            isheute = Function.isTerminheute(Terminsdf);
+                                        } else {
+                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Die TEL hat einen Fehler Gemacht!!! " +
+                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                        }
+                                        break;
+                                    case 1: //ab /bis
+                                        if(!Termintag.equals("null")&&Terminende.equals("null")){//ab
+                                            Terminsdf = sdf.parse(Termintag);
+                                            formated_termintag = edf.format(Terminsdf);
+                                            finalTermin="Ab "+formated_termintag;
+                                            isheute =Function.isTerminheute(Terminsdf);
+                                        }else if(!Terminende.equals("null")&&Termintag.equals("null")){//bis
+
+                                        Terminsdfend = sdf.parse(Terminende);
+                                        formated_terminende = edf.format(Terminsdfend);
+                                        finalTermin="Bis "+ formated_terminende;
+
+
+                                        isheute =Function.isTerminheute(Terminsdf);
+                                    } else {
+                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Die TEL hat einen Fehler Gemacht!!! " +
+                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                        }
+                                        break;
+                                    case 2:// von /bis
+                                        if(!Terminende.equals("null")&&!Termintag.equals("null")){
+                                            Terminsdf = sdf.parse(Termintag);
+                                            formated_termintag = edf.format(Terminsdf);
+                                            Terminsdfend = sdf.parse(Terminende);
+                                            formated_terminende = edf.format(Terminsdfend);
+                                            finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                            isheute =Function.isTerminheute(Terminsdf);
+                                        }
+                                        else {
+                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Die TEL hat einen Fehler Gemacht!!! " +
+                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                        }
+                                        break;
+                                    case 3://Termin
+                                        if(!Termintag.equals("null")) {
                                         Terminsdf = sdf.parse(Termintag);
                                         formated_termintag = edf.format(Terminsdf);
                                         finalTermin="Termin: "+formated_termintag;
 
 
-                                        isheute =Function.isTerminheute(Terminsdf);
-                                        break;
-                                    case 1:
+                                        isheute =Function.isTerminheute(Terminsdf);} else {
+                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Die TEL hat einen Fehler Gemacht!!! " +
+                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
 
-                                        Terminsdf = sdf.parse(Termintag);
-                                        formated_termintag = edf.format(Terminsdf);
-                                        Terminsdfend = sdf.parse(Terminende);
-                                        formated_terminende = edf.format(Terminsdfend);
-                                        finalTermin="Ab "+formated_termintag+" bis "+ formated_terminende;
-
-
-                                        isheute =Function.isTerminheute(Terminsdf);
-                                        break;
-                                    case 2:
-                                        Terminsdf = sdf.parse(Termintag);
-                                        formated_termintag = edf.format(Terminsdf);
-                                        Terminsdfend = sdf.parse(Terminende);
-                                        formated_terminende = edf.format(Terminsdfend);
-                                        finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
-
-
-                                        isheute =Function.isTerminheute(Terminsdf);
-                                        break;
-                                    case 3:
-
-                                        Terminsdf = sdf.parse(Termintag);
-                                        formated_termintag = edf.format(Terminsdf);
-                                        finalTermin="Termin: "+formated_termintag;
-
-
-                                        isheute =Function.isTerminheute(Terminsdf);
+                                        }
                                         break;
                                 }
 
 
-                                }
 
 
 

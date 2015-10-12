@@ -18,9 +18,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.query.Functions;
+import de.hoell.jobcontrol.session.SessionManager;
 
 public class NewInfo extends Activity {
     private static final String TAG_SUCCESS = "success";
@@ -31,9 +33,10 @@ public class NewInfo extends Activity {
         setContentView(R.layout.activity_new_info);
         Button Button_InfoSave = (Button) findViewById(R.id.button_info_save);
         final String ID = getIntent().getStringExtra("value_id");
-        final String user;
+        SessionManager session =new SessionManager(Jobcontrol.getAppCtx());
+        final String user=session.getUser();
 
-        user = de.hoell.jobcontrol.Start.user;
+
 
 
         Button_InfoSave.setOnClickListener(new View.OnClickListener() {

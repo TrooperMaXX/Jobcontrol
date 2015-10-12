@@ -24,6 +24,10 @@ TODO:  VersionCode: immer +1 bei neuer Version
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
         <activity
             android:name=".Start"
             android:label="@string/app_name" >
@@ -81,18 +85,29 @@ TODO:  VersionCode: immer +1 bei neuer Version
                 android:value="de.hoell.jobcontrol.MainActivity" />
         </activity>
 
-        <receiver android:icon="@drawable/appwidget_preview"
-            android:label="@string/widget_name"
-            android:name=".widget.WidgetProvider">
+        <receiver
+            android:name=".widget.WidgetProvider"
+            android:icon="@drawable/appwidget_preview"
+            android:label="@string/widget_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        <service android:name=".widget.WidgetService"
+
+        <service
+            android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name=".schein.Arbeitsschein"
+            android:label="@string/title_activity_arbeitsschein" >
+        </activity>
+
+
     </application>
 
 </manifest>

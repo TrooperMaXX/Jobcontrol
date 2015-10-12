@@ -3,5 +3,6 @@
     tools:context="de.hoell.jobcontrol.ticketlist.TicketDetailsActivity">
 
     <item android:id="@+id/action_verschieben" android:title="Ticket verschieben"/>
+    <item android:id="@+id/action_arbeitsschein" android:title="Arbeitsschein erstellen"/>
 
 </menu>

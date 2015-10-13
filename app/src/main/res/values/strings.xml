@@ -40,7 +40,7 @@
 
     <!-- Nav Drawer List Item Icons -->
     <!-- Keep them in order as the titles are in -->
-    <!-- TODO: die richtigen icons hinzufügen -->
+
     <array name="nav_drawer_icons">
         <item>@drawable/ic_action_info</item>
         <item>@drawable/ic_action_settings</item>

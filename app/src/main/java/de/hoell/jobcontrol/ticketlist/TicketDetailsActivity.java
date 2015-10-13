@@ -56,7 +56,9 @@ import de.hoell.jobcontrol.widget.WidgetProvider;
 public class TicketDetailsActivity extends Activity {
 
  String user,gebiet;
+    public boolean fertig=false;
     public static  int Statusnum;
+    public TouchImageView img;
 static String ID;
 private static final String TAG_SUCCESS = "success";
 
@@ -80,7 +82,7 @@ private static final String TAG_SUCCESS = "success";
         Button Button_info = (Button) findViewById(R.id.button_info);
         Button Button_eskalation = (Button) findViewById(R.id.button_eskalation);
         Button Button_img = (Button) findViewById(R.id.button_img);
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+        img = (TouchImageView) findViewById(R.id.img);
 
         int DropPos = getIntent().getIntExtra("value_droppos", 0);
         final String Firma = getIntent().getStringExtra("value_firma");
@@ -706,6 +708,7 @@ private static final String TAG_SUCCESS = "success";
 
         if(file.exists()){
             bmp=BitmapFactory.decodeFile(filePath);
+            img = showImage(bmp);
             Log.e("yay","Datei vom speicher gelesen");
         }
         else{
@@ -716,19 +719,23 @@ private static final String TAG_SUCCESS = "success";
 
                        // Log.e("get bis vor ASYNC", "5");
                         System.out.println("AsyncIMG(Files.getString(" + String.valueOf(current_img) + ")," + TicketID + "," + String.valueOf(current_img) + ")");
-                        bmp = new AsyncIMG(Files.get(current_img).toString(), TicketID, String.valueOf(current_img)).execute().get();
+                        Log.e("Async:", "gestartet");
+                      new AsyncIMG(Files.get(current_img).toString(), TicketID, String.valueOf(current_img),context).execute();
+
+
+
                        // Log.e("get bis nach ASYNC", "6");
                     }
 
 
-            } catch (InterruptedException | ExecutionException | JSONException e) {
+            } catch (JSONException e) {
 
                 e.printStackTrace();
             }
 
         }
       //  Log.e("get bis vor showIMG","7");
-        TouchImageView img = showImage(bmp);
+
         TextView BildAnz = (TextView) findViewById(R.id.textViewSeitenAnz);
         BildAnz.setVisibility(View.VISIBLE);
         BildAnz.setText((current_img+1) + "/"+ length);
@@ -764,7 +771,7 @@ private static final String TAG_SUCCESS = "success";
 
                     }
 
-                //Toast.makeText(getApplicationContext(), "onSwipeLeft", Toast.LENGTH_SHORT).show();
+                //     Toast.makeText(getApplicationContext(), "onSwipeLeft", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -789,7 +796,7 @@ private static final String TAG_SUCCESS = "success";
 
     public TouchImageView showImage(Bitmap bmp) {
 
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+         img = (TouchImageView) findViewById(R.id.img);
 
         img.setVisibility(View.VISIBLE);
 
@@ -818,7 +825,7 @@ private static final String TAG_SUCCESS = "success";
 
     public void deshowImage() {
 
-        TouchImageView img = (TouchImageView) findViewById(R.id.img);
+         img = (TouchImageView) findViewById(R.id.img);
         img.setVisibility(View.GONE);
         TextView BildAnz = (TextView) findViewById(R.id.textViewSeitenAnz);
         BildAnz.setVisibility(View.GONE);
@@ -828,17 +835,40 @@ private static final String TAG_SUCCESS = "success";
     private class AsyncIMG extends AsyncTask<Integer, Integer, Bitmap> {
         private String mID,mTicketID, mName;
         private  Bitmap mbmp;
-        public AsyncIMG(String ID,String TicketID,String Name) {
+        private Context mContext;
+        private ProgressDialog pDialog;
+
+
+        public AsyncIMG(String ID,String TicketID,String Name,Context context) {
             mID=ID;
             mTicketID= TicketID;
             mName= Name;
+            mContext= context;
+            fertig=false;
+
+        }
+
+        /**
+         * Before starting background thread Show Progress Bar Dialog
+         * */
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(mContext);
+            pDialog.setMessage("Downloading file. Please wait...");
+            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDialog.setIndeterminate(true);
+            pDialog.show();
         }
 
         @Override
         protected Bitmap doInBackground(Integer... params) {
             InputStream in = null;
             try {
-                //TODO: Pfad ändern
+
                 in = new URL("http://5.158.136.15/job/android/bild.php?id="+mID).openStream();
 
                 mbmp = BitmapFactory.decodeStream(in);
@@ -851,27 +881,24 @@ private static final String TAG_SUCCESS = "success";
                 PATHdir.mkdirs();
                 Log.e("PATH",PATH);
 
-                try {
+
                     out = new FileOutputStream(dir+"/Jobcontrol/"+mTicketID+"/"+mName+".png");
                     mbmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
                     // PNG is a lossless format, the compression factor (100) is ignored
-                } catch (Exception e) {
-                    e.printStackTrace();
 
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             return mbmp;
+        }
+        @Override
+        protected void onPostExecute(Bitmap bmp) {
+            // dismiss the dialog after the file was downloaded
+            img = showImage(bmp);
+            pDialog.dismiss();
+
+
         }
     }
 

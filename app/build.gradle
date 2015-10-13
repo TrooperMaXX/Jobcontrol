@@ -28,12 +28,6 @@ android {
         }
     }
     productFlavors {
-        flavor_bluestack {
-            minSdkVersion 18
-            applicationId 'de.hoell.jobcontrol'
-            signingConfig signingConfigs.config
-            targetSdkVersion 18
-        }
     }
 }
 

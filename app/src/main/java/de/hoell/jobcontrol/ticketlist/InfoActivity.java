@@ -197,7 +197,7 @@ public class InfoActivity extends ListActivity {
             } catch (JSONException |  ParseException e) {
                 e.printStackTrace();
             }
-            //TODO:
+
             Log.e("Infolist", infolist.toString());
             setListAdapter(new SpecialAdapter(InfoActivity.this, infolist, R.layout.row_info,
                     new String[] {"Datum","Benutzer","Ansprech","KonArt", "L_Benutzer", "L_Datum", "Info" },

@@ -14,7 +14,7 @@
     </FrameLayout>
 
     <!-- Listview to display slider menu -->
-    <!--TODO: Farbe ändern list_background_-->
+
     <LinearLayout
         android:id="@+id/layout_slidermenu"
         android:orientation="vertical"

@@ -209,7 +209,7 @@ public class TicketFragment extends ListFragment {
 
 
 
-                                //TODO: Fehler einbauen!!!!!!!!
+
                                 switch (Termintyp ){
 
                                     case 99://beliebig
@@ -388,7 +388,7 @@ public class TicketFragment extends ListFragment {
                 }
             }
 //
-          /*/  TODO: autoupdater*/
+
           ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
             //SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
             //int zeit=session.getZeit();

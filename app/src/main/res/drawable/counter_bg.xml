@@ -3,7 +3,7 @@
     android:shape="rectangle" >
 
     <!-- view background color
-    TODO: Farbe ändern @color/counter_text_bg-->
+   -->
     <solid android:color="@color/counter_text_bg" >
     </solid>
 

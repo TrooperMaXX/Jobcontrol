@@ -81,7 +81,7 @@ public class LoremViewsFactory implements RemoteViewsService.RemoteViewsFactory 
 
 
 
-            //TODO: alle felder setzen :)
+
             row.setTextViewText(R.id.FIRMA_CELL,TicketFirma[position]);
             row.setTextViewText(R.id.STATUS_CELL,TicketStatus[position]);
             row.setTextViewText(R.id.ADRESSE_CELL, TicketAdresse[position]);

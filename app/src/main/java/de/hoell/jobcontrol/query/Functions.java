@@ -1,31 +1,18 @@
 package de.hoell.jobcontrol.query;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import de.hoell.jobcontrol.MainActivity;
 
 /**
  * Created by Hoell on 12.11.2014.
@@ -37,7 +24,7 @@ import de.hoell.jobcontrol.MainActivity;
         private JSONParser jsonParser;
 
 
-        private static String URL = "http://5.158.136.15/job/android/test/index.php";
+        private static String URL = "http://5.158.136.15/job/android/index.php";
 
 
         private static String login_tag = "login";

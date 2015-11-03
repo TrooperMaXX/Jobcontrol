@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.preference.PreferenceManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,11 +41,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
-
 import de.hoell.jobcontrol.ticketlist.TicketDetailsActivity;
 import de.hoell.jobcontrol.ticketlist.Tickets;
 import de.hoell.jobcontrol.widget.WidgetProvider;
@@ -248,7 +246,7 @@ public class TicketFragment extends ListFragment {
                                         finalTermin="Bis "+ formated_terminende;
 
 
-                                        isheute =Function.isTerminheute(Terminsdf);
+                                        isheute =Function.isTerminheute(Terminsdfend);
                                     } else {
                                             Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Die TEL hat einen Fehler Gemacht!!! " +
                                                     "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();

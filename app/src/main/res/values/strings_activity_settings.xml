@@ -7,7 +7,7 @@
     <string name="pref_header_1">Allgemein</string>
 
     <string name="pref_title_offline_starten">App Offline starten</string>
-    <string name="pref_description_offline_starten">App ruf beim starten keine Neunen Tickets ab
+    <string name="pref_description_offline_starten">App ruft beim starten keine neuen Tickets ab
         (Schnellerer Start bei schlechter Verbindung)
     </string>
 

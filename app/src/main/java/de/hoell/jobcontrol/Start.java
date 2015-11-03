@@ -5,13 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.support.v7.internal.widget.TintImageView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,16 +23,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 
 
 public class Start extends Activity {
@@ -197,8 +191,8 @@ public class Start extends Activity {
                     int g_success = gebiet_json.getInt(TAG_SUCCESS);
                     if (g_success == 1) {
                         JSONObject c = gebiet_json.getJSONObject("gebiet");
-                       String gebiet= c.getString("Gebiet");
-                        int technum = c.getInt("Technr");
+                       String gebiet= c.getString("tech_gebiet");
+                        int technum = c.getInt("tech_nr");
                         System.out.print("Gebiet von " +mUser +" :"+ gebiet);
                         session.saveGebiet(gebiet);
                         session.saveTechNum(technum);

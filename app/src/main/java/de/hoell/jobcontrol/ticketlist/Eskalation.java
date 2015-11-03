@@ -21,7 +21,6 @@ import java.util.concurrent.TimeoutException;
 import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
-import de.hoell.jobcontrol.Start;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.session.SessionManager;
 
@@ -70,14 +69,10 @@ public class Eskalation extends Activity {
 
                     try {
                         new JSONSaveEsk(ID,editAnsprech,editInfo, user).execute().get(30000, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         e.printStackTrace();
                     }
-                    ;}  else {
+                    }  else {
                     Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();}
 
 

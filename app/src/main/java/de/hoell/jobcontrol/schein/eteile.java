@@ -1,42 +1,36 @@
 package de.hoell.jobcontrol.schein;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import de.hoell.jobcontrol.R;
-import de.hoell.jobcontrol.session.SessionManager;
+import de.hoell.jobcontrol.query.DBManager;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class eteile extends Fragment {
     private Context context;
+    EditText editTextTeileNr;
     public eteile() {
     }
 
@@ -64,10 +58,86 @@ public class eteile extends Fragment {
         numberPickerAw.setWrapSelectorWheel(false);
 
 
-        EditText editTextTechnikernr =  (EditText) rootView.findViewById(R.id.editTextTeileNr);
-        SessionManager session = new SessionManager(context);
-        String url = "http://5.158.136.15/job/android/test/file.csv";
-        new DownloadFileFromURL(context,url).execute();
+        editTextTeileNr =  (EditText) rootView.findViewById(R.id.editTextTeileNr);
+        EditText editTextBezeichnung =  (EditText) rootView.findViewById(R.id.editTextBezeichnung);
+
+        editTextTeileNr.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+
+
+            @Override
+            public void afterTextChanged(Editable edit) {
+                if (edit.length() >= 3) {
+
+                    // Business logic for search here
+                    DBManager dbManager= new DBManager(context);
+                    SQLiteDatabase db=dbManager.getReadableDatabase();
+                    Cursor result = db.rawQuery("SELECT "+DBManager.COLUMN_BESCHREIBUNG+
+                                                " FROM "+
+                                                DBManager.TABLE_NAME+
+                                                " WHERE " + DBManager.COLUMN_EAN + " = '%" + edit.toString() + "%' ;", null);
+                    Log.e("querryyyyy:::","SELECT "+DBManager.COLUMN_BESCHREIBUNG+
+                            " FROM "+
+                            DBManager.TABLE_NAME+
+                            " WHERE " + DBManager.COLUMN_EAN + " = '%" + edit.toString() + "%'"+
+                            "LIMIT 5 ;" );
+                    int count = result.getCount();
+                    String values[] = new String[count+1];
+                    int i = 0;
+                    while(result.moveToNext())
+                    {
+                        values[i]= result.getString(result.getColumnIndex(DBManager.COLUMN_BESCHREIBUNG));
+                        i++;
+                    }
+                    System.out.println("mal sehn obs geht: "+values[0]);
+
+
+                }
+            }
+        });
+
+
+
+
+
+        Button Button_scan = (Button) rootView.findViewById(R.id.button_bscan);
+
+        Button_scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                IntentIntegrator scanIntegrator = new IntentIntegrator(eteile.this);
+                scanIntegrator.initiateScan();
+
+
+            }
+        });
+
+        //TODO: download und fill der db iorgend wo anders hin machen
+        /** String url = getResources().getString(R.string.url_artstamm);
+        String output = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/file.csv"));
+        File file = new File(output);
+
+        if(!file.exists()){
+            new DownloadFileFromURL(context,url,output).execute();
+        }else {
+         DBManager dbManager= new DBManager(context);
+                dbManager.onUpgrade(dbManager.getWritableDatabase(), 1, 2);
+             dbManager.execute(context,file);
+
+        }**/
+
+
 
         return rootView;
     }
@@ -87,112 +157,44 @@ public class eteile extends Fragment {
         String TechNr = String.valueOf(TechnikerNr.getText());
         String ARBEIT =String.valueOf(Arbeit.getText());
 
-        next.putString("AW"+Position,AW);
-        next.putString("WEG"+Position,WEG);
+        next.putString("AW" + Position, AW);
+        next.putString("WEG" + Position, WEG);
         next.putString("TechNr"+Position,TechNr);
         next.putString("Arbeit"+Position,ARBEIT);
-        next.putString("Datum"+Position, Date);
-        Log.e("NextBundle",""+next);
+        next.putString("Datum" + Position, Date);
+        Log.e("NextBundle", "" + next);
         return next;
     }
 
 
-    private class DownloadFileFromURL extends AsyncTask<String, String, String> {
-        private ProgressDialog pDialog;
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+//retrieve scan result
 
-        private Context mContext;
-        private String mUrl;
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        Log.e("scanningResult",""+scanningResult);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            if (scanContent != null){
 
-        public DownloadFileFromURL (Context context,String url){
-            mContext = context;
-            mUrl=url;
-        }
-        /**
-         * Before starting background thread Show Progress Bar Dialog
-         * */
+                editTextTeileNr.setText(scanContent);
+                Toast toast = Toast.makeText(context,
+                        "SCAN THERE "+scanContent, Toast.LENGTH_SHORT);
 
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(mContext);
-            pDialog.setMessage("Downloading file. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setMax(100);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        }
-
-        /**
-         * Downloading file in background thread
-         * */
-        @Override
-        protected String doInBackground(String... args) {
-            int count;
-            try {
-                URL url = new URL(mUrl);
-                URLConnection conection = url.openConnection();
-                conection.connect();
-
-                // this will be useful so that you can show a tipical 0-100%
-                // progress bar
-                int lenghtOfFile = conection.getContentLength();
-
-                // download the file
-                InputStream input = new BufferedInputStream(url.openStream(),
-                        8192);
-                File PATHdir =new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/" )));
-                PATHdir.mkdirs();
-                // Output stream
-                OutputStream output = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/Jobcontrol/file.csv"));
-
-                byte data[] = new byte[1024];
-
-                    long total = 0;
-
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        // publishing the progress....
-                        // After this onProgressUpdate will be called
-                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
-
-                        // writing data to file
-                        output.write(data, 0, count);
-                }
-
-                // flushing output
-                output.flush();
-
-                // closing streams
-                output.close();
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
+                toast.show();
             }
 
-            return null;
+        }else{
+            Toast toast = Toast.makeText(context,
+                    "No scan data received!", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
-        /**
-         * Updating progress bar
-         * */
-        protected void onProgressUpdate(String... progress) {
-            // setting progress percentage
-            pDialog.setProgress(Integer.parseInt(progress[0]));
-        }
-
-        /**
-         * After completing background task Dismiss the progress dialog
-         * **/
-        @Override
-        protected void onPostExecute(String file_url) {
-            // dismiss the dialog after the file was downloaded
-            pDialog.dismiss();
-
-        }
 
     }
+
+
+
+
+
 
 }

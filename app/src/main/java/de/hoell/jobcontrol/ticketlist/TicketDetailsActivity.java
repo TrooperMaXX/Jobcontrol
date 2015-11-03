@@ -23,21 +23,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.ortiz.touch.TouchImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,11 +41,9 @@ import java.util.concurrent.TimeoutException;
 import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
-
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.schein.Arbeitsschein;
 import de.hoell.jobcontrol.session.SessionManager;
-import de.hoell.jobcontrol.schein.srnabgleich;
 import de.hoell.jobcontrol.widget.WidgetProvider;
 
 
@@ -354,7 +348,7 @@ private static final String TAG_SUCCESS = "success";
                         JSONArray gebtech = gebietstech.getJSONArray("gebtech");
                         for (int i = 0; i < gebtech.length(); i++) {
                             JSONObject c = gebtech.getJSONObject(i);
-                            String techniker= c.getString("kuerzel");
+                            String techniker= c.getString("user_name");
                             arrayAdapter.add(techniker);
                         }
 

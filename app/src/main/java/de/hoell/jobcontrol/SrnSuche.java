@@ -4,17 +4,11 @@ package de.hoell.jobcontrol;
  * Created by Hoell on 16.10.2014.
  */
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-
-import java.io.File;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import de.hoell.jobcontrol.ticketlist.Historie_Activity;
 
@@ -64,10 +56,12 @@ public class SrnSuche extends Fragment {
             public void onClick(View view) {
 
 
-              /*  IntentIntegrator scanIntegrator = new IntentIntegrator(SrnSuche.this);
+                IntentIntegrator scanIntegrator = new IntentIntegrator(SrnSuche.this);
                 scanIntegrator.initiateScan();
 
 
+                /*
+                TO DO: QRDROID
                 Intent qrDroid = new Intent( "la.droid.qr.scan" );
                 qrDroid.putExtra("la.droid.qr.complete", true);
                 try {
@@ -77,12 +71,6 @@ public class SrnSuche extends Fragment {
                   //  ja=false;
                     qrDroidRequired(getActivity());
                 }*/
-
-                BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).build();
-                CameraSource mCameraSource = new CameraSource.Builder(context,barcodeDetector)
-                        .setFacing(CameraSource.CAMERA_FACING_BACK)
-                        .setRequestedFps(15.0f)
-                        .build();
 
 
 
@@ -119,24 +107,29 @@ public class SrnSuche extends Fragment {
     }
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 //retrieve scan result
-        /*
+
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        Log.e("scanningResult",""+scanningResult);
         if (scanningResult != null) {
             String scanContent = scanningResult.getContents();
+            if (scanContent != null){
+
+
             Toast toast = Toast.makeText(context,
                 "SCAN THERE "+scanContent, Toast.LENGTH_SHORT);
             Intent i = new Intent(context, Historie_Activity.class);
             i.putExtra("value_seriennummer", scanContent);
             startActivity(i);
             toast.show();
-
+        }
 
         }else{
             Toast toast = Toast.makeText(context,
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
-        }*/
+        }
 
+        /*TO DO: QRDROID
         if (intent!= null){
             String result = intent.getExtras().getString("la.droid.qr.result");
             if (result != null) {
@@ -154,10 +147,11 @@ public class SrnSuche extends Fragment {
                         "No scan data received!", Toast.LENGTH_SHORT);
                 toast.show();
             }
-        }
+        }*/
     }
 
 
+    /* TO DO: QRDROID
     public static void qrDroidRequired( final Activity activity ) {
         //Apparently, QR Droid is not installed, or it's previous to version 3.5
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -174,6 +168,6 @@ public class SrnSuche extends Fragment {
                     }
                 });
         builder.create().show();
-    }
+    }*/
 
 }

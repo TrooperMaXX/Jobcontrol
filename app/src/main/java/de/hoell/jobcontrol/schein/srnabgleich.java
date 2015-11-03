@@ -1,14 +1,9 @@
 package de.hoell.jobcontrol.schein;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.R;
@@ -93,11 +90,11 @@ public class srnabgleich extends Fragment {
             public void onClick(View view) {
 
 
-              /*  IntentIntegrator scanIntegrator = new IntentIntegrator(SrnSuche.this);
+                IntentIntegrator scanIntegrator = new IntentIntegrator(srnabgleich.this);
                 scanIntegrator.initiateScan();
-                */
 
-                Intent qrDroid = new Intent( "la.droid.qr.scan" );
+
+               /* Intent qrDroid = new Intent( "la.droid.qr.scan" );
                 qrDroid.putExtra("la.droid.qr.complete", true);
                 try {
                     startActivityForResult(qrDroid, 0);
@@ -105,7 +102,7 @@ public class srnabgleich extends Fragment {
                 } catch (ActivityNotFoundException activity) {
                     //  ja=false;
                     qrDroidRequired(getActivity());
-                }
+                }*/
             }
         });
 
@@ -116,32 +113,37 @@ public class srnabgleich extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
         if (intent!= null){
-            String result = intent.getExtras().getString("la.droid.qr.result");
-            if (result != null) {
 
+            IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            Log.e("scanningResult",""+scanningResult);
+            if (scanningResult != null) {
+                String scanContent = scanningResult.getContents();
+                String scanFormat = scanningResult.getFormatName();
+                if (scanContent != null && scanFormat.equals("QR_CODE")){
 
-                if (mSeriennummer.equals(result)){
-                    Toast toast = Toast.makeText(context,
-                            "Gerät stimmt überein"+result, Toast.LENGTH_SHORT);
-                    toast.show();
-                    arbeit nextFragment = new arbeit();
+                    if (mSeriennummer.equals(scanContent)) {
+                        Toast toast = Toast.makeText(context,
+                                "Gerät stimmt überein" + scanContent, Toast.LENGTH_SHORT);
+                        toast.show();
+                        arbeit nextFragment = new arbeit();
 
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction.replace(R.id.fragment_container, nextFragment);
-                    transaction.addToBackStack(null);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("Srn", mSeriennummer);
-                    bundle.putInt("Pos",0);
-                    nextFragment.setArguments(bundle);
-                    // Commit the transaction
-                    transaction.commit();
+                        // Replace whatever is in the fragment_container view with this fragment,
+                        // and add the transaction to the back stack so the user can navigate back
+                        transaction.replace(R.id.fragment_container, nextFragment);
+                        transaction.addToBackStack(null);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("Srn", mSeriennummer);
+                        bundle.putInt("Pos", 0);
+                        nextFragment.setArguments(bundle);
+                        // Commit the transaction
+                        transaction.commit();
+                    }
 
                 }else{
                    Toast toast = Toast.makeText(context,
-                            "Gerät stimmt nicht überein"+result, Toast.LENGTH_SHORT);
+                            "Gerät stimmt nicht überein"+scanContent, Toast.LENGTH_SHORT);
                     toast.show();
                 }
 
@@ -158,21 +160,5 @@ public class srnabgleich extends Fragment {
 
 
 
-    public static void qrDroidRequired( final Activity activity ) {
-        //Apparently, QR Droid is not installed, or it's previous to version 3.5
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage("QR Droid fehlt. Bitte im Market Downloaden")
-                .setCancelable(true)
-                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .setPositiveButton("Download from Market", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://market.android.com/details?id=la.droid.qr.priva")));
-                    }
-                });
-        builder.create().show();
-    }
+
 }

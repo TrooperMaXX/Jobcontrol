@@ -6,13 +6,14 @@
         import android.content.Context;
         import android.content.Intent;
         import android.content.pm.PackageInfo;
+        import android.content.pm.PackageManager.NameNotFoundException;
         import android.content.res.Configuration;
         import android.content.res.TypedArray;
         import android.net.Uri;
         import android.os.AsyncTask;
         import android.os.Bundle;
-        import android.support.v7.app.ActionBarDrawerToggle;
         import android.support.v4.widget.DrawerLayout;
+        import android.support.v7.app.ActionBarDrawerToggle;
         import android.util.Log;
         import android.view.Menu;
         import android.view.MenuInflater;
@@ -25,7 +26,6 @@
         import android.widget.Switch;
         import android.widget.TextView;
         import android.widget.Toast;
-        import android.content.pm.PackageManager.NameNotFoundException;
 
         import org.json.JSONArray;
         import org.json.JSONException;
@@ -37,10 +37,10 @@
         import java.util.concurrent.TimeUnit;
         import java.util.concurrent.TimeoutException;
 
-        import de.hoell.jobcontrol.preference.SettingsActivity;
         import de.hoell.jobcontrol.adapter.NavDrawerListAdapter;
         import de.hoell.jobcontrol.adapter.SpecialAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
+        import de.hoell.jobcontrol.preference.SettingsActivity;
         import de.hoell.jobcontrol.query.Functions;
         import de.hoell.jobcontrol.session.SessionManager;
 
@@ -161,7 +161,7 @@
                     // on first time display view for first nav item
                     if (!offline){
                         displayView(0);
-                        executeTech();
+                        //executeTech();
                     }else{
                         displayView(1);
                     }
@@ -372,8 +372,8 @@
 
                                     Technikerliste = json.getJSONArray("techniker");
                                     JSONObject Ich = json.getJSONObject("ich");
-                                    int Ich_verfuegbar = Ich.getInt("Verfuegbar");
-                                    String ICH = Ich.getString("user_name");
+                                    int Ich_verfuegbar = Ich.getInt("tech_verfuegbar");
+                                    String ICH = Ich.getString("full_name");
                                     mIch.setText(ICH);
                                     int ichimgid;
 
@@ -389,11 +389,11 @@
                                     for (int i = 0; i < Technikerliste.length(); i++) {
                                         JSONObject c = Technikerliste.getJSONObject(i);
 
-                                        String Techniker = c.getString("user_name");
-                                        int verfuegbar = c.getInt("Verfuegbar");
-                                        String Gebiet = c.getString("Gebiet");
-                                        String kuerzel = c.getString("kuerzel");
-                                        String Tel = c.getString("Telefon");
+                                        String Techniker = c.getString("full_name");
+                                        int verfuegbar = c.getInt("tech_verfuegbar");
+                                        String Gebiet = c.getString("tech_gebiet");
+                                        String kuerzel = c.getString("user_name");
+                                        String Tel = c.getString("telefon");
 
 
                                         int imgid;

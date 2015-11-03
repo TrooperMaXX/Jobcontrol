@@ -50,9 +50,7 @@ public class JSONParser {
             is = httpEntity.getContent();
             Log.e("params",params.toString());
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
+        } catch (UnsupportedEncodingException | ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +58,7 @@ public class JSONParser {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
+                    is, "utf-8"), 8);
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {

@@ -1,31 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:orientation="vertical" >
+
+<LinearLayout
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/numberPickerAnzahl"
-
-        android:layout_gravity="center_horizontal">
-
-    </NumberPicker>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextTeileNr"
-
-        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textViewBezeichnung"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Verbrauchte Teile"
+        android:id="@+id/eTeileUeberschrift"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="101dp">
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/numberPickerAnzahl"
+
+            >
+
+        </NumberPicker>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="11dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="TeileNr."
+                    android:id="@+id/textView14"
+                    android:layout_gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextTeileNr"
+
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Bezeichnung"
+                    android:id="@+id/textView19"
+                    android:layout_gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextBezeichnung"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Barcode-Scan"
+        android:id="@+id/button_bscan"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
+
+
+
+
+
+
 
 
 </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/hoell_blau"
+        android:src="@mipmap/ic_plus"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:layout_gravity="bottom|start" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/hoell_blau"
+        android:src="@mipmap/ic_next"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:layout_gravity="bottom|end"/>
+</FrameLayout>

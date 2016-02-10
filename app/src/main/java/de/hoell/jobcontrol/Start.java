@@ -93,7 +93,7 @@ public class Start extends Activity {
 
 
                 try {
-                   String user = InputName.getText().toString();
+                   String user = InputName.getText().toString().trim().toLowerCase();
                     String password = InputPass.getText().toString();
                     new JSONLogin(user,password).execute().get(30000, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -174,20 +174,20 @@ public class Start extends Activity {
 
                 if (success == 1) {
                     // successfully logged in
-
+                    String kuerzel=json.getString("kuerzel");
                     if (InputCheck.isChecked()){
 
                         System.out.println("Checkbox is gesetz daten werden gespeichert ");
 
 
-                        session.saveSession(mUser);
+                        session.saveSession(kuerzel);
 
 
                     }
                     else{
                         System.out.println("Checkbox is leer daten werden NICHT gespeichert");
                     }
-                    JSONObject gebiet_json = new JSONGebiet(mUser).execute().get(30000, TimeUnit.MILLISECONDS);
+                    JSONObject gebiet_json = new JSONGebiet(kuerzel).execute().get(30000, TimeUnit.MILLISECONDS);
                     int g_success = gebiet_json.getInt(TAG_SUCCESS);
                     if (g_success == 1) {
                         JSONObject c = gebiet_json.getJSONObject("gebiet");

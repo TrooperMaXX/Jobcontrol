@@ -3,6 +3,7 @@ package de.hoell.jobcontrol.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -37,7 +38,7 @@ public class SessionManager {
         private static final String IS_USER_GEBIET = "IsUserGebiet";
 
         // All Shared Preferences Keys
-        private static final String IS_OFFLINEMODE = "IsOfflineOn";
+    private static final String IS_OFFLINEMODE = "IsOfflineOn";
 
         // All Shared Preferences Keys
         private static final String IS_ZEIT = "IsZeitOn";
@@ -60,8 +61,11 @@ public class SessionManager {
         // Email address (make variable public to access from outside)
         public static final String KEY_ZEIT = "zeit";
 
-        // Email address (make variable public to access from outside)
-        public static final String KEY_SWITCH = "switch";
+    // Email address (make variable public to access from outside)
+    public static final String KEY_SWITCH = "switch";
+
+    // Email address (make variable public to access from outside)
+    public static final String KEY_DB = "DB";
 
         // Constructor
         public SessionManager(Context context){
@@ -241,6 +245,24 @@ public class SessionManager {
     public boolean getSwitchstatus() {
 
         return pref.getBoolean(KEY_SWITCH, true);
+
+    }
+
+
+
+    public void saveDB(String date){
+
+
+        editor.putString(KEY_DB, date);
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+date);
+    }
+
+    public String getDB() {
+
+        return pref.getString(KEY_DB, "null");
 
     }
 }

@@ -77,7 +77,7 @@ public class arbeit extends Fragment {
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.fragment_container, nextFragment);
+                transaction.replace(R.id.frame_container, nextFragment);
                 transaction.addToBackStack(null);
 
                 nextFragment.setArguments(next);
@@ -102,7 +102,7 @@ public class arbeit extends Fragment {
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.fragment_container, nextFragment);
+                transaction.replace(R.id.frame_container, nextFragment);
                 transaction.addToBackStack(null);
                 next.putInt("Pos", pos + 1);
                 nextFragment.setArguments(next);
@@ -187,7 +187,7 @@ public class arbeit extends Fragment {
         EditText TechnikerNr =  (EditText) rootView.findViewById(R.id.editTextTechniker);
         EditText Arbeit =  (EditText) rootView.findViewById(R.id.editTextArbeit);
 
-        String Date = String.valueOf(Datum.getYear())+"-"+String.valueOf(Datum.getMonth()+1)+"-"+String.valueOf(Datum.getDayOfMonth());
+        String Date = String.valueOf(String.valueOf(Datum.getDayOfMonth())+"-"+String.valueOf(Datum.getMonth()+1)+"-"+Datum.getYear());
         Log.e("DATUM!!!", Date);
         String AW =String.valueOf(Aw.getValue());
         String WEG =String.valueOf(Weg.getValue());

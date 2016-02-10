@@ -323,6 +323,8 @@ public class OfflineFragment extends ListFragment {
 
 
             intent.putExtra("value_status", Status);
+            int KundenNr = extra.getInt("kundennr");
+            intent.putExtra("value_kundennr",KundenNr);
             intent.putExtra("value_droppos", DropPos);
 
             String Firma = extra.getString("Firma");

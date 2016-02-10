@@ -1,0 +1,375 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arbeits-Schein"
+        android:id="@+id/textViewUeberschrift"
+        android:textStyle="normal|bold"
+        android:textSize="22sp"
+
+        android:layout_gravity="center_horizontal" />
+
+    <ScrollView
+        android:id="@+id/layout"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical|horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginTop="0dip"
+        android:scrollbarStyle="outsideInset"
+        android:fillViewport="true"
+
+
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="2dp"
+        android:layout_marginRight="2dip"
+        >
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ArbeitsscheinTabelle"
+            android:layout_marginTop="0dip"
+            >
+
+            <TableRow
+                android:id="@+id/Anschrift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Anschrift"
+                    android:id="@+id/textViewAnschrift"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/AnschriftContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/anschrift"
+                    android:id="@+id/editTextAnschriftContent"
+                    android:textStyle="normal"
+                    android:layout_column="0"
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:background="@android:color/transparent" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/Ger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gerät"
+                    android:id="@+id/textViewGer"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/GerContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ger"
+                    android:id="@+id/editTextGerContent"
+                    android:textStyle="normal"
+                    android:layout_column="0"
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:background="@android:color/transparent" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/Srn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seriennummer"
+                    android:id="@+id/textView30"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/SrnContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ger"
+                    android:id="@+id/editTextSrnContent"
+                    android:textStyle="normal"
+                    android:layout_column="0"
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:background="@android:color/transparent" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/Zaehler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zaehler"
+                    android:id="@+id/textViewZaehler"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/ZaehlerContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="S/W: "
+                        android:id="@+id/textView28"
+                        android:textStyle="italic" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sw"
+                        android:id="@+id/editTextSWContent"
+                        android:textStyle="normal"
+                        android:inputType="number"
+                        style="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:background="@android:color/transparent" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Farb: "
+                        android:id="@+id/textView29"
+                        android:textStyle="italic" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/farb"
+                        android:id="@+id/editTextFarbContent"
+                        android:textStyle="normal"
+                        android:inputType="number"
+                        style="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:background="@android:color/transparent" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/Arbeit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ausgeführte Arbeit"
+                    android:id="@+id/textViewArbeit"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/ArbeitContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="77dp"
+                            android:layout_height="wrap_content"
+                            android:text="Datum"
+                            android:id="@+id/textView20"
+                            android:textStyle="normal|italic"
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="47dp"
+                            android:layout_height="wrap_content"
+                            android:text="TechNr"
+                            android:id="@+id/textView21"
+                            android:textStyle="normal|italic"
+
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="47dp"
+                            android:layout_height="wrap_content"
+                            android:text="AW"
+                            android:id="@+id/textView24"
+                            android:textStyle="normal|italic"
+
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="47dp"
+                            android:layout_height="wrap_content"
+                            android:text="Weg"
+                            android:id="@+id/textView23"
+                            android:textStyle="normal|italic"
+
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ausgeführte Arbeit"
+                            android:id="@+id/textView22"
+                            android:textStyle="normal|italic"
+
+                            android:layout_gravity="center_horizontal" />
+
+                    </LinearLayout>
+
+                    <de.hoell.jobcontrol.adapter.ExpandableHeightListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/arbeitList"
+                        />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/Teile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Verwendete Teile"
+                    android:id="@+id/textViewTeile"
+                    android:textStyle="normal|bold"
+                    android:layout_column="0" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:layout_width="47dp"
+                            android:layout_height="wrap_content"
+                            android:text="Menge"
+                            android:id="@+id/textViewMengeContent"
+                            android:textStyle="normal|italic"
+
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="123dp"
+                            android:layout_height="wrap_content"
+                            android:text="Teile-Nr"
+                            android:id="@+id/textViewTeileNrContent"
+                            android:textStyle="normal|italic"
+
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Bezeichnung"
+                            android:id="@+id/textViewBezeichnungContent"
+                            android:textStyle="normal|italic"
+
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal" />
+                    </LinearLayout>
+
+                    <de.hoell.jobcontrol.adapter.ExpandableHeightListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/teileList"
+                        />
+                </LinearLayout>
+            </TableRow>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/hoell_blau"
+                android:src="@mipmap/ic_next"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                android:layout_gravity="bottom|end"/>
+
+
+        </TableLayout>
+
+
+
+
+    </ScrollView>
+
+</LinearLayout>
+

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2016-07-33"
+            android:id="@+id/editTextDatumContent"
+            android:textStyle="normal"
+
+            android:gravity="center_horizontal"
+            android:editable="true"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <EditText
+            android:layout_width="47dp"
+            android:layout_height="wrap_content"
+            android:text="TechNr"
+            android:id="@+id/editTextTechNrContent"
+            android:textStyle="normal"
+
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:editable="true"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <EditText
+            android:layout_width="47dp"
+            android:layout_height="wrap_content"
+            android:text="AW"
+            android:id="@+id/editTextAWContent"
+            android:textStyle="normal"
+
+            android:gravity="center_horizontal"
+            android:editable="true"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <EditText
+            android:layout_width="47dp"
+            android:layout_height="wrap_content"
+            android:text="Weg"
+            android:id="@+id/editTextWegContent"
+            android:textStyle="normal"
+
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:editable="true"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Medium" />
+
+        <EditText
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:text="Ausgeführte Arbeitdffdfsddfsdfsdfsfdsf"
+            android:id="@+id/editTextAusArbeitContent"
+            android:textStyle="normal"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Medium" />
+    </LinearLayout>

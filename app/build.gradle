@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'jobkey'
             keyPassword 'Yeah!666'
-            storeFile file('C:/Users/Hoell/Documents/android/jobkey.jks')
+            storeFile file('C:/Users/mstaeglich/AndroidStudioProjects/KeyStores/jobkey.jks')
             storePassword 'Yeah!666'
         }
     }
@@ -32,8 +32,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:design:22.2.0'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    /* // Stetho core
+                        compile 'com.facebook.stetho:stetho:1.2.0'
+
+                        //If you want to add a network helper
+                        compile 'com.facebook.stetho:stetho-okhttp:1.2.0'
+                */
 }

@@ -11,10 +11,6 @@
     <string name="login_button">Login!</string>
     <string name="title_activity_menu">menu</string>
 
-    <!-- Menü_Beschriftung -->
-    <string name="title_section1">Meine Tickets</string>
-    <string name="title_section2">Kalender</string>
-    <string name="title_section3">Neues Ticket</string>
 
     <!-- Action_Bar -->
     <string name="navigation_drawer_open">Menü öffnen</string>
@@ -31,6 +27,7 @@
         <item>Meine Tickets</item>
         <item>Offline Modus</item>
         <item>Gerät suchen</item>
+        <item>Arbeitsschein erstellen</item>
     </string-array>
 
     <!-- Nav Drawer List Item Icons -->
@@ -40,6 +37,7 @@
         <item>@drawable/ic_action_info</item>
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_search</item>
+        <item>@mipmap/ic_action_schein</item>
     </array>
 
 
@@ -83,8 +81,8 @@
 
 
     <!-- URLS -->
-    <string name="url_artstamm">http://5.158.136.15/job/android/test/temp/file.csv</string>
-
+    <string name="url_artstamm">http://5.158.136.15/job/android/db/artstamm.csv</string>
+    <string name="url_dbfunctions">https://hoell.syno-ds.de:55443/job/android/test/index.php</string>
 
 
 
@@ -130,6 +128,11 @@
     <string name="widget_name">Jobcontrol ALPHA</string>
     <string name="title_activity_arbeitsschein">Arbeitsschein</string>
     <string name="test_text">TEST</string>
+    <string name="anschrift">Host Höll GmbH \n Huberstusstraße 15 \n 77815 Bühl</string>
+    <string name="ger">021014671 BizhubC207</string>
+    <string name="sw">11234</string>
+    <string name="farb">4321</string>
+    <string name="zaehler">zähler</string>
 
 
 </resources>

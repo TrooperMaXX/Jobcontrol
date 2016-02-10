@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:orientation="vertical" >
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView88" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Schwarz:"
+            android:id="@+id/textViewSchwarz"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextSw"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:inputType="number"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Farbe:"
+            android:id="@+id/textViewFarbe"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="75dp"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextFarb"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:inputType="number"
+           />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gesamt:"
+            android:id="@+id/textViewGesamt"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+</ScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/hoell_blau"
+        android:src="@mipmap/ic_next"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:layout_gravity="bottom|end"/>
+
+</FrameLayout>

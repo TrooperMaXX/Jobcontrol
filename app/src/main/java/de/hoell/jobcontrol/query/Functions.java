@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.hoell.jobcontrol.Jobcontrol;
+import de.hoell.jobcontrol.R;
+
 /**
  * Created by Hoell on 12.11.2014.
  */
@@ -24,7 +27,7 @@ import java.util.List;
         private JSONParser jsonParser;
 
 
-        private static String URL = "http://5.158.136.15/job/android/index.php";
+        private static String URL = "https://hoell.syno-ds.de:55443/job/android/index.php";
 
 
         private static String login_tag = "login";
@@ -43,6 +46,8 @@ import java.util.List;
         private static String saveswitch_tag = "saveswitch";
         private static String oeffnungs_tag = "oeffnung";
         private static String filenumbers_tag = "bogen";
+    private JSONObject resources;
+
     // constructor
         public Functions(){
             jsonParser = new JSONParser();
@@ -350,6 +355,7 @@ import java.util.List;
         // return json
         return json;
     }
+
 
 
 }

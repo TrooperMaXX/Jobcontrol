@@ -24,7 +24,7 @@ public class Arbeitsschein extends FragmentActivity {
             }
 
             // Create a new Fragment to be placed in the activity layout
-            srnabgleich firstFragment = new srnabgleich();
+            srnpruefen firstFragment = new srnpruefen();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments

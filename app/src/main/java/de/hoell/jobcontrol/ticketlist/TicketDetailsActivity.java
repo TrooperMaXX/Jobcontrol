@@ -80,6 +80,7 @@ private static final String TAG_SUCCESS = "success";
 
         int DropPos = getIntent().getIntExtra("value_droppos", 0);
         final String Firma = getIntent().getStringExtra("value_firma");
+        int KundenNr = getIntent().getIntExtra("value_kundennr", 0);
         final String Adresse = getIntent().getStringExtra("value_adresse");
         String Standort = getIntent().getStringExtra("value_standort");
         final String Modell = getIntent().getStringExtra("value_modell");//Gerät
@@ -119,6 +120,10 @@ private static final String TAG_SUCCESS = "success";
             Button_img.setVisibility(View.GONE);
         }
 
+
+        TextView textViewKunde = (TextView) findViewById(R.id.textViewFirma);
+        String Kundentxt= "Firma ("+KundenNr+")";
+        textViewKunde.setText(Kundentxt);
 
         TextView textViewFirma = (TextView) findViewById(R.id.textViewContentFirma);
         textViewFirma.setText(Firma);
@@ -208,9 +213,7 @@ private static final String TAG_SUCCESS = "success";
                 if( Function.isNetworkOnline(TicketDetailsActivity.this)){
                     try {
                         new JSONSaveDetails().execute().get(30000, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         e.printStackTrace();
                     }
                 }

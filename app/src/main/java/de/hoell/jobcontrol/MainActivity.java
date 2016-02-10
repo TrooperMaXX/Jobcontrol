@@ -3,6 +3,7 @@
         import android.app.Activity;
         import android.app.Fragment;
         import android.app.FragmentManager;
+        import android.app.ProgressDialog;
         import android.content.Context;
         import android.content.Intent;
         import android.content.pm.PackageInfo;
@@ -12,6 +13,7 @@
         import android.net.Uri;
         import android.os.AsyncTask;
         import android.os.Bundle;
+        import android.os.Environment;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.ActionBarDrawerToggle;
         import android.util.Log;
@@ -31,8 +33,14 @@
         import org.json.JSONException;
         import org.json.JSONObject;
 
+        import java.io.File;
+        import java.text.ParseException;
+        import java.text.SimpleDateFormat;
         import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.Date;
         import java.util.HashMap;
+        import java.util.Locale;
         import java.util.concurrent.ExecutionException;
         import java.util.concurrent.TimeUnit;
         import java.util.concurrent.TimeoutException;
@@ -41,7 +49,10 @@
         import de.hoell.jobcontrol.adapter.SpecialAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
         import de.hoell.jobcontrol.preference.SettingsActivity;
+        import de.hoell.jobcontrol.query.DBManager;
+        import de.hoell.jobcontrol.query.DownloadFileFromURL;
         import de.hoell.jobcontrol.query.Functions;
+        import de.hoell.jobcontrol.schein.srnpruefen;
         import de.hoell.jobcontrol.session.SessionManager;
 
 
@@ -109,6 +120,8 @@
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
                 // NewTickets
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+                //Schein
+                navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
 
                 PackageInfo pInfo = null;
@@ -169,20 +182,109 @@
                 }
 
 
+   /*String url = getResources().getString(R.string.url_artstamm);
+          String output = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/artstamm.csv"));
+        File file = new File(output);
+                Log.e("nix","da1");
+        if(!file.exists()){
+            Log.e("nix","da2");
+            new DownloadFileFromURL(this,url,output).execute();
+        }else {
+         DBManager dbManager= new DBManager(context);
+                dbManager.onUpgrade(dbManager.getWritableDatabase(), 1, 2);
+             dbManager.execute(context,file);
+
+        }
+*/
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN);
+               //session.saveDB("null");
+                Calendar cal = Calendar.getInstance();
+                Date heute=new Date(123);
+                String today = sdf.format(cal.getTime());
+                try {
+
+                    heute = sdf.parse(today);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (session.getDB().equals("null")){
+
+
+                            //makeDbUpdat(MainActivity.this, pDialog);
 
 
 
+                    new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv").execute();
+                    new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv").execute();
 
 
 
+                    cal.add(Calendar.DATE, +7);
+
+                    Log.e("Date+7=", sdf.format(cal.getTime()));
+                    session.saveDB(sdf.format(cal.getTime()));
+                }else try {
+                    if(sdf.parse(session.getDB()).before(heute)){
+                        Log.e("loool", "dannach");
+                        new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv").execute();
+                        new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv").execute();
 
 
+                        cal.add(Calendar.DATE, +7);
+
+                        Log.e("Date+7=", sdf.format(cal.getTime()));
+                        session.saveDB(sdf.format(cal.getTime()));
+                    }else{
+                        Log.e("Datenbank", "Aktuell");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
-            @Override
-            public void onTicketInteraction(String id) {
 
-            }
+
+        /*    private void makeDbUpdat(final Context context,final ProgressDialog  pDialog) {
+
+                Log.e("Pdialog", "show");
+                pDialog.setProgress(1);
+                Log.e("Pdialog", "1");
+
+                        new DownloadFileFromURL(context, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv",pDialog).execute();
+
+
+                        Log.e("Pdialog", " "+pDialog.getProgress());
+                        new DownloadFileFromURL(context, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv",pDialog).execute();
+
+                        Log.e("Pdialog", " "+pDialog.getProgress());
+                        String art = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/artstamm.csv"));
+                        File ArtCsv = new File(art);
+
+                        if (ArtCsv.exists()) {
+                            DBManager dbManager = new DBManager(context);
+
+                            dbManager.ArtExecute(context, ArtCsv,pDialog);
+                        } else {
+
+                        }
+
+
+                        Log.e("Pdialog", " "+pDialog.getProgress());
+                        String ger = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/gerstamm.csv"));
+                        File GerCsv = new File(ger);
+
+                        if (GerCsv.exists()) {
+                            DBManager dbManager = new DBManager(context);
+
+                            dbManager.GerExecute(context, GerCsv,pDialog);
+                        } else {
+
+                        }
+
+
+            }*/
+
 
             /**
              * Slide menu item click listener
@@ -206,7 +308,7 @@
                     try {
                         JSONObject c = Technikerliste.getJSONObject(position);
 
-                        String Tel = c.getString("Telefon");
+                        String Tel = c.getString("telefon");
 
 
                         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", Tel, null));
@@ -307,12 +409,18 @@
                     case 2:
                         fragment = new SrnSuche();
                         break;
-
+                    case 3:
+                        fragment = new srnpruefen();
+                      /*  Bundle bundle = new Bundle();
+                        bundle.putString("value_seriennummer", "0123456879");
+                        fragment.setArguments(bundle);*/
+                        break;
                     default:
                         break;
                 }
 
                 if (fragment != null) {
+
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.frame_container, fragment).commit();
@@ -447,7 +555,10 @@
                     e.printStackTrace();
                 }
             }
+            @Override
+            public void onTicketInteraction(String id) {
 
+            }
 
 
             public class JSONTechniker extends AsyncTask<String, String, JSONObject> {

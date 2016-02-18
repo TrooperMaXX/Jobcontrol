@@ -245,45 +245,6 @@
 
 
 
-        /*    private void makeDbUpdat(final Context context,final ProgressDialog  pDialog) {
-
-                Log.e("Pdialog", "show");
-                pDialog.setProgress(1);
-                Log.e("Pdialog", "1");
-
-                        new DownloadFileFromURL(context, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv",pDialog).execute();
-
-
-                        Log.e("Pdialog", " "+pDialog.getProgress());
-                        new DownloadFileFromURL(context, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv",pDialog).execute();
-
-                        Log.e("Pdialog", " "+pDialog.getProgress());
-                        String art = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/artstamm.csv"));
-                        File ArtCsv = new File(art);
-
-                        if (ArtCsv.exists()) {
-                            DBManager dbManager = new DBManager(context);
-
-                            dbManager.ArtExecute(context, ArtCsv,pDialog);
-                        } else {
-
-                        }
-
-
-                        Log.e("Pdialog", " "+pDialog.getProgress());
-                        String ger = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/gerstamm.csv"));
-                        File GerCsv = new File(ger);
-
-                        if (GerCsv.exists()) {
-                            DBManager dbManager = new DBManager(context);
-
-                            dbManager.GerExecute(context, GerCsv,pDialog);
-                        } else {
-
-                        }
-
-
-            }*/
 
 
             /**

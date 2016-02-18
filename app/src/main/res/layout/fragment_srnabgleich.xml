@@ -14,6 +14,7 @@
         android:text="Seriennummer? "
         android:id="@+id/textView9"
         android:layout_gravity="center_horizontal"
+        android:labelFor="@+id/Serienummer_Eingabe"
         />
 
     <EditText
@@ -23,6 +24,24 @@
         android:id="@+id/Serienummer_Eingabe"
         android:layout_gravity="center_horizontal"
         android:inputType="textCapCharacters" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Ansprechpartner?"
+        android:id="@+id/textView25"
+        android:layout_gravity="center_horizontal"
+        android:labelFor="@+id/Ansprechpartner_Eingabe"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/Ansprechpartner_Eingabe"
+        android:layout_gravity="center_horizontal"
+        android:inputType="textAutoComplete|textAutoCorrect"
+        />
 
     <Button
         style="?android:attr/buttonStyleSmall"

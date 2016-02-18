@@ -27,7 +27,7 @@ import de.hoell.jobcontrol.R;
         private JSONParser jsonParser;
 
 
-        private static String URL = "https://hoell.syno-ds.de:55443/job/android/index.php";
+        private static String URL = "http://hoell.syno-ds.de/job/android/index.php";
 
 
         private static String login_tag = "login";

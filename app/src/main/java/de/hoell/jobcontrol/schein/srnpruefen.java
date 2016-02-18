@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -28,6 +31,7 @@ import de.hoell.jobcontrol.query.DBManager;
 public class srnpruefen extends Fragment {
     private Context context;
 private String mSeriennummer;
+   public EditText editTextAnsprechpartner;
     public srnpruefen(){
 
     }
@@ -37,20 +41,51 @@ private String mSeriennummer;
 
         final View rootView = inflater.inflate(R.layout.fragment_srnabgleich, container, false);
 
-        Bundle args=getArguments();
+        final Bundle args=getArguments();
         context = rootView.getContext();
         EditText editTextSerienummer =  (EditText) rootView.findViewById(R.id.Serienummer_Eingabe);
+         editTextAnsprechpartner = (EditText) rootView.findViewById(R.id.Ansprechpartner_Eingabe);
+        TextView textView = (TextView) rootView.findViewById(R.id.textView25);
+
+
+
+        Log.e("args", "lol " + args);
+        final Button Button_abgleichen = (Button) rootView.findViewById(R.id.button_abgleich);
+        final Button Button_abgleich_scan = (Button) rootView.findViewById(R.id.button_abgleich_scan);
+        Button_abgleich_scan.setEnabled(false);
+        Button_abgleichen.setEnabled(false);
         if(args!=null){
             editTextSerienummer.setText(args.getString("value_seriennummer"));
+            Button_abgleich_scan.setVisibility(View.GONE);
+            editTextAnsprechpartner.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
+            Button_abgleichen.setEnabled(true);
         }
 
+        editTextAnsprechpartner.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
 
 
-        Log.e("args", "lol "+args);
-        Button Button_abgleichen = (Button) rootView.findViewById(R.id.button_abgleich);
-        Button Button_abgleich_scan = (Button) rootView.findViewById(R.id.button_abgleich_scan);
+            @Override
+            public void afterTextChanged(Editable edit) {
+                if (edit.length() >= 3) {
+                    Button_abgleichen.setEnabled(true);
+                    Button_abgleich_scan.setEnabled(true);
 
-
+                }else{
+                    Button_abgleich_scan.setEnabled(false);
+                    Button_abgleichen.setEnabled(false);
+                }
+            }
+        });
 
 
         Button_abgleichen.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +132,19 @@ private String mSeriennummer;
                     bundle.putString("Str", Str);
                     bundle.putString("Ort", Ort);
                     bundle.putString("Ger", Ger);
-                    bundle.putInt("Pos",0);
-                    bundle.putInt("TeilePos",0);
+                    bundle.putInt("Pos", 0);
+                    bundle.putInt("TeilePos", 0);
+
+                    if (args!=null) {
+                        bundle.putString("AuaNr", args.getString("value_auftragsnr"));
+                        bundle.putString("Name", args.getString("value_name"));
+                        bundle.putString("TicketID", args.getString("value_id"));
+                    } else {
+                        bundle.putString("AuaNr", "");
+                        bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
+                    }
+
+
                     nextFragment.setArguments(bundle);
                     // Commit the transaction
                     transaction.commit();
@@ -200,6 +246,17 @@ private String mSeriennummer;
                         bundle.putString("Ger", Ger);
                         bundle.putInt("Pos", 0);
                         bundle.putInt("TeilePos", 0);
+
+                        bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
+                        bundle.putString("AuaNr", "");
+                        /*if (args!=null) {
+                            bundle.putString("AuaNr", args.getString("value_auftragsnr"));
+                            bundle.putString("Name", args.getString("value_name"));
+                        } else {
+                            bundle.putString("AuaNr", "");
+                            bundle.putString("Name","");
+                        }*/
+
                         nextFragment.setArguments(bundle);
                         // Commit the transaction
                         transaction.commit();

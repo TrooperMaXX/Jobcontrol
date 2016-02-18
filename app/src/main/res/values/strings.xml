@@ -133,6 +133,7 @@
     <string name="sw">11234</string>
     <string name="farb">4321</string>
     <string name="zaehler">zähler</string>
+    <string name="bemerkung">Bemerkung</string>
 
 
 </resources>

@@ -1,9 +1,12 @@
 package de.hoell.jobcontrol.schein;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -25,25 +28,47 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import de.hoell.jobcontrol.Jobcontrol;
+import de.hoell.jobcontrol.MainActivity;
+import de.hoell.jobcontrol.OfflineFragment;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
+import de.hoell.jobcontrol.query.CustomBodyStringRequest;
+import de.hoell.jobcontrol.query.CustomRequest;
 import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.DownloadFileFromURL;
+import de.hoell.jobcontrol.query.MyVolley;
+import de.hoell.jobcontrol.session.SessionManager;
+import de.hoell.jobcontrol.ticketlist.Tickets;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -74,6 +99,7 @@ public class pruefen extends Fragment {
         final TextView Zaehler = (TextView) rootView.findViewById(R.id.textViewZaehler);
         final EditText sw = (EditText) rootView.findViewById(R.id.editTextSWContent);
         final EditText Farb = (EditText) rootView.findViewById(R.id.editTextFarbContent);
+        final EditText Bemerkung = (EditText) rootView.findViewById(R.id.editTextBemerkung);
 
         ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
         ExpandableHeightListView teileliste = (ExpandableHeightListView) rootView.findViewById(R.id.teileList);
@@ -194,19 +220,27 @@ public class pruefen extends Fragment {
         fab_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String xmlFile = "userData";
-                String userNAme = "username";
-                String password = "password";
+
                 try {
                     //FileOutputStream fos = new  FileOutputStream("userData.xml");
-                    FileOutputStream fileos= new FileOutputStream (new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/test.xml"))));
+                    SessionManager session =new SessionManager(context);
+                    FileOutputStream fileos= new FileOutputStream (new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/"+args.getString("Srn")+".xml"))));
                     XmlSerializer xmlSerializer = Xml.newSerializer();
                     xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
                     StringWriter writer = new StringWriter();
                     xmlSerializer.setOutput(writer);
                     xmlSerializer.startDocument("UTF-8", true);
-                    xmlSerializer.startTag(null, "Report");
-                        xmlSerializer.startTag(null, "AuftragsDaten");
+                    xmlSerializer.startTag(null, "AuftragsDaten");
+                    xmlSerializer.startTag(null, "AuftragsKopf");
+                        xmlSerializer.startTag(null, "AuaNr");
+                            xmlSerializer.text(args.getString("AuaNr"));
+                        xmlSerializer.endTag(null, "AuaNr");
+
+                        xmlSerializer.startTag(null, "AuaTechNr");
+                            xmlSerializer.text(String.valueOf(session.getTechNum()));
+                        xmlSerializer.endTag(null, "AuaTechNr");
+
+                        xmlSerializer.startTag(null, "GeräteDaten");
 
                             xmlSerializer.startTag(null, "Firma");
                                 xmlSerializer.text(args.getString("Firma"));
@@ -220,9 +254,9 @@ public class pruefen extends Fragment {
                                 xmlSerializer.text(args.getString("Ort"));
                             xmlSerializer.endTag(null, "Ort");
 
-                            xmlSerializer.startTag(null, "AuaNr");
-                                xmlSerializer.text("testnummer12345");
-                            xmlSerializer.endTag(null, "AuaNr");
+                            xmlSerializer.startTag(null, "Ansprechpartner");
+                                xmlSerializer.text(args.getString("Name"));
+                            xmlSerializer.endTag(null, "Ansprechpartner");
 
                             xmlSerializer.startTag(null, "Modell");
                                 xmlSerializer.text(args.getString("Ger"));
@@ -232,6 +266,8 @@ public class pruefen extends Fragment {
                                 xmlSerializer.text(args.getString("Srn"));
                             xmlSerializer.endTag(null, "Srn");
 
+                        xmlSerializer.startTag(null, "Zähler");
+
                             xmlSerializer.startTag(null, "SW");
                                 xmlSerializer.text(args.getString("Sw"));
                             xmlSerializer.endTag(null, "SW");
@@ -240,11 +276,15 @@ public class pruefen extends Fragment {
                                 xmlSerializer.text(args.getString("Farb"));
                             xmlSerializer.endTag(null, "Farb");
 
-                        xmlSerializer.endTag(null, "AuftragsDaten");
+                        xmlSerializer.endTag(null, "Zähler");
 
-                        xmlSerializer.startTag(null, "Arbeit");
+                        xmlSerializer.endTag(null, "GeräteDaten");
+
+                    xmlSerializer.endTag(null, "AuftragsKopf");
+
+                        xmlSerializer.startTag(null, "Arbeitszeit");
                         for ( int i=0; i <= args.getInt("Pos");i++) {
-                            xmlSerializer.startTag(null, "Position"+String.valueOf(i));
+                            xmlSerializer.startTag(null, "Position");
 
                                 xmlSerializer.startTag(null, "Datum");
                                     xmlSerializer.text(args.getString("Datum" + String.valueOf(i)));
@@ -258,62 +298,152 @@ public class pruefen extends Fragment {
                                     xmlSerializer.text(args.getString("AW" + String.valueOf(i)));
                                 xmlSerializer.endTag(null, "AW");
 
-                                xmlSerializer.startTag(null, "Weg");
+                                xmlSerializer.startTag(null, "WegAW");
                                     xmlSerializer.text(args.getString("WEG" + String.valueOf(i)));
-                                xmlSerializer.endTag(null, "Weg");
+                                xmlSerializer.endTag(null, "WegAW");
 
-                                xmlSerializer.startTag(null, "ausgefuert");
+                                xmlSerializer.startTag(null, "Text");
                                     xmlSerializer.text(args.getString("Arbeit" + String.valueOf(i)));
-                                xmlSerializer.endTag(null, "ausgefuert");
+                                xmlSerializer.endTag(null, "Text");
 
-                            xmlSerializer.endTag(null, "Position"+String.valueOf(i));
+                            xmlSerializer.endTag(null, "Position");
                         }
-                        xmlSerializer.endTag(null, "Arbeit");
+                        xmlSerializer.endTag(null, "Arbeitszeit");
 
-                        xmlSerializer.startTag(null, "Teile");
+                        xmlSerializer.startTag(null, "E-Teile");
 
                         for ( int t=0; t <= args.getInt("TeilePos");t++){
-                            xmlSerializer.startTag(null, "Teil"+String.valueOf(t));
+                            if ( args.containsKey("Anz"+ String.valueOf(t))) {
+
+                                xmlSerializer.startTag(null, "Artikel");
 
                                 xmlSerializer.startTag(null, "Menge");
-                                    xmlSerializer.text(args.getString("Anz" + String.valueOf(t)));
+                                xmlSerializer.text(args.getString("Anz" + String.valueOf(t)));
                                 xmlSerializer.endTag(null, "Menge");
 
                                 xmlSerializer.startTag(null, "TeileNr");
-                                    xmlSerializer.text(args.getString("TeileNr" + String.valueOf(t)));
+                                xmlSerializer.text(args.getString("ArtNr" + String.valueOf(t)));
                                 xmlSerializer.endTag(null, "TeileNr");
 
-                                xmlSerializer.startTag(null, "Bez");
-                                    xmlSerializer.text(args.getString("Bez" + String.valueOf(t)));
-                                xmlSerializer.endTag(null, "Bez");
+                                xmlSerializer.startTag(null, "HerstArtNr");
+                                xmlSerializer.text(args.getString("TeileNr" + String.valueOf(t)));
+                                xmlSerializer.endTag(null, "HerstArtNr");
 
-                            xmlSerializer.endTag(null, "Teil" + String.valueOf(t));
+                                xmlSerializer.startTag(null, "Bezeichnung");
+                                xmlSerializer.text(args.getString("Bez" + String.valueOf(t)));
+                                xmlSerializer.endTag(null, "Bezeichnung");
+
+                                xmlSerializer.endTag(null, "Artikel");
+                            }
                         }
 
-                        xmlSerializer.endTag(null, "Teile");
+                        xmlSerializer.endTag(null, "E-Teile");
 
+                        xmlSerializer.startTag(null, "Bemerkung");
+                            xmlSerializer.text(Bemerkung.getText().toString());
+                        xmlSerializer.endTag(null, "Bemerkung");
 
-                    xmlSerializer.endTag(null, "Report");
+                    xmlSerializer.endTag(null, "AuftragsDaten");
                     xmlSerializer.endDocument();
                     xmlSerializer.flush();
                     String dataWrite = writer.toString();
                     fileos.write(dataWrite.getBytes());
                     fileos.close();
+
+                    Toast.makeText(context, "Schein erstellt", Toast.LENGTH_SHORT).show();
+
+                    RequestQueue queue = MyVolley.getRequestQueue();
+
+                    String url = "https://hoell.syno-ds.de:55443/job/android/xml.php";
+
+                    File xml = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/"+args.getString("Srn")+".xml")));
+
+
+                    FileInputStream fin = new FileInputStream(xml);
+                    String ret = convertStreamToString(fin);
+                    //Make sure you close all streams.
+                    fin.close();
+
+                    //Log.e("xml",ret);
+
+
+                    CustomBodyStringRequest jsObjRequest1 = new CustomBodyStringRequest( url,ret ,new Response.Listener<String>() {
+
+                        @Override
+                        public void onResponse(String string) {
+                            Log.d("Response Volley: ", string);
+
+                           /* try {
+                                if(json.getInt("success")==1){
+                                    Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                    startActivity(i);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }*/
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.d("onErrorResponse: ", response.toString());
+
+                        }
+                    });
+
+
+                    queue.add(jsObjRequest1);
+
+
+
+
+
+
+
+                    /*if ( args.containsKey("TicketID")) {
+
+
+                    Map<String, String> postparams = new HashMap<String, String>();
+                    postparams.put("tag", "savedetails");
+                    postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
+                    postparams.put("status", "20");
+                    postparams.put("id", args.getString("TicketID"));
+                        Log.d("Volley Params: ", postparams.toString());
+
+
+                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject json) {
+                            Log.d("Response Volley: ", json.toString());
+
+                            try {
+                                if(json.getInt("success")==1){
+                                    Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                    startActivity(i);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.d("onErrorResponse: ", response.toString());
+
+                        }
+                    });
+
+                    queue.add(jsObjRequest);
+                    }*/
                 }
-                catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
+                catch (IllegalArgumentException | IllegalStateException | IOException e) {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                }
-                catch (IllegalArgumentException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                catch (IllegalStateException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                catch (IOException e) {
-                    // TODO Auto-generated catch block
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -346,26 +476,17 @@ public class pruefen extends Fragment {
         return rootView;
     }
 
-   /* private Bundle addValues(Bundle next_args, View rootView) {
-        Bundle next= new Bundle(next_args);
 
-        NumberPicker numberPickerAnz = (NumberPicker) rootView.findViewById(R.id.numberPickerAnzahl);
-
-
-        String Anzahl =String.valueOf(numberPickerAnz.getValue());
-
-        String TeileNr = String.valueOf(editTextTeileNr.getText());
-        String Bezeichnung =String.valueOf(editTextBezeichnung.getText());
-
-        next.putString("Anz" + Position, Anzahl);
-
-        next.putString("TechNr" + Position, TeileNr);
-        next.putString("Arbeit" + Position, Bezeichnung);
-
-        Log.e("NextBundle", "" + next);
-        return next;
-    }*/
-
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
 
 
 }

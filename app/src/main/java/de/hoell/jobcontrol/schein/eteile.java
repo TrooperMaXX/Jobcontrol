@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -37,6 +38,8 @@ import de.hoell.jobcontrol.query.DownloadFileFromURL;
 public class eteile extends Fragment {
     private Context context;
     EditText editTextTeileNr,editTextBezeichnung;
+    CheckBox Kleinteile,Entsorgung;
+       int teilepos;
     public eteile() {
     }
 
@@ -58,11 +61,20 @@ public class eteile extends Fragment {
 
         context = rootView.getContext();
         Bundle args=getArguments();
-        final   int teilepos =args.getInt("TeilePos");
+       teilepos =args.getInt("TeilePos");
         final  Bundle next_args=args;
 
+        if(teilepos==0){
+            Kleinteile = (CheckBox) rootView.findViewById(R.id.checkBoxKleinteile);
+            Entsorgung = (CheckBox) rootView.findViewById(R.id.checkBoxEntsorgung);
+
+            Kleinteile.setVisibility(View.VISIBLE);
+            Entsorgung.setVisibility(View.VISIBLE);
+        }
+
+
         /** AW Picker **/
-        NumberPicker numberPickerAnz = (NumberPicker) rootView.findViewById(R.id.numberPickerAnzahl);
+        final NumberPicker numberPickerAnz = (NumberPicker) rootView.findViewById(R.id.numberPickerAnzahl);
         numberPickerAnz.setMaxValue(100);
         numberPickerAnz.setMinValue(0);
         numberPickerAnz.setWrapSelectorWheel(false);
@@ -111,7 +123,9 @@ public class eteile extends Fragment {
                         editTextBezeichnung.setText(values[0]);
                     }
 
-
+                    numberPickerAnz.setValue(1);
+                }else{
+                    numberPickerAnz.setValue(0);
                 }
             }
         });
@@ -141,8 +155,23 @@ public class eteile extends Fragment {
 
                 Bundle next = addValues(next_args, rootView, String.valueOf(teilepos));
                 Log.e("final next", "" + next);
-
-                zaehler nextFragment = new zaehler();
+                if(next.getBoolean("Kleinteile")){
+                    teilepos++;
+                    next.putString("Anz" + teilepos, "1");
+                    next.putString("TeileNr" + teilepos, "919001100");
+                    next.putString("ArtNr" + teilepos, "919001100");
+                    next.putString("Bez" + teilepos, "Kleinteile/Reinigungsmateriel");
+                    next.putInt("TeilePos", teilepos);
+                }
+                if(next.getBoolean("Entsorgung")){
+                    teilepos++;
+                    next.putString("Anz" + teilepos, "1");
+                    next.putString("TeileNr" + teilepos, "919001201");
+                    next.putString("ArtNr" + teilepos, "919001201");
+                    next.putString("Bez" + teilepos, "Entsorgung");
+                    next.putInt("TeilePos", teilepos);
+                }
+                vde nextFragment = new vde();
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
@@ -186,21 +215,7 @@ public class eteile extends Fragment {
 
 
 
-        //TODO: download und fill der db iorgend wo anders hin machen
-      /*   String url = getResources().getString(R.string.url_artstamm);
-          String output = String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Jobcontrol/file.csv"));
-        File file = new File(output);
 
-        if(!file.exists()){
-            new DownloadFileFromURL(context,url,output).execute();
-        }else {
-         DBManager dbManager= new DBManager(context);
-                dbManager.onUpgrade(dbManager.getWritableDatabase(), 1, 2);
-             dbManager.execute(context,file);
-
-        }
-
-*/
 
         return rootView;
     }
@@ -216,10 +231,11 @@ public class eteile extends Fragment {
         String TeileNr = String.valueOf(editTextTeileNr.getText());
         String Bezeichnung =String.valueOf(editTextBezeichnung.getText());
 
+        if (Bezeichnung.trim().length()>2){
 
         DBManager dbManager = new DBManager(context);
         SQLiteDatabase db = dbManager.getReadableDatabase();
-        String query = "SELECT " + DBManager.COLUMN_EAN +
+        String query = "SELECT " + DBManager.COLUMN_EAN +","+DBManager.COLUMN_ARTNR +
                 " FROM " +
                 DBManager.TABLE_ARTSTAMM +
                 " WHERE " + DBManager.COLUMN_BESCHREIBUNG + " LIKE '"+Bezeichnung+"';";
@@ -228,23 +244,31 @@ public class eteile extends Fragment {
         Log.e("querryyyyy:::", query);
         int count = result.getCount();
         String values[] = new String[count + 1];
+        String artnr[] = new String[count + 1];
         int i = 0;
 
         while (result.moveToNext()) {
             values[i] = result.getString(result.getColumnIndex(DBManager.COLUMN_EAN));
+            artnr[i] = result.getString(result.getColumnIndex(DBManager.COLUMN_ARTNR));
             System.out.println("values[" + i + "]: " + values[i]);
+            System.out.println("artnr[" + i + "]: " + values[i]);
             i++;
         }
         System.out.println("länge " + values.length);
         if (values.length > 0) {
             next.putString("TeileNr" + Position, values[0]);
+            next.putString("ArtNr" + Position, artnr[0]);
         }
-
+        next.putString("Bez" + Position, Bezeichnung);
 
         next.putString("Anz" + Position, Anzahl);
 
+        }
+        if (teilepos==0) {
+            next.putBoolean("Kleinteile", Kleinteile.isChecked());
+            next.putBoolean("Entsorgung",Entsorgung.isChecked());
+        }
 
-        next.putString("Bez" + Position, Bezeichnung);
 
         Log.e("NextBundle", "" + next);
         return next;

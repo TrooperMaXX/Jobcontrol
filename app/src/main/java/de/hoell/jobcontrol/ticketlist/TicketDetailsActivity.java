@@ -452,8 +452,18 @@ private static final String TAG_SUCCESS = "success";
         if (id == R.id.action_arbeitsschein) {
             TextView textViewSerienummer =  (TextView) findViewById(R.id.textViewContentSerienummer);
             String Serienummer = textViewSerienummer.getText().toString();
+
+            TextView textViewAuftragsnr =  (TextView) findViewById(R.id.textViewContentAuftragsnr);
+            String Auftragsnr = textViewAuftragsnr.getText().toString();
+
+            TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
+            String Ansprechpartner = textViewAnsprechpartner.getText().toString();
+
             Intent i = new Intent(getApplicationContext(), Arbeitsschein.class);
             i.putExtra("value_seriennummer", Serienummer);
+            i.putExtra("value_auftragsnr", Auftragsnr);
+            i.putExtra("value_name", Ansprechpartner);
+            i.putExtra("value_id", ID);
             startActivity(i);
 
         }

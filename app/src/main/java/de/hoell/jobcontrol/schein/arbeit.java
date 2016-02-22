@@ -3,6 +3,8 @@ package de.hoell.jobcontrol.schein;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import de.hoell.jobcontrol.R;
+import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.session.SessionManager;
 
 /**
@@ -43,6 +46,30 @@ public class arbeit extends Fragment {
 
         context = rootView.getContext();
         Bundle args=getArguments();
+
+        DBManager dbManager = new DBManager(context);
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        String query = "SELECT " + DBManager.COLUMN_BEZEICHNUNG +
+                " FROM " +
+                DBManager.TABLE_LOHNART + ";";
+        Cursor result = db.rawQuery(query, null);
+
+        Log.e("querryyyyy:::", query);
+        int count = result.getCount();
+        String lohnbez[] = new String[count];
+
+        int i = 0;
+
+        while (result.moveToNext()) {
+            lohnbez[i] = result.getString(result.getColumnIndex(DBManager.COLUMN_BEZEICHNUNG));
+
+            System.out.println("values[" + i + "]: " + lohnbez[i]);
+
+            i++;
+        }
+        result.close();
+
+
         /** AW Picker **/
         NumberPicker numberPickerAw = (NumberPicker) rootView.findViewById(R.id.numberPickerAw);
         numberPickerAw.setMaxValue(100);
@@ -53,6 +80,13 @@ public class arbeit extends Fragment {
         numberPickerWeg.setMaxValue(100);
         numberPickerWeg.setMinValue(0);
         numberPickerWeg.setWrapSelectorWheel(false);
+
+        NumberPicker LohnPicker = (NumberPicker) rootView.findViewById(R.id.lohnart);
+        LohnPicker.setMaxValue(count-1);
+        LohnPicker.setMinValue(0);
+        LohnPicker.setDisplayedValues(lohnbez);
+        LohnPicker.setWrapSelectorWheel(false);
+        LohnPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         EditText editTextTechnikernr =  (EditText) rootView.findViewById(R.id.editTextTechniker);
         SessionManager session = new SessionManager(context);
@@ -184,8 +218,35 @@ public class arbeit extends Fragment {
         DatePicker Datum = (DatePicker) rootView.findViewById(R.id.datePickerArbeit);
         NumberPicker Aw = (NumberPicker) rootView.findViewById(R.id.numberPickerAw);
         NumberPicker Weg = (NumberPicker) rootView.findViewById(R.id.numberPickerWeg);
+        NumberPicker LohnPicker = (NumberPicker) rootView.findViewById(R.id.lohnart);
         EditText TechnikerNr =  (EditText) rootView.findViewById(R.id.editTextTechniker);
         EditText Arbeit =  (EditText) rootView.findViewById(R.id.editTextArbeit);
+
+        String Lohnarten[]=LohnPicker.getDisplayedValues();
+        String Lohnart=Lohnarten[LohnPicker.getValue()];
+
+        DBManager dbManager = new DBManager(context);
+        SQLiteDatabase db = dbManager.getReadableDatabase();
+        String query = "SELECT " + DBManager.COLUMN_LOHNARTNR +
+                " FROM " +
+                DBManager.TABLE_LOHNART +
+                " WHERE "+DBManager.COLUMN_BEZEICHNUNG+" = '" +Lohnart+"';";
+        Cursor lohnresult = db.rawQuery(query, null);
+
+        Log.e("querryyyyy:::", query);
+        int count = lohnresult.getCount();
+        int lohnartnr[] = new int[count];
+
+        int i = 0;
+
+        while (lohnresult.moveToNext()) {
+            lohnartnr[i] = lohnresult.getInt(lohnresult.getColumnIndex(DBManager.COLUMN_LOHNARTNR));
+
+            System.out.println("values[" + i + "]: " + lohnartnr[i]);
+
+            i++;
+        }
+        lohnresult.close();
 
         String Date = String.valueOf(String.valueOf(Datum.getDayOfMonth())+"-"+String.valueOf(Datum.getMonth()+1)+"-"+Datum.getYear());
         Log.e("DATUM!!!", Date);
@@ -193,12 +254,14 @@ public class arbeit extends Fragment {
         String WEG =String.valueOf(Weg.getValue());
         String TechNr = String.valueOf(TechnikerNr.getText());
         String ARBEIT =String.valueOf(Arbeit.getText());
+        String LohnArtNr =String.valueOf(lohnartnr[0]);
 
         next.putString("AW"+Position,AW);
         next.putString("WEG"+Position,WEG);
         next.putString("TechNr"+Position,TechNr);
         next.putString("Arbeit"+Position,ARBEIT);
         next.putString("Datum"+Position, Date);
+        next.putString("LohnArtNr"+Position, LohnArtNr);
         Log.e("NextBundle",""+next);
         return next;
     }

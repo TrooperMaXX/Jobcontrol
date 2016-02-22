@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -26,11 +24,8 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.File;
-
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.query.DBManager;
-import de.hoell.jobcontrol.query.DownloadFileFromURL;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -254,6 +249,7 @@ public class eteile extends Fragment {
             System.out.println("artnr[" + i + "]: " + values[i]);
             i++;
         }
+            result.close();
         System.out.println("länge " + values.length);
         if (values.length > 0) {
             next.putString("TeileNr" + Position, values[0]);

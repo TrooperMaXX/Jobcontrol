@@ -25,7 +25,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, File> {
         mContext = context;
         mUrl=url;
         mOutput=output;
-        //mPdialog=pDialog;
+
     }
 
 
@@ -117,11 +117,26 @@ public class DownloadFileFromURL extends AsyncTask<String, String, File> {
         Log.e("parameter postexecute", "" + file);
 
         pDialog.dismiss();
-        if (file.getName().equals("artstamm.csv")){
+        String filename=file.getName();
+       switch (filename){
+
+           case "artstamm.csv":
+               new DBManager.FillArtDB(mContext, file).execute();
+               break;
+           case "gerstamm.csv":
+               new DBManager.FillGerDB(mContext, file).execute();
+               break;
+           case "lohnart.csv":
+               new DBManager.FillLohnDB(mContext, file).execute();
+               break;
+       }
+
+
+       /* if (file.getName().equals("artstamm.csv")){
             new DBManager.FillArtDB(mContext, file).execute();
         }else {
             new DBManager.FillGerDB(mContext, file).execute();
-        }
+        }*/
 
 //        mPdialog.incrementProgressBy(1);
     }

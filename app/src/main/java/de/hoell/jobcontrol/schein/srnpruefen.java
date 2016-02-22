@@ -44,7 +44,7 @@ private String mSeriennummer;
         final Bundle args=getArguments();
         context = rootView.getContext();
         EditText editTextSerienummer =  (EditText) rootView.findViewById(R.id.Serienummer_Eingabe);
-         editTextAnsprechpartner = (EditText) rootView.findViewById(R.id.Ansprechpartner_Eingabe);
+        editTextAnsprechpartner = (EditText) rootView.findViewById(R.id.Ansprechpartner_Eingabe);
         TextView textView = (TextView) rootView.findViewById(R.id.textView25);
 
 
@@ -139,8 +139,13 @@ private String mSeriennummer;
                         bundle.putString("AuaNr", args.getString("value_auftragsnr"));
                         bundle.putString("Name", args.getString("value_name"));
                         bundle.putString("TicketID", args.getString("value_id"));
+                        bundle.putString("Standort", args.getString("value_standort"));
+                        bundle.putString("Error", args.getString("value_error"));
                     } else {
                         bundle.putString("AuaNr", "");
+
+                        bundle.putString("Standort", "");
+                        bundle.putString("Error", "");
                         bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
                     }
 
@@ -249,13 +254,8 @@ private String mSeriennummer;
 
                         bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
                         bundle.putString("AuaNr", "");
-                        /*if (args!=null) {
-                            bundle.putString("AuaNr", args.getString("value_auftragsnr"));
-                            bundle.putString("Name", args.getString("value_name"));
-                        } else {
-                            bundle.putString("AuaNr", "");
-                            bundle.putString("Name","");
-                        }*/
+                        bundle.putString("Standort", "");
+                        bundle.putString("Error", "");
 
                         nextFragment.setArguments(bundle);
                         // Commit the transaction

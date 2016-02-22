@@ -459,10 +459,18 @@ private static final String TAG_SUCCESS = "success";
             TextView textViewAnsprechpartner =  (TextView) findViewById(R.id.textViewContentAnsprechpartner);
             String Ansprechpartner = textViewAnsprechpartner.getText().toString();
 
+            TextView textViewStandort =  (TextView) findViewById(R.id.textViewContentStandort);
+            String Standort = textViewStandort.getText().toString();
+
+            TextView textViewError =  (TextView) findViewById(R.id.textViewContentStoerung);
+            String Error = textViewError.getText().toString();
+
             Intent i = new Intent(getApplicationContext(), Arbeitsschein.class);
             i.putExtra("value_seriennummer", Serienummer);
             i.putExtra("value_auftragsnr", Auftragsnr);
             i.putExtra("value_name", Ansprechpartner);
+            i.putExtra("value_standort", Standort);
+            i.putExtra("value_error", Error);
             i.putExtra("value_id", ID);
             startActivity(i);
 

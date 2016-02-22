@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextRPE"
                     android:textStyle="normal"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:layout_marginLeft="2dp" />
 
                 <TextView
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextRISO"
                     android:textStyle="normal"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:layout_marginLeft="2dp" />
 
                 <TextView
@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextILEAK"
                     android:textStyle="normal"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:layout_marginLeft="2dp" />
 
                 <TextView

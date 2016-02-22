@@ -59,8 +59,14 @@
         <item>Eskalation</item>   <!-- 0  -->
         <item>Eskalation in arbeit</item>          <!-- 1  -->
         <item>Eskalation erledigt</item>      <!-- 2  -->
+    </string-array>
 
+    <!-- Lohnart -->
 
+    <string-array name="arry_lohnart">
+        <item>Techniker</item>   <!-- 0  -->
+        <item>SoftwareTechniker</item>          <!-- 1  -->
+        <item>Solutionspezialist</item>      <!-- 2  -->
     </string-array>
 
     <!-- Notificcations -->

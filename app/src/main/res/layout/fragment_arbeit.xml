@@ -51,8 +51,8 @@
                 android:textSize="20dp"
                 android:id="@+id/textView15"
                 android:layout_row="2"
-                android:layout_column="0"
-                android:layout_columnSpan="2"/>
+                android:layout_column="1"
+                android:layout_columnSpan="1"/>
 
             <TextView
                 android:text="Weg"
@@ -69,10 +69,20 @@
             <NumberPicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/numberPickerAw"
+                android:id="@+id/lohnart"
+                android:entries="@array/arry_lohnart"
                 android:layout_row="2"
                 android:layout_column="0"
-                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                android:clickable="false" />
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numberPickerAw"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:layout_columnSpan="1"
                 android:layout_gravity="center_horizontal">
 
             </NumberPicker>

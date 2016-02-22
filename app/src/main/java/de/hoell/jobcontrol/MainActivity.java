@@ -217,7 +217,7 @@
 
                     new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv").execute();
                     new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv").execute();
-
+                    new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/lohnart.csv", "lohnart.csv").execute();
 
 
                     cal.add(Calendar.DATE, +7);
@@ -229,7 +229,7 @@
                         Log.e("loool", "dannach");
                         new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/artstamm.csv", "artstamm.csv").execute();
                         new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/gerstamm.csv", "gerstamm.csv").execute();
-
+                        new DownloadFileFromURL(this, "https://hoell.syno-ds.de:55443/job/android/db/lohnart.csv", "lohnart.csv").execute();
 
                         cal.add(Calendar.DATE, +7);
 
@@ -438,7 +438,8 @@
                                 int success = json.getInt(TAG_SUCCESS);
 
                                 if (success == 1) {
-
+                                    TheTechniker = new ArrayList<HashMap<String, String>>();
+                                    mTechList.setAdapter(null);
                                     Technikerliste = json.getJSONArray("techniker");
                                     JSONObject Ich = json.getJSONObject("ich");
                                     int Ich_verfuegbar = Ich.getInt("tech_verfuegbar");

@@ -137,35 +137,8 @@ public class InfoActivity extends ListActivity {
                         Log.e("Datums","unformatiert "+Datum_unformatiert+" \n Formatiert "+Datum+" \n StringFormatiert "+formatiertes_datum);
                         String Benutzer= inf.getString("Benutzer");
                         String Ansprech= inf.getString("Kontaktperson");
-                        int KonArt= inf.optInt("Kontakt_Art", 0);
-                        String KonartKue = "1";
-                        switch (KonArt){
-                            case 0:
-                                KonartKue= "Undef.";
-                                break;
-                            case 1:
-                                KonartKue= "TK";
-                                break;
-                            case 2:
-                                KonartKue= "B";
-                                break;
-                            case 3:
-                                KonartKue= "IN";
-                                break;
-                            case 4:
-                                KonartKue= "RE";
-                                break;
-                            case 5:
-                                KonartKue= "K";
-                                break;
-                            case 6:
-                                KonartKue= "BB";
-                                break;
-                            case 7:
-                                KonartKue= "RÜ";
-                                break;
+                        String KonArt= inf.getString("Kontakt_Art");
 
-                        }
                         String Info= inf.getString("Information");
                         String L_Benutzer= inf.getString("Letzte_Aederung");
                         String L_Datum_unformatiert= inf.getString("Letzteaenderung_Datum");
@@ -177,7 +150,7 @@ public class InfoActivity extends ListActivity {
                         map.put("Datum", formatiertes_datum);
                         map.put("Benutzer", Benutzer);
                         map.put("Ansprech", Ansprech);
-                        map.put("KonArt", KonartKue);
+                        map.put("KonArt", KonArt);
                         map.put("L_Benutzer", L_Benutzer);
                         map.put("L_Datum", formatiertes_l_datum);
                         map.put("Info", Info);

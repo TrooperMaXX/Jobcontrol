@@ -113,6 +113,7 @@ public class eteile extends Fragment {
                         System.out.println("values[" + i + "]: " + values[i]);
                         i++;
                     }
+                    result.close();
                     System.out.println("länge " + values.length);
                     if (values.length > 0) {
                         editTextBezeichnung.setText(values[0]);

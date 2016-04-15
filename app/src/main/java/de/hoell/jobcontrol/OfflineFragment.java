@@ -6,6 +6,7 @@ package de.hoell.jobcontrol;
 
 import android.app.ListFragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -253,6 +254,12 @@ public class OfflineFragment extends ListFragment {
                             }
 
                             HashMap<String, String> map = new HashMap<String, String>();
+
+                            Jobcontrol.getAppCtx().getResources().getConfiguration();
+                            if (Jobcontrol.getAppCtx().getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT&& Firma.length()>20){
+                                Firma = Firma.substring(0,20)+".";
+                            }
+
                             map.put("Firma", Firma);
                             map.put("Status", Status);
                             map.put("Termin", finalTermin);
@@ -323,7 +330,7 @@ public class OfflineFragment extends ListFragment {
 
 
             intent.putExtra("value_status", Status);
-            int KundenNr = extra.getInt("kundennr");
+            int KundenNr = extra.optInt("kundennr",0);
             intent.putExtra("value_kundennr",KundenNr);
             intent.putExtra("value_droppos", DropPos);
 

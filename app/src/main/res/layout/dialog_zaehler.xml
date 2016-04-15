@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alter Zähler:"
+            android:id="@+id/textViewOld"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Neuer Zähler:"
+            android:id="@+id/textViewNew"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+
+
+    </TableRow>
+
+    <!--SW-->
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sw:"
+            android:id="@+id/textViewOldSw"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sw:"
+            android:id="@+id/editTextNewSw"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:inputType="number"
+            />
+
+
+    </TableRow>
+
+    <!--FARBE-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Farbe: "
+            android:id="@+id/textViewOldFarb"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Farbe: "
+            android:id="@+id/editTextNewFarbe"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:inputType="number"
+            />
+
+
+    </TableRow>
+
+</TableLayout>

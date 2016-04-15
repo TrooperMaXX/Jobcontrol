@@ -42,11 +42,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.CustomRequest;
@@ -123,7 +121,7 @@ public class TicketFragment extends ListFragment {
                                 Log.e("succsess", "yay");
 
 
-                                neueTickets(json, Jobcontrol.getAppCtx());
+
 
 
 
@@ -783,25 +781,81 @@ public class TicketFragment extends ListFragment {
 // This schedule a runnable task every 15 minutes
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
-                    try {
-                       new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    final Functions Function = new Functions();
+
+            if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
+                //JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
+
+
+
+
+                RequestQueue queue = MyVolley.getRequestQueue();
+
+                String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                Map<String, String> postparams = new HashMap<String, String>();
+                postparams.put("tag", "mytickets");
+                postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
+
+
+
+                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject json) {
+                        Log.d("Response Volley: ", json.toString());
+                      //  showProgress(false);
+                try {
+                      if (json.getInt("success")==1) {
+
+                                Log.e("succsess_background", "yay");
+                                 neueTickets(json, Jobcontrol.getAppCtx());
+                                String jstring = json.toString();
+                                System.out.println("is JSONstring null?" + jstring);
+                                new SessionManager(Jobcontrol.getAppCtx()).saveJSON(jstring);
+
+                    }
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError response) {
+                        Log.d("Response: ", response.toString());
+                        //showProgress(false);
+                        Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                        Fragment fragment = null;
+                        fragment = new OfflineFragment();
+                        if (fragment != null) {
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.frame_container, fragment).commit();
+
+                        }
+
+                    }
+                });
+
+            queue.add(jsObjRequest);
+
                 }
-            }, 0, zeit, TimeUnit.MINUTES);
+            }
 //InterruptedException | ExecutionException | TimeoutException |
 
 
 
+    }, 0, zeit, TimeUnit.MINUTES);
     }
-
 
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ListView lv = getListView();
+
         ColorDrawable sage = new ColorDrawable(Jobcontrol.getAppCtx().getResources().getColor(R.color.ticket_list_divider));
         lv.setDivider(sage);
         lv.setDividerHeight(10);
@@ -1384,7 +1438,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(ticker)
         // Sets the ticker text
-        builder.setTicker(getResources().getString(R.string.custom_notification));
+        builder.setTicker("Neues Ticket!");
 
         // Sets the small icon for the ticker
         builder.setSmallIcon(R.drawable.ic_launcher);
@@ -1522,7 +1576,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(ticker)
         // Sets the ticker text
-        builder.setTicker(getResources().getString(R.string.custom_notification_newtemin));
+        builder.setTicker("Neuer Termin!!!");
 
         // Sets the small icon for the ticker
         builder.setSmallIcon(R.drawable.ic_launcher);
@@ -1612,7 +1666,7 @@ public class TicketFragment extends ListFragment {
 
         // BEGIN_INCLUDE(ticker)
         // Sets the ticker text
-        builder.setTicker(getResources().getString(R.string.custom_notification_newstatus));
+        builder.setTicker("Ware Da!");
 
         // Sets the small icon for the ticker
         builder.setSmallIcon(R.drawable.ic_launcher);

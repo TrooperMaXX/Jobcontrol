@@ -29,10 +29,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Ansprechpartner?"
-        android:id="@+id/textView25"
+        android:text="Beauftragte Dienstleistung?"
+        android:id="@+id/textView26"
         android:layout_gravity="center_horizontal"
         android:labelFor="@+id/Ansprechpartner_Eingabe"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="15"
+        android:id="@+id/TextError"
+        android:background="@drawable/textlines"
+        android:layout_gravity="center_horizontal"
+        />
+
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:text="Ansprechpartner?"
+    android:id="@+id/textView25"
+    android:layout_gravity="center_horizontal"
+    android:labelFor="@+id/Ansprechpartner_Eingabe"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -42,6 +61,8 @@
         android:layout_gravity="center_horizontal"
         android:inputType="textAutoComplete|textAutoCorrect"
         />
+
+
 
     <Button
         style="?android:attr/buttonStyleSmall"

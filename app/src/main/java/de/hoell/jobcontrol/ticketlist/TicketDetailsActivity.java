@@ -885,7 +885,7 @@ private static final String TAG_SUCCESS = "success";
             try {
 
                 in = new URL("http://5.158.136.15/job/android/bild.php?id="+mID).openStream();
-
+                Log.e("bildurl","http://5.158.136.15/job/android/bild.php?id="+mID);
                 mbmp = BitmapFactory.decodeStream(in);
                 in.close();
                 /**SAVE IMG AS PNG**/

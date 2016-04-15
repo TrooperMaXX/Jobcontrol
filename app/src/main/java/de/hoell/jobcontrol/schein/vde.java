@@ -3,33 +3,22 @@ package de.hoell.jobcontrol.schein;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hoell.jobcontrol.R;
-import de.hoell.jobcontrol.query.DBManager;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -105,10 +94,12 @@ public class vde extends Fragment {
                 }
 
                 if(ok){
-
-
-                zaehler nextFragment = new zaehler();
-
+                Fragment nextFragment;
+                if(args.getInt("zAnz")>0) {
+                     nextFragment = new zaehler();
+                }else{
+                     nextFragment = new pruefen();
+                }
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,

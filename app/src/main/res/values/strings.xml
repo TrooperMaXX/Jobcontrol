@@ -45,7 +45,7 @@
         <item>Unbearbeitet</item>   <!-- 0  -->
         <item>Fahrt</item>          <!-- 1  -->
         <item>In Arbeit</item>      <!-- 2  -->
-        <item>offen</item>          <!-- 3  -->
+        <item>Wiederbesuch</item>          <!-- 3  -->
 
         <item>Erledigt</item>       <!-- 4  -->
         <item>wartet</item>         <!-- 5  -->
@@ -140,6 +140,11 @@
     <string name="farb">4321</string>
     <string name="zaehler">zähler</string>
     <string name="bemerkung">Bemerkung</string>
+    <string name="getarbeit">Ausgeführte Arbeit</string>
+    <string name="zaehpruefen">Bitte Zähler prüfen</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="geterror">Beauftragte Dienstleistung</string>
 
 
 </resources>

@@ -1,8 +1,11 @@
 package de.hoell.jobcontrol.schein;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +36,10 @@ public class srnpruefen extends Fragment {
     private Context context;
 private String mSeriennummer;
    public EditText editTextAnsprechpartner;
+    public EditText mError;
+    public TextView Error;
+    private boolean ok=true;
+
     public srnpruefen(){
 
     }
@@ -45,8 +53,18 @@ private String mSeriennummer;
         context = rootView.getContext();
         EditText editTextSerienummer =  (EditText) rootView.findViewById(R.id.Serienummer_Eingabe);
         editTextAnsprechpartner = (EditText) rootView.findViewById(R.id.Ansprechpartner_Eingabe);
-        TextView textView = (TextView) rootView.findViewById(R.id.textView25);
 
+        Error =  (TextView) rootView.findViewById(R.id.TextError);
+
+        Error.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getErrorDialog();
+            }
+        });
+
+        TextView textView = (TextView) rootView.findViewById(R.id.textView25);
+        TextView textView2 = (TextView) rootView.findViewById(R.id.textView26);
 
 
         Log.e("args", "lol " + args);
@@ -54,13 +72,7 @@ private String mSeriennummer;
         final Button Button_abgleich_scan = (Button) rootView.findViewById(R.id.button_abgleich_scan);
         Button_abgleich_scan.setEnabled(false);
         Button_abgleichen.setEnabled(false);
-        if(args!=null){
-            editTextSerienummer.setText(args.getString("value_seriennummer"));
-            Button_abgleich_scan.setVisibility(View.GONE);
-            editTextAnsprechpartner.setVisibility(View.GONE);
-            textView.setVisibility(View.GONE);
-            Button_abgleichen.setEnabled(true);
-        }
+
 
         editTextAnsprechpartner.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,14 +88,14 @@ private String mSeriennummer;
 
             @Override
             public void afterTextChanged(Editable edit) {
-                if (edit.length() >= 3) {
+                if (edit.length() >= 3&&Error.getText().toString().trim().length()>3) {
                     Button_abgleichen.setEnabled(true);
                     Button_abgleich_scan.setEnabled(true);
 
                 }else{
-                    Button_abgleich_scan.setEnabled(false);
-                    Button_abgleichen.setEnabled(false);
-                }
+                        Button_abgleich_scan.setEnabled(false);
+                        Button_abgleichen.setEnabled(false);
+                    }
             }
         });
 
@@ -116,7 +128,10 @@ private String mSeriennummer;
                     String Str   = result.getString(result.getColumnIndex(DBManager.COLUMN_STR));
                     String Ort   = result.getString(result.getColumnIndex(DBManager.COLUMN_ORT));
                     String Ger   = result.getString(result.getColumnIndex(DBManager.COLUMN_GER));
-                    Log.e("Result", GerNr +" "+ Ger+" "+ Firma+" "+ Str+" "+ Ort);
+                    int zanz = result.getInt(result.getColumnIndex(DBManager.COLUMN_ZANZ));
+                    int z1 = result.getInt(result.getColumnIndex(DBManager.COLUMN_Z1));
+                    int z2 = result.getInt(result.getColumnIndex(DBManager.COLUMN_Z2));
+                    Log.e("Result", GerNr +" "+ Ger+" "+ Firma+" "+ Str+" "+ Ort+ " "+ zanz);
 
                     arbeit nextFragment = new arbeit();
 
@@ -132,6 +147,9 @@ private String mSeriennummer;
                     bundle.putString("Str", Str);
                     bundle.putString("Ort", Ort);
                     bundle.putString("Ger", Ger);
+                    bundle.putInt("zAnz", zanz);
+                    bundle.putInt("z1", z1);
+                    bundle.putInt("z2", z2);
                     bundle.putInt("Pos", 0);
                     bundle.putInt("TeilePos", 0);
 
@@ -145,7 +163,7 @@ private String mSeriennummer;
                         bundle.putString("AuaNr", "");
 
                         bundle.putString("Standort", "");
-                        bundle.putString("Error", "");
+                        bundle.putString("Error", Error.getText().toString());
                         bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
                     }
 
@@ -159,6 +177,7 @@ private String mSeriennummer;
                     Log.e("ERROR","result is null");
                     Toast.makeText(Jobcontrol.getAppCtx(), "Ungültige Seriennummer Bitte manuellen Schein ausfüllen oder DB updaten?", Toast.LENGTH_SHORT).show();
                 }
+                result.close();
 
 
 
@@ -200,7 +219,15 @@ private String mSeriennummer;
                 }*/
             }
         });
-
+        if(args!=null){
+            editTextSerienummer.setText(args.getString("value_seriennummer"));
+            Button_abgleich_scan.setVisibility(View.GONE);
+            editTextAnsprechpartner.setVisibility(View.GONE);
+            Error.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
+            textView2.setVisibility(View.GONE);
+            Button_abgleichen.setEnabled(true);
+        }
 
         return rootView;
     }
@@ -233,6 +260,9 @@ private String mSeriennummer;
                         String Str = result.getString(result.getColumnIndex(DBManager.COLUMN_STR));
                         String Ort = result.getString(result.getColumnIndex(DBManager.COLUMN_ORT));
                         String Ger = result.getString(result.getColumnIndex(DBManager.COLUMN_GER));
+                        int zanz = result.getInt(result.getColumnIndex(DBManager.COLUMN_ZANZ));
+                        int z1 = result.getInt(result.getColumnIndex(DBManager.COLUMN_Z1));
+                        int z2 = result.getInt(result.getColumnIndex(DBManager.COLUMN_Z2));
                         Log.e("Result", GerNr + " " + Ger + " " + Firma + " " + Str + " " + Ort);
 
                         arbeit nextFragment = new arbeit();
@@ -249,13 +279,16 @@ private String mSeriennummer;
                         bundle.putString("Str", Str);
                         bundle.putString("Ort", Ort);
                         bundle.putString("Ger", Ger);
+                        bundle.putInt("zAnz", zanz);
+                        bundle.putInt("z1", z1);
+                        bundle.putInt("z2", z2);
                         bundle.putInt("Pos", 0);
                         bundle.putInt("TeilePos", 0);
 
                         bundle.putString("Name",  editTextAnsprechpartner.getText().toString());
                         bundle.putString("AuaNr", "");
                         bundle.putString("Standort", "");
-                        bundle.putString("Error", "");
+                        bundle.putString("Error", Error.getText().toString());
 
                         nextFragment.setArguments(bundle);
                         // Commit the transaction
@@ -266,7 +299,7 @@ private String mSeriennummer;
                         Log.e("ERROR", "result is null");
                         Toast.makeText(Jobcontrol.getAppCtx(), "Ungültige Seriennummer Bitte manuellen Schein ausfüllen oder DB updaten?", Toast.LENGTH_SHORT).show();
                     }
-
+                    result.close();
 
                 } else {
                     Toast toast = Toast.makeText(context,
@@ -278,4 +311,50 @@ private String mSeriennummer;
 
 
     }
+    private void getErrorDialog() {
+        View mView = View.inflate(context, R.layout.dialog_arbeit, null);
+        mError = ((EditText) mView.findViewById(R.id.getarbeit));
+        mError.setText(Error.getText().toString());
+        mError.setSelection(mError.getText().length());
+
+        final InputMethodManager mInputMethodManager = (InputMethodManager) context
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputMethodManager.restartInput(mView);
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder( context);
+        mBuilder.setTitle(getString(R.string.geterror));
+        mBuilder.setPositiveButton(getString(R.string.save), new Dialog.OnClickListener() {
+            public void onClick(DialogInterface mDialogInterface, int mWhich) {
+                String mGetErrorString = mError.getText().toString().trim();
+
+                if (mGetErrorString.length() > 3) {
+                    Error.setText(mGetErrorString);
+                    Error.setError(null);
+                    mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    mDialogInterface.dismiss();
+                }else{
+                    Error.setError("Bitte Störung eingeben");
+
+                }
+            }
+        });
+
+        mBuilder.setNegativeButton(getString(R.string.cancel), new Dialog.OnClickListener() {
+            public void onClick(DialogInterface mDialogInterface, int mWhich) {
+
+                mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                mDialogInterface.dismiss();
+
+            }
+        });
+
+        mBuilder.setView(mView);
+        mBuilder.show();
+
+        if (mInputMethodManager != null) {
+            mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
+
 }

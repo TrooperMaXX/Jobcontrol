@@ -31,7 +31,7 @@ public class NewInfo extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_info);
-        Button Button_InfoSave = (Button) findViewById(R.id.button_info_save);
+        final Button Button_InfoSave = (Button) findViewById(R.id.button_info_save);
         final String ID = getIntent().getStringExtra("value_id");
         SessionManager session =new SessionManager(Jobcontrol.getAppCtx());
         final String user=session.getUser();
@@ -44,7 +44,7 @@ public class NewInfo extends Activity {
             public void onClick(View view) {
                 Functions Function = new Functions();
                 if( Function.isNetworkOnline(NewInfo.this)){
-
+                    Button_InfoSave.setClickable(false);
                     TextView editTextAnsprechpartner =  (TextView) findViewById(R.id.Ansprechpartner_Info_Content);
                     String editInfoAnsprech = editTextAnsprechpartner.getText().toString();
                     TextView editTextInfo =  (TextView) findViewById(R.id.Info_Info_ontent);
@@ -55,11 +55,12 @@ public class NewInfo extends Activity {
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     } catch (TimeoutException e) {
+                        Button_InfoSave.setClickable(true);
                         e.printStackTrace();
                     }
                 }  else {
                     Toast.makeText(getApplicationContext(), "Keine INternet verbindung", Toast.LENGTH_LONG).show();}
-
+                Button_InfoSave.setClickable(true);
 
 
             }

@@ -1,20 +1,25 @@
 package de.hoell.jobcontrol.schein;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import de.hoell.jobcontrol.R;
@@ -26,6 +31,8 @@ import de.hoell.jobcontrol.session.SessionManager;
  */
 public class arbeit extends Fragment {
     private Context context;
+    public EditText mArbeit;
+    public TextView Arbeit;
     public arbeit() {
     }
 
@@ -92,6 +99,19 @@ public class arbeit extends Fragment {
         SessionManager session = new SessionManager(context);
 
         editTextTechnikernr.setText(String.valueOf(session.getTechNum()));
+
+        Arbeit =  (TextView) rootView.findViewById(R.id.TextArbeit);
+
+        Arbeit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getArbeitDialog();
+            }
+        });
+
+
+
+
         String mSeriennummer =args.getString("Srn");
         final   int pos =args.getInt("Pos");
         Log.e("args", mSeriennummer + "lol " + args);
@@ -150,64 +170,6 @@ public class arbeit extends Fragment {
 
 
 
-       /** Button_abgleichen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Log.e("button_abgleich","clicked");
-                EditText editTextSerienummer =  (EditText) rootView.findViewById(R.id.Serienummer_Eingabe);
-
-                String Seriennummer_eingabe = editTextSerienummer.getText().toString().trim();
-
-
-                if (mSeriennummer != null) {
-                    if (mSeriennummer.equals(Seriennummer_eingabe)){
-
-                        arbeit nextFragment = new arbeit();
-
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                        // Replace whatever is in the fragment_container view with this fragment,
-                        // and add the transaction to the back stack so the user can navigate back
-                        transaction.replace(R.id.fragment_container, nextFragment);
-                        transaction.addToBackStack(null);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("Srn", mSeriennummer);
-                        nextFragment.setArguments(bundle);
-                        // Commit the transaction
-                        transaction.commit();
-
-                    }
-                    else{
-                        Toast.makeText(Jobcontrol.getAppCtx(), "Ungültige Seriennummer NEUE Maschine?", Toast.LENGTH_SHORT).show();
-                    }
-                }else
-                {
-                    Toast.makeText(Jobcontrol.getAppCtx(), "mSeriennummer null!!!!!!!!", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });**/
-
-       /** Button_abgleich_scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-
-
-                Intent qrDroid = new Intent( "la.droid.qr.scan" );
-                qrDroid.putExtra("la.droid.qr.complete", true);
-                try {
-                    startActivityForResult(qrDroid, 0);
-                    //ja=true;
-                } catch (ActivityNotFoundException activity) {
-                    //  ja=false;
-                    qrDroidRequired(getActivity());
-                }
-            }
-        });**/
 
 
         return rootView;
@@ -220,7 +182,7 @@ public class arbeit extends Fragment {
         NumberPicker Weg = (NumberPicker) rootView.findViewById(R.id.numberPickerWeg);
         NumberPicker LohnPicker = (NumberPicker) rootView.findViewById(R.id.lohnart);
         EditText TechnikerNr =  (EditText) rootView.findViewById(R.id.editTextTechniker);
-        EditText Arbeit =  (EditText) rootView.findViewById(R.id.editTextArbeit);
+        TextView Arbeit =  (TextView) rootView.findViewById(R.id.TextArbeit);
 
         String Lohnarten[]=LohnPicker.getDisplayedValues();
         String Lohnart=Lohnarten[LohnPicker.getValue()];
@@ -264,6 +226,45 @@ public class arbeit extends Fragment {
         next.putString("LohnArtNr"+Position, LohnArtNr);
         Log.e("NextBundle",""+next);
         return next;
+    }
+    private void getArbeitDialog() {
+        View mView = View.inflate(context, R.layout.dialog_arbeit, null);
+        mArbeit = ((EditText) mView.findViewById(R.id.getarbeit));
+        mArbeit.setText(Arbeit.getText().toString());
+        mArbeit.setSelection(mArbeit.getText().length());
+
+        final InputMethodManager mInputMethodManager = (InputMethodManager) context
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputMethodManager.restartInput(mView);
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder( context);
+        mBuilder.setTitle(getString(R.string.getarbeit));
+        mBuilder.setPositiveButton(getString(R.string.save), new Dialog.OnClickListener() {
+            public void onClick(DialogInterface mDialogInterface, int mWhich) {
+                String mGetArbeitString = mArbeit.getText().toString().trim();
+                if (mGetArbeitString.length() > 0) {
+                    Arbeit.setText(mGetArbeitString);
+                    mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    mDialogInterface.dismiss();
+                }
+            }
+        });
+
+        mBuilder.setNegativeButton(getString(R.string.cancel), new Dialog.OnClickListener() {
+            public void onClick(DialogInterface mDialogInterface, int mWhich) {
+
+                    mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                    mDialogInterface.dismiss();
+
+            }
+        });
+
+        mBuilder.setView(mView);
+        mBuilder.show();
+
+        if (mInputMethodManager != null) {
+            mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
 }

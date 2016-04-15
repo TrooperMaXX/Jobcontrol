@@ -3,61 +3,48 @@ package de.hoell.jobcontrol.schein;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
-import android.util.Xml;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlSerializer;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
-import de.hoell.jobcontrol.query.CustomBodyStringRequest;
-import de.hoell.jobcontrol.query.CustomRequest;
+import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.MyVolley;
-import de.hoell.jobcontrol.session.SessionManager;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class pruefen extends Fragment {
     private Context context;
+    SignatureView mSig;
     EditText editTextTeileNr,editTextBezeichnung;
     public pruefen() {
     }
@@ -84,7 +71,7 @@ public class pruefen extends Fragment {
         final EditText Farb = (EditText) rootView.findViewById(R.id.editTextFarbContent);
         final EditText Bemerkung = (EditText) rootView.findViewById(R.id.editTextBemerkung);
 
-        ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
+                ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
         ExpandableHeightListView teileliste = (ExpandableHeightListView) rootView.findViewById(R.id.teileList);
 
 
@@ -190,12 +177,50 @@ public class pruefen extends Fragment {
         
 
 
-                FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
-        fab_next.setOnClickListener(new View.OnClickListener() {
+                FloatingActionButton fab_end = (FloatingActionButton) rootView.findViewById(R.id.fab_end);
+        fab_end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mSig!=null){
+                    CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
+                    Log.e("save","klickedd");
+                    args.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
 
-                try {
+                    byte[] signature = mSig.getBytes();
+
+                    Log.e("BLOB?", Arrays.toString(signature));
+                    Bitmap bitsignature = mSig.getBitmap();
+                    String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
+                    args.putString("BLOB",myBase64Image);
+                    new DBManager.FillScheinDB(context,args,true).execute();
+
+
+                    final RequestQueue queue = MyVolley.getRequestQueue();
+
+                    if ( args.containsKey("TicketID")) {
+
+                    }else{
+
+                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
+                    }
+
+
+                }else{
+                    Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+
+
+
+
+
+
+                /*try {
                     //FileOutputStream fos = new  FileOutputStream("userData.xml");
                     SessionManager session =new SessionManager(context);
 
@@ -415,14 +440,14 @@ public class pruefen extends Fragment {
                                 startActivity(i);
                             }
 
-                           /* try {
+                           *//* try {
                                 if(json.getInt("success")==1){
                                     Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
                                     startActivity(i);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }*/
+                            }*//*
 
                         }
                     }, new Response.ErrorListener() {
@@ -447,32 +472,51 @@ public class pruefen extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+*/
 
 
-             /*   Bundle next = addValues(args, rootView);
-                Log.e("final next", "" + next);
-
-                eteile nextFragment = new eteile();
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.frame_container, nextFragment);
-                transaction.addToBackStack(null);
-
-                nextFragment.setArguments(next);
-                // Commit the transaction
-                transaction.commit();
-
-                Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();*/
 
 
             }
         });
 
+        FloatingActionButton fab_unterschrift = (FloatingActionButton) rootView.findViewById(R.id.fab_unterschrift);
+        fab_unterschrift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout mContent = (LinearLayout) rootView.findViewById(R.id.linearLayout);
+                 mSig=new SignatureView(context,null);
+                mContent.addView(mSig, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            }
+        });
+
+        FloatingActionButton fab_save = (FloatingActionButton) rootView.findViewById(R.id.fab_save);
+        fab_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSig!=null){
+                    CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
+                    Log.e("save","klickedd");
+                    args.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
+
+                    byte[] signature = mSig.getBytes();
+
+                    Log.e("BLOB?", Arrays.toString(signature));
+                    Bitmap bitsignature = mSig.getBitmap();
+                    String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
+                    args.putString("BLOB",myBase64Image);
+                    new DBManager.FillScheinDB(context,args).execute();
+                    Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+
+                }else{
+                    Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
+                }
 
 
+            }
+        });
 
         return rootView;
     }
@@ -487,6 +531,19 @@ public class pruefen extends Fragment {
         }
         reader.close();
         return sb.toString();
+    }
+
+    public static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
+    {
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        image.compress(compressFormat, quality, byteArrayOS);
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+    }
+
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
 }

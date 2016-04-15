@@ -3,8 +3,9 @@ package de.hoell.jobcontrol.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.Date;
 import java.util.HashMap;
+
+import de.hoell.jobcontrol.query.DBManager;
 
 /**
  * Created by Hoell on 21.11.2014.
@@ -214,6 +215,8 @@ public class SessionManager {
             // Clearing all user data from Shared Preferences
             editor.clear();
             editor.commit();
+            // Clearing all user data from Database
+            DBManager.dropAll( new DBManager(_context).getWritableDatabase());
 
         }
 

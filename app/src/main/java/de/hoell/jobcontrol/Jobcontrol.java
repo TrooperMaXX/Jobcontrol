@@ -2,9 +2,6 @@ package de.hoell.jobcontrol;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
-
-import com.facebook.stetho.Stetho;
 
 import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.MyVolley;
@@ -24,9 +21,9 @@ public class Jobcontrol extends Application {
         appCtx=getApplicationContext();
         DBManager dbManager =new DBManager(appCtx);
 
-        Stetho.initializeWithDefaults(this);
+       /* Stetho.initializeWithDefaults(this);
         Log.e("Stetho", "done");
-        init();
+        init();*/
 
     }
     public static Context getAppCtx(){

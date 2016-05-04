@@ -823,8 +823,8 @@ public class TicketFragment extends ListFragment {
 
                     @Override
                     public void onErrorResponse(VolleyError response) {
-                        Log.d("Response: ", response.toString());
-                        //showProgress(false);
+                        Log.e("Response: ", response.toString());
+                      /*  //showProgress(false);
                         Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                         Fragment fragment = null;
@@ -834,7 +834,7 @@ public class TicketFragment extends ListFragment {
                             fragmentManager.beginTransaction()
                                     .replace(R.id.frame_container, fragment).commit();
 
-                        }
+                        }*/
 
                     }
                 });

@@ -99,7 +99,8 @@ public class DBManager extends SQLiteOpenHelper {
     // Indexes should not be used on small tables. © Tutorials Point
     private static final String ART_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_ARTSTAMM + "(" +
-                    COLUMN_ARTNR + " TEXT PRIMARY KEY, " +
+                    "artid INTEGER PRIMARY KEY AUTOINCREMENT , " +
+                    COLUMN_ARTNR + " TEXT , " +
                     COLUMN_BESCHREIBUNG + " TEXT , " +
                     COLUMN_EAN + " TEXT ,"+
                     COLUMN_VK + " DOUBLE );";

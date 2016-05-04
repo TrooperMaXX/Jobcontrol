@@ -45,7 +45,7 @@
         <item>Unbearbeitet</item>   <!-- 0  -->
         <item>Fahrt</item>          <!-- 1  -->
         <item>In Arbeit</item>      <!-- 2  -->
-        <item>Wiederbesuch</item>          <!-- 3  -->
+        <item>offen</item>          <!-- 3  -->
 
         <item>Erledigt</item>       <!-- 4  -->
         <item>wartet</item>         <!-- 5  -->

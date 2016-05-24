@@ -21,9 +21,9 @@ public class Jobcontrol extends Application {
         appCtx=getApplicationContext();
         DBManager dbManager =new DBManager(appCtx);
 
-       /* Stetho.initializeWithDefaults(this);
-        Log.e("Stetho", "done");
-        init();*/
+   /*     Stetho.initializeWithDefaults(this);
+        Log.e("Stetho", "done");*/
+        init();
 
     }
     public static Context getAppCtx(){

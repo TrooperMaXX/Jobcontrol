@@ -62,6 +62,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 
     public final static String TABLE_LOHNART="lohnart";
+    public final static String COLUMN_REIHENFOLGEID="reihenfolgeID";
     public final static String COLUMN_LOHNARTNR="artnr";
     public final static String COLUMN_BEZEICHNUNG="bez";
     public final static String COLUMN_WVT="wvt";
@@ -119,7 +120,8 @@ public class DBManager extends SQLiteOpenHelper {
 
     private static final String LOHN_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_LOHNART + "(" +
-                    COLUMN_LOHNARTNR + " INTEGER PRIMARY KEY, " +
+                    COLUMN_REIHENFOLGEID + " INTEGER PRIMARY KEY, " +
+                    COLUMN_LOHNARTNR + " INTEGER, " +
                     COLUMN_BEZEICHNUNG + " TEXT , " +
                     COLUMN_WVT + " INTEGER );";
 
@@ -450,7 +452,7 @@ public class DBManager extends SQLiteOpenHelper {
             BufferedReader buffer = new BufferedReader(file);
             String line = "";
 
-            String columns = COLUMN_LOHNARTNR + ", "+ COLUMN_BEZEICHNUNG+ ", " +COLUMN_WVT;
+            String columns = COLUMN_REIHENFOLGEID+ ", "+ COLUMN_LOHNARTNR + ", "+ COLUMN_BEZEICHNUNG+ ", " +COLUMN_WVT;
             String str1 = "INSERT INTO " + TABLE_LOHNART + " (" + columns + ") values(";
             String str2 = ");";
 
@@ -462,7 +464,8 @@ public class DBManager extends SQLiteOpenHelper {
                     String[] str = line.split(",");
                     sb.append("'" + str[0] + "','");
                     sb.append(str[1] + "','");
-                    sb.append(str[2] + "'");
+                    sb.append(str[2] + "','");
+                    sb.append(str[3] + "'");
 
                     sb.append(str2);
                     // Log.d("INSERT: ",sb.toString());
@@ -593,7 +596,7 @@ public class DBManager extends SQLiteOpenHelper {
             for ( int t=0; t <= mBundle.getInt("TeilePos");t++){
                 if ( mBundle.containsKey("Anz"+ String.valueOf(t))) {
                     String columnst = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_ERROR +  ", " +COLUMN_POSART + ", "
-                            + COLUMN_ARTNR+ ", " +COLUMN_MENGE_AW + ", " +COLUMN_TEXT+ ", " +COLUMN_PRUEFEN;
+                            + COLUMN_ARTNR+ ", " +COLUMN_MENGE_AW + ", "+COLUMN_TECHNR + ", " +COLUMN_TEXT+ ", " +COLUMN_PRUEFEN;
                     String str1t = "INSERT INTO " + TABLE_SCHEIN + " (" + columnst + ") values(";
                     int Posart = 2;
                     String MengeAW=mBundle.getString("Anz" + String.valueOf(t));
@@ -601,8 +604,9 @@ public class DBManager extends SQLiteOpenHelper {
                     String ArtNr = mBundle.getString("ArtNr" + String.valueOf(t));
 
                     String Bez = mBundle.getString("Bez" + String.valueOf(t));
+                    String Techniker=mBundle.getString("TechNr0");
 
-                    String values="'" + Srn+"','"+TicketID+"','"+Error+"','"+Posart+"','"+ArtNr+"','"+ MengeAW+"','"+ Bez+"','"+pruefen+"');";
+                    String values="'" + Srn+"','"+TicketID+"','"+Error+"','"+Posart+"','"+ArtNr+"','"+ MengeAW+"','"+ Techniker+"','"+ Bez+"','"+pruefen+"');";
 
                     String abfrage=str1t+values;
                     Log.d("INSERT: ",abfrage);
@@ -738,7 +742,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             Log.d("GET: ",selectfrom+TABLE_SCHEIN+where);
 
-            Cursor scheinresult = sdb.rawQuery(selectfrom+TABLE_SCHEIN,null);
+            Cursor scheinresult = sdb.rawQuery(selectfrom+TABLE_SCHEIN+where,null);
 
 
 
@@ -777,7 +781,7 @@ public class DBManager extends SQLiteOpenHelper {
             /*********************Zähler**********************************************************************************/
             Log.d("GET: ",selectfrom+TABLE_ZAEHLER+where);
 
-            Cursor zaehlerresult = sdb.rawQuery(selectfrom+TABLE_ZAEHLER,null);
+            Cursor zaehlerresult = sdb.rawQuery(selectfrom+TABLE_ZAEHLER+where,null);
 
 
 
@@ -809,7 +813,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             Log.d("GET: ",selectfrom+TABLE_VDE+where);
 
-            Cursor vderesult = sdb.rawQuery(selectfrom+TABLE_VDE,null);
+            Cursor vderesult = sdb.rawQuery(selectfrom+TABLE_VDE+where,null);
 
 
 
@@ -841,7 +845,7 @@ public class DBManager extends SQLiteOpenHelper {
             /*********************Unterschrift**********************************************************************************/
             Log.d("GET: ",selectfrom+TABLE_UNTERSCHRIFT+where);
 
-            Cursor unterresult = sdb.rawQuery(selectfrom+TABLE_UNTERSCHRIFT,null);
+            Cursor unterresult = sdb.rawQuery(selectfrom+TABLE_UNTERSCHRIFT+where,null);
 
 
 

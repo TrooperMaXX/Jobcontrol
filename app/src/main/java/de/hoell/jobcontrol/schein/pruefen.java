@@ -21,8 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -37,7 +35,6 @@ import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.DBManager;
-import de.hoell.jobcontrol.query.MyVolley;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -195,7 +192,7 @@ public class pruefen extends Fragment {
                     new DBManager.FillScheinDB(context,args,true).execute();
 
 
-                    final RequestQueue queue = MyVolley.getRequestQueue();
+
 
                     if ( args.containsKey("TicketID")) {
 

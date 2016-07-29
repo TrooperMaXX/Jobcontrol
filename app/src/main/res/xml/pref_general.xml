@@ -36,5 +36,9 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
 
+    <Preference android:title="Acts like a button"
+        android:key="@string/dropScheinDB"
+        android:summary="This is a cool button"/>
+
 
 </PreferenceScreen>

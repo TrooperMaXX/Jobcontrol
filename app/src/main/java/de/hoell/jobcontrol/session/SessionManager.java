@@ -216,7 +216,7 @@ public class SessionManager {
             editor.clear();
             editor.commit();
             // Clearing all user data from Database
-            DBManager.dropAll( new DBManager(_context).getWritableDatabase());
+            DBManager.dropAll( _context);
 
         }
 

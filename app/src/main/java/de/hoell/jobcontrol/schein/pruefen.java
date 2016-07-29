@@ -2,7 +2,6 @@ package de.hoell.jobcontrol.schein;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -21,6 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -28,13 +35,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.hoell.jobcontrol.Jobcontrol;
-import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
+import de.hoell.jobcontrol.query.CustomRequest;
 import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.query.MyVolley;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -172,41 +181,6 @@ public class pruefen extends Fragment {
             }
         });
         
-
-
-                FloatingActionButton fab_end = (FloatingActionButton) rootView.findViewById(R.id.fab_end);
-        fab_end.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSig!=null){
-                    CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
-                    Log.e("save","klickedd");
-                    args.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
-
-                    byte[] signature = mSig.getBytes();
-
-                    Log.e("BLOB?", Arrays.toString(signature));
-                    Bitmap bitsignature = mSig.getBitmap();
-                    String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
-                    args.putString("BLOB",myBase64Image);
-                    new DBManager.FillScheinDB(context,args,true).execute();
-
-
-
-
-                    if ( args.containsKey("TicketID")) {
-
-                    }else{
-
-                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                    }
-
-
-                }else{
-                    Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
-                }
 
 
 
@@ -474,8 +448,7 @@ public class pruefen extends Fragment {
 
 
 
-            }
-        });
+
 
         FloatingActionButton fab_unterschrift = (FloatingActionButton) rootView.findViewById(R.id.fab_unterschrift);
         fab_unterschrift.setOnClickListener(new View.OnClickListener() {
@@ -487,25 +460,78 @@ public class pruefen extends Fragment {
             }
         });
 
-        FloatingActionButton fab_save = (FloatingActionButton) rootView.findViewById(R.id.fab_save);
-        fab_save.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
+        fab_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSig!=null){
                     CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
-                    Log.e("save","klickedd");
+                    Log.i("save","klickedd");
                     args.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
 
                     byte[] signature = mSig.getBytes();
 
-                    Log.e("BLOB?", Arrays.toString(signature));
+                    Log.d("BLOB?", Arrays.toString(signature));
                     Bitmap bitsignature = mSig.getBitmap();
                     String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
                     args.putString("BLOB",myBase64Image);
-                    new DBManager.FillScheinDB(context,args).execute();
-                    Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                    args.putString("bemerkung", String.valueOf(Bemerkung.getText()));
+
+                    RequestQueue queue = MyVolley.getRequestQueue();
+                    String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                    Map<String, String> postparams = new HashMap<String, String>();
+                    postparams.put("tag", "scheinid");
+                    postparams.put("srn", args.getString("Srn"));
+                    postparams.put("ticketnr", args.getString("TicketID"));
+
+                    Log.i("volley",postparams.toString());
+
+                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject json) {
+                            Log.d("Response Volley: ", json.toString());
+                            //  showProgress(false);
+                            try {
+                                if (json.getInt("success")==1) {
+                                    Log.e("succsess","yaaaaaaaaaay");
+                                    new DBManager.FillScheinDB(context,args,json.getInt("ScheinId")).execute();
+                                    //TODO: FillSchein mit schein id
+                                } else {
+                                    Log.e("GetScheinID","Failed succsess != 1");
+
+                                    Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+
+                                }
+                            } catch (JSONException  e) {
+                                e.printStackTrace();
+                                Log.e("GetScheinID","Something went wrong w/ the json");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.e("eror_Response: ", response.toString());
+                            new DBManager.FillScheinDB(context,args,0).execute();
+                            //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
+
+                        }
+                    });
+
+                    queue.add(jsObjRequest);
+
+
+
+
+
+
+                    /* Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
+                    startActivity(i);*/
 
                 }else{
                     Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();

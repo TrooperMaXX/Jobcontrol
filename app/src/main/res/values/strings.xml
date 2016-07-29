@@ -145,6 +145,7 @@
     <string name="save">Speichern</string>
     <string name="cancel">Abbrechen</string>
     <string name="geterror">Beauftragte Dienstleistung</string>
+    <string name="dropScheinDB">DROP ScheinDB</string>
 
 
 </resources>

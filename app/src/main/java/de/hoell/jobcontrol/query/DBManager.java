@@ -3,7 +3,6 @@ package de.hoell.jobcontrol.query;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -33,8 +32,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import de.hoell.jobcontrol.Jobcontrol;
-import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.session.SessionManager;
 
 public class DBManager extends SQLiteOpenHelper {
@@ -68,12 +65,10 @@ public class DBManager extends SQLiteOpenHelper {
     public final static String COLUMN_WVT="wvt";
 
 
-    private static final String TABLE_SCHEIN = "schein";
-    private static final String COLUMN_SRN = "srn";
-    private static final String COLUMN_TICKETNR = "ticketnr";
-    private static final String COLUMN_ERROR = "error";
+    public final static String TABLE_POSITIONEN="positionen";
+    private static final String COLUMN_POSID = "posid";
+    private static final String COLUMN_SCHEINID = "scheinid";
     private static final String COLUMN_POSART = "posart";
-    //public final static String COLUMN_ARTNR="artnr";
     private static final String COLUMN_DATUM = "datum";
     private static final String COLUMN_TECHNR = "technr";
     private static final String COLUMN_MENGE_AW = "mengeaw";
@@ -82,25 +77,34 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String COLUMN_PRUEFEN = "pruefen";
 
     public final static String TABLE_ZAEHLER="zaehler";
-    //private static final String COLUMN_ID = "id";
-    //private static final String COLUMN_TICKETNR = "ticketnr";
+    private static final String COLUMN_ZAEHLERID = "zaehlerid";
     public final static String COLUMN_Z1="z1";
     public final static String COLUMN_Z2="z2";
 
     public final static String TABLE_VDE="vde";
+    private static final String COLUMN_VDEID = "vdeid";
     private static final String COLUMN_RPE = "rpe";
     private static final String COLUMN_RISO = "riso";
     private static final String COLUMN_LEAK = "leak";
 
     public final static String TABLE_UNTERSCHRIFT="unterschrift";
-    //private static final String COLUMN_ID = "id";
+    private static final String COLUMN_UNTERSCHRIFTID = "unterschriftid";
     //private static final String COLUMN_TICKETNR = "ticketnr";
     public final static String COLUMN_UNTERSCHRIFT="unterschrift";
+
+    private static final String TABLE_SCHEIN = "schein";
+    private static final String COLUMN_SRN = "srn";
+    private static final String COLUMN_TICKETNR = "ticketnr";
+    private static final String COLUMN_ERROR = "error";
+    private static final String COLUMN_ANSPRECHPARTNER = "ansprechpartner";
+    private static final String COLUMN_EMAIL = "email";
+    private static final String COLUMN_BEMERKUNG = "bemerkung";
+    public final static String COLUMN_ABGESCHLOSSEN="abgeschlossen";
     // Database creation sql statement
     // Indexes should not be used on small tables. © Tutorials Point
     private static final String ART_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_ARTSTAMM + "(" +
-                    "artid INTEGER PRIMARY KEY AUTOINCREMENT , " +
+                    "artid INTEGER PRIMARY KEY  , " +
                     COLUMN_ARTNR + " TEXT , " +
                     COLUMN_BESCHREIBUNG + " TEXT , " +
                     COLUMN_EAN + " TEXT ,"+
@@ -125,11 +129,10 @@ public class DBManager extends SQLiteOpenHelper {
                     COLUMN_BEZEICHNUNG + " TEXT , " +
                     COLUMN_WVT + " INTEGER );";
 
-    private static final String SCHEIN_CREATE =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_SCHEIN + "(" +
-                    COLUMN_SRN + " TEXT , " +
-                    COLUMN_TICKETNR + " INTEGER , " +
-                    COLUMN_ERROR + " TEXT , " +
+    private static final String POSITIONEN_CREATE =
+            "CREATE TABLE IF NOT EXISTS " + TABLE_POSITIONEN + "(" +
+                    COLUMN_POSID + " INTEGER  NOT NULL  PRIMARY KEY , " +
+                    COLUMN_SCHEINID + " INTEGER , " +
                     COLUMN_POSART + " INTEGER , " +
                     COLUMN_ARTNR + " TEXT , " +
                     COLUMN_DATUM + " TEXT , " +
@@ -142,16 +145,16 @@ public class DBManager extends SQLiteOpenHelper {
 
     private static final String ZAEHLER_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_ZAEHLER + "(" +
-                    COLUMN_SRN + " TEXT , " +
-                    COLUMN_TICKETNR + " INTEGER , " +
+                    COLUMN_ZAEHLERID + " INTEGER  NOT NULL  PRIMARY KEY , " +
+                    COLUMN_SCHEINID + " INTEGER UNIQUE, " +
                     COLUMN_Z1 + " INTEGER , " +
                     COLUMN_Z2 + " INTEGER ," +
                     COLUMN_UEBERTRAGEN+ " BOOLEAN NOT NULL DEFAULT '0' );";
 
     private static final String VDE_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_VDE + "(" +
-                    COLUMN_SRN + " TEXT , " +
-                    COLUMN_TICKETNR + " INTEGER , " +
+                    COLUMN_VDEID + " INTEGER  NOT NULL  PRIMARY KEY , " +
+                    COLUMN_SCHEINID + " INTEGER UNIQUE, " +
                     COLUMN_RPE + " DOUBLE , " +
                     COLUMN_RISO + " DOUBLE , " +
                     COLUMN_LEAK + " DOUBLE," +
@@ -159,10 +162,23 @@ public class DBManager extends SQLiteOpenHelper {
 
     private static final String UNTERSCHRIFT_CREATE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_UNTERSCHRIFT + "(" +
-                    COLUMN_SRN + " TEXT , " +
-                    COLUMN_TICKETNR + " INTEGER , " +
+                    COLUMN_UNTERSCHRIFTID + " INTEGER  NOT NULL  PRIMARY KEY , " +
+                    COLUMN_SCHEINID + " INTEGER UNIQUE, " +
                     COLUMN_UNTERSCHRIFT+ " LONGBLOB ," +
                     COLUMN_UEBERTRAGEN+ " BOOLEAN NOT NULL DEFAULT '0' );";
+
+    private static final String SCHEIN_CREATE =
+            "CREATE TABLE IF NOT EXISTS " + TABLE_SCHEIN + "(" +
+                    COLUMN_SCHEINID + " INTEGER PRIMARY KEY," +
+                    COLUMN_SRN + " TEXT , " +
+                    COLUMN_TICKETNR + " INTEGER , " +
+                    COLUMN_TECHNR + " INTEGER , " +
+                    COLUMN_ANSPRECHPARTNER + " TEXT , " +
+                    COLUMN_ERROR + " TEXT , " +
+                    COLUMN_EMAIL + " TEXT , " +
+                    COLUMN_BEMERKUNG + " TEXT , " +
+                    COLUMN_ABGESCHLOSSEN+ " BOOLEAN NOT NULL DEFAULT '0' ," +
+                    COLUMN_UEBERTRAGEN+ " BOOLEAN NOT NULL DEFAULT '0');";
 
     public DBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -172,14 +188,16 @@ public class DBManager extends SQLiteOpenHelper {
         this.getWritableDatabase().execSQL(GER_CREATE);
         Log.d("DATABASE_CREATE", LOHN_CREATE);
         this.getWritableDatabase().execSQL(LOHN_CREATE);
-        Log.d("DATABASE_CREATE", SCHEIN_CREATE);
-        this.getWritableDatabase().execSQL(SCHEIN_CREATE);
+        Log.d("DATABASE_CREATE", POSITIONEN_CREATE);
+        this.getWritableDatabase().execSQL(POSITIONEN_CREATE);
         Log.d("DATABASE_CREATE", ZAEHLER_CREATE);
         this.getWritableDatabase().execSQL(ZAEHLER_CREATE);
         Log.d("DATABASE_CREATE", VDE_CREATE);
         this.getWritableDatabase().execSQL(VDE_CREATE);
         Log.d("DATABASE_CREATE", UNTERSCHRIFT_CREATE);
         this.getWritableDatabase().execSQL(UNTERSCHRIFT_CREATE);
+        Log.d("DATABASE_CREATE", SCHEIN_CREATE);
+        this.getWritableDatabase().execSQL(SCHEIN_CREATE);
 
     }
 
@@ -196,9 +214,10 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
 
-    public static void dropAll( SQLiteDatabase sdb){
+    public static void dropAll( Context context){
+        context.deleteDatabase(DATABASE_NAME);
 
-        Log.d("DATABASE_DROP", "DROP TABLE " + TABLE_ARTSTAMM);
+        /*Log.d("DATABASE_DROP", "DROP TABLE " + TABLE_ARTSTAMM);
         sdb.execSQL("DROP TABLE " + TABLE_ARTSTAMM);
         Log.d("DATABASE_DROP", "DROP TABLE " + TABLE_GERSTAMM);
         sdb.execSQL("DROP TABLE " + TABLE_GERSTAMM);
@@ -211,7 +230,7 @@ public class DBManager extends SQLiteOpenHelper {
         Log.d("DATABASE_DROP", "DROP TABLE " + TABLE_VDE);
         sdb.execSQL("DROP TABLE " + TABLE_VDE);
         Log.d("DATABASE_DROP", "DROP TABLE " + TABLE_UNTERSCHRIFT);
-        sdb.execSQL("DROP TABLE " + TABLE_UNTERSCHRIFT);
+        sdb.execSQL("DROP TABLE " + TABLE_UNTERSCHRIFT);*/
 
     }
 
@@ -286,7 +305,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
             sdb.setTransactionSuccessful();
             sdb.endTransaction();
-
+            sdb.close();
 
 
 
@@ -354,7 +373,7 @@ public class DBManager extends SQLiteOpenHelper {
             BufferedReader buffer = new BufferedReader(file);
             String line = "";
 
-            String columns = COLUMN_GERNR + ", "+ COLUMN_GER + ", " +COLUMN_FIRMA + ", " +COLUMN_STR + ", " +COLUMN_ORT + ", " +COLUMN_STANDORT+ ", " +COLUMN_Z1 + ", " +COLUMN_Z2 + ", " +COLUMN_ZANZ;
+            String columns = COLUMN_GERNR + ", "+ COLUMN_FIRMA + ", " +COLUMN_STR + ", " +COLUMN_ORT + ", " + COLUMN_GER+ ", " +COLUMN_STANDORT+ ", " +COLUMN_Z1 + ", " +COLUMN_Z2 + ", " +COLUMN_ZANZ;
             String str1 = "INSERT INTO " + TABLE_GERSTAMM + " (" + columns + ") values(";
             String str2 = ");";
 
@@ -383,7 +402,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
             sdb.setTransactionSuccessful();
             sdb.endTransaction();
-
+            sdb.close();
 
 
             return "true";
@@ -476,7 +495,7 @@ public class DBManager extends SQLiteOpenHelper {
             }
             sdb.setTransactionSuccessful();
             sdb.endTransaction();
-
+            sdb.close();
 
 
 
@@ -498,22 +517,18 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    public static class FillScheinDB extends AsyncTask<String, String, String[]> {
+    public static class FillScheinDB extends AsyncTask<String, String, Integer> {
 
         private Context mContext;
         private Bundle mBundle;
-        private boolean mLoeschen=false;
+        private int mScheinID;
 
         private ProgressDialog pDialog;
-        public FillScheinDB (Context context,Bundle Bundle){
-            mContext = context;
-            mBundle = Bundle;
 
-        }
-        public FillScheinDB (Context context,Bundle Bundle,boolean loeschen){
+        public FillScheinDB (Context context,Bundle bundle,int scheinid){
             mContext = context;
-            mBundle = Bundle;
-            mLoeschen=loeschen;
+            mBundle = bundle;
+            mScheinID =scheinid;
 
         }
         /**
@@ -537,31 +552,65 @@ public class DBManager extends SQLiteOpenHelper {
          * Downloading file in background thread
          * */
         @Override
-        protected String[] doInBackground(String... args) {
+        protected Integer doInBackground(String... args) {
 
-
+            Log.d("in background","speichereSchein");
             SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
-            sdb.execSQL(SCHEIN_CREATE);
+            /*********************Schein**********************************************************************************/
 
-
-
-            String columns = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_ERROR +  ", " +COLUMN_POSART + ", "
-                    + COLUMN_ARTNR+ ", " +COLUMN_DATUM + ", " +COLUMN_TECHNR + ", " +COLUMN_MENGE_AW + ", " +COLUMN_WEGAW + ", " +COLUMN_TEXT + ", " + COLUMN_PRUEFEN;
-            String str1 = "INSERT INTO " + TABLE_SCHEIN + " (" + columns + ") values(";
+            String columns = COLUMN_SCHEINID + ", " + COLUMN_SRN + ", " + COLUMN_TICKETNR+ ", " +COLUMN_TECHNR + ", " +COLUMN_ANSPRECHPARTNER + ", " +COLUMN_ERROR + ", " +COLUMN_EMAIL + ", " +COLUMN_BEMERKUNG;
+            String str1s = "INSERT OR REPLACE INTO " + TABLE_SCHEIN + " (" + columns + ") values(";
 
 
 
             sdb.beginTransaction();
 
             String Srn = mBundle.getString("Srn");
-            int pruefen = mBundle.getInt("pruefen");
             String TicketID="";
             if ( mBundle.containsKey("TicketID")) {
 
                 TicketID= mBundle.getString("TicketID");
 
             }
+            SessionManager session = new SessionManager(mContext);
+            String Technr =String.valueOf(session.getTechNum());
             String Error = mBundle.getString("Error");
+            String Ansprechpartner = mBundle.getString("Name");
+
+            String email="";
+            if ( mBundle.containsKey("email")) {
+
+                email= mBundle.getString("email");
+
+            }
+            String bemerkung="";
+            if ( mBundle.containsKey("bemerkung")) {
+
+                bemerkung= mBundle.getString("bemerkung");
+
+            }
+                String values="'" +mScheinID+"','"+ Srn+"','"+TicketID+"','"+ Technr+"','"+ Ansprechpartner +"',COALESCE((SELECT "+COLUMN_ERROR+" FROM "+TABLE_SCHEIN+" WHERE "+COLUMN_SCHEINID+" = "+mScheinID+"),'') || ' ;"+Error+"'," +
+                        "'"+ email+"'," +
+                        "COALESCE((SELECT "+COLUMN_BEMERKUNG+" FROM "+TABLE_SCHEIN+" WHERE "+COLUMN_SCHEINID+" = "+mScheinID+"), '') || ' ;"+bemerkung+"');";
+
+                String abfrage=str1s+values;
+                Log.d("INSERT: ",abfrage);
+                sdb.execSQL(abfrage);
+
+
+
+            /*********************Positionen**********************************************************************************/
+
+            String columnp = COLUMN_SCHEINID + ", " + COLUMN_POSART + ", " + COLUMN_ARTNR+ ", " +COLUMN_DATUM + ", " +COLUMN_TECHNR + ", " +COLUMN_MENGE_AW + ", " +COLUMN_WEGAW + ", " +COLUMN_TEXT + ", " + COLUMN_PRUEFEN;
+            String str1p = "INSERT INTO " + TABLE_POSITIONEN + " (" + columnp + ") values(";
+
+
+
+
+
+
+            int pruefen = mBundle.getInt("pruefen");
+
 
             for ( int i=0; i <= mBundle.getInt("Pos");i++) {
 
@@ -585,19 +634,20 @@ public class DBManager extends SQLiteOpenHelper {
                 String Text = mBundle.getString("Arbeit" + String.valueOf(i));
 
 
-                String values="'" + Srn+"','"+TicketID+"','"+ Error+"','"+Posart+"','"+ArtNr+"','"+formated +"','"+Techniker+"','"+MengeAW+"','"+WegAW+"','"+Text+"','"+pruefen+"');";
+                String valuep="'" + mScheinID+"','"+Posart+"','"+ArtNr+"','"+formated +"','"+Techniker+"','"+MengeAW+"','"+WegAW+"','"+Text+"','"+pruefen+"');";
 
-                String abfrage=str1+values;
-                Log.d("INSERT: ",abfrage);
-                sdb.execSQL(abfrage);
+                String abfragep=str1p+valuep;
+                Log.d("INSERT: ",abfragep);
+                sdb.execSQL(abfragep);
+
 
             }
 
             for ( int t=0; t <= mBundle.getInt("TeilePos");t++){
                 if ( mBundle.containsKey("Anz"+ String.valueOf(t))) {
-                    String columnst = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_ERROR +  ", " +COLUMN_POSART + ", "
+                    String columnst =COLUMN_SCHEINID + ", " +  COLUMN_POSART + ", "
                             + COLUMN_ARTNR+ ", " +COLUMN_MENGE_AW + ", "+COLUMN_TECHNR + ", " +COLUMN_TEXT+ ", " +COLUMN_PRUEFEN;
-                    String str1t = "INSERT INTO " + TABLE_SCHEIN + " (" + columnst + ") values(";
+                    String str1t = "INSERT INTO " + TABLE_POSITIONEN + " (" + columnst + ") values(";
                     int Posart = 2;
                     String MengeAW=mBundle.getString("Anz" + String.valueOf(t));
 
@@ -606,23 +656,25 @@ public class DBManager extends SQLiteOpenHelper {
                     String Bez = mBundle.getString("Bez" + String.valueOf(t));
                     String Techniker=mBundle.getString("TechNr0");
 
-                    String values="'" + Srn+"','"+TicketID+"','"+Error+"','"+Posart+"','"+ArtNr+"','"+ MengeAW+"','"+ Techniker+"','"+ Bez+"','"+pruefen+"');";
+                    String valuet="'" +mScheinID+"','"+Posart+"','"+ArtNr+"','"+ MengeAW+"','"+ Techniker+"','"+ Bez+"','"+pruefen+"');";
 
-                    String abfrage=str1t+values;
-                    Log.d("INSERT: ",abfrage);
-                    sdb.execSQL(abfrage);
+                    String abfraget=str1t+valuet;
+                    Log.d("INSERT: ",abfraget);
+                    sdb.execSQL(abfraget);
+
                 }
             }
 
             /*********************Zähler**********************************************************************************/
-            sdb.execSQL(ZAEHLER_CREATE);
-            String columnsz = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_Z1 + ", " +COLUMN_Z2;
-            String str1z = "INSERT INTO " + TABLE_ZAEHLER + " (" + columnsz + ") values(";
+
+
+            String columnsz = COLUMN_SCHEINID + ", " +COLUMN_Z1 + ", " +COLUMN_Z2;
+            String str1z = "INSERT OR REPLACE INTO " + TABLE_ZAEHLER + " (" + columnsz + ") values(";
 
             String Sw =mBundle.getString("Sw");
             String Farb =mBundle.getString("Farb");
 
-            String valuesz="'" + Srn+"','"+TicketID+"','"+Sw +"','"+Farb+"');";
+            String valuesz="'" + mScheinID+"','"+Sw +"','"+Farb+"')";
 
             String abfragez=str1z+valuesz;
             Log.d("INSERT: ",abfragez);
@@ -632,8 +684,8 @@ public class DBManager extends SQLiteOpenHelper {
 
             if(mBundle.getBoolean("VDE")){
                 sdb.execSQL(VDE_CREATE);
-                String columnst = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_RPE +  ", " +COLUMN_RISO + ", " +COLUMN_LEAK;
-                String str1t = "INSERT INTO " + TABLE_VDE + " (" + columnst + ") values(";
+                String columnv = COLUMN_SCHEINID + ", " +COLUMN_RPE +  ", " +COLUMN_RISO + ", " +COLUMN_LEAK;
+                String str1v = "INSERT OR REPLACE INTO " + TABLE_VDE + " (" + columnv + ") values(";
 
                 String RPE =mBundle.getString("RPE");
                 String RISO =mBundle.getString("RISO");
@@ -641,21 +693,22 @@ public class DBManager extends SQLiteOpenHelper {
 
 
 
-                String values="'" + Srn+"','"+TicketID+"','"+RPE+"','"+RISO+"','"+LEAK+"');";
+                String valuev="'" + mScheinID+"','"+RPE+"','"+RISO+"','"+LEAK+"'); ";
 
-                String abfrage=str1t+values;
-                Log.d("INSERT: ",abfrage);
-                sdb.execSQL(abfrage);
+                String abfragev=str1v+valuev;
+                Log.d("INSERT: ",abfragev);
+                sdb.execSQL(abfragev);
+
             }
 
             /*********************Unterschrift**********************************************************************************/
-            sdb.execSQL(UNTERSCHRIFT_CREATE);
-            String columnsu = COLUMN_SRN + ", "+ COLUMN_TICKETNR + ", " +COLUMN_UNTERSCHRIFT;
-            String str1u = "INSERT INTO " + TABLE_UNTERSCHRIFT + " (" + columnsu + ") values(";
+
+            String columnsu = COLUMN_SCHEINID + ", " +COLUMN_UNTERSCHRIFT;
+            String str1u = "INSERT OR REPLACE INTO " + TABLE_UNTERSCHRIFT + " (" + columnsu + ") values(";
 
             String BLOB = mBundle.getString("BLOB");
 
-            String valuesu="'" + Srn+"','"+TicketID+"','"+ BLOB+"');";
+            String valuesu="'" +mScheinID+"','"+ BLOB+"');";
 
             String abfrageu=str1u+valuesu;
             Log.d("INSERT: ",abfrageu);
@@ -669,10 +722,8 @@ public class DBManager extends SQLiteOpenHelper {
 
             sdb.setTransactionSuccessful();
             sdb.endTransaction();
-            String[] ids=new String[2];
-            ids[0]=Srn;
-            ids[1]=TicketID;
-            return ids;
+            sdb.close();
+            return mScheinID;
         }
 
 
@@ -680,12 +731,19 @@ public class DBManager extends SQLiteOpenHelper {
          * After completing background task Dismiss the progress dialog
          * **/
         @Override
-        protected void onPostExecute(String[] ids) {
+        protected void onPostExecute(Integer scheinid) {
             // dismiss the dialog after the file was downloaded
             //mCSV.delete();
             Log.i("erfolgreich", "fillScheinDB");
-            //TODO: Daten an den Server übertragen
-            new UebertrageDaten(mContext,mLoeschen,ids).execute();
+            //TODO: Daten an den Server übertragen wenn scheinid !=0
+            if (scheinid !=0){
+                Log.d("fillScheinDB","daten sollen übertragen werden mit id: "+scheinid);
+               new UebertrageDaten(mContext,scheinid).execute();
+            }else
+            {   //TODO: spater wieder nach der id fragen wenn erfolgreich dann übertragen
+                Log.i("Scheinid==0","schein wird nich übertragen weil noch keine id");
+            }
+
             pDialog.dismiss();
 
         }
@@ -694,15 +752,14 @@ public class DBManager extends SQLiteOpenHelper {
     public static class UebertrageDaten extends AsyncTask<String, String, String> {
 
         private Context mContext;
-        private boolean mLoeschen;
-        private String[] mIds;
+        private int mId;
 
 
         private ProgressDialog pDialog;
-        public UebertrageDaten (Context context,boolean loeschen,String[] ids){
+        public UebertrageDaten (Context context,int id){
             mContext = context;
-            mLoeschen=loeschen;
-            mIds=ids;
+
+            mId=id;
         }
         /**
          * Before starting background thread Show Progress Bar Dialog
@@ -736,7 +793,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 
             String selectfrom = "SELECT * FROM ";
-            String where = " WHERE uebertragen = '0';";
+            String where = " WHERE scheinid = '"+mId+"' AND uebertragen = '0';";
             SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
             sdb.beginTransaction();
 
@@ -773,7 +830,37 @@ public class DBManager extends SQLiteOpenHelper {
             scheinresult.close();
 
 
+            /*********************Positionen**********************************************************************************/
+            Log.d("GET: ",selectfrom+TABLE_POSITIONEN+where);
 
+            Cursor posresult = sdb.rawQuery(selectfrom+TABLE_POSITIONEN+where,null);
+
+
+
+            JSONArray positionen = new JSONArray();
+            JSONObject prow;
+
+
+            while (posresult.moveToNext()) {
+                prow=new JSONObject();
+                for (int c=0; c<posresult.getColumnCount();c++){
+                    Log.d("getColumnName",posresult.getColumnName(c)+ " " + posresult.getString(c));
+                    try {
+                        prow.put(posresult.getColumnName(c),posresult.getString(c));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                positionen.put(prow);
+
+
+
+            }
+            postparams.put("posdata", String.valueOf(positionen));
+
+
+            posresult.close();
 
 
 
@@ -882,7 +969,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             sdb.setTransactionSuccessful();
             sdb.endTransaction();
-
+            sdb.close();
 
 
 
@@ -904,10 +991,11 @@ public class DBManager extends SQLiteOpenHelper {
                             Log.d("übertragung", "succsess wub wub");
                             SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
                             sdb.beginTransaction();
-                            String abfrage= "UPDATE "+TABLE_SCHEIN+" SET uebertragen='1' WHERE uebertragen='0';"+
-                                            "UPDATE "+TABLE_ZAEHLER+" SET uebertragen='1' WHERE uebertragen='0';"+
-                                            "UPDATE "+TABLE_VDE+" SET uebertragen='1' WHERE uebertragen='0';"+
-                                            "UPDATE "+TABLE_UNTERSCHRIFT+" SET uebertragen='1' WHERE uebertragen='0';";
+                            String abfrage= "UPDATE "+TABLE_SCHEIN+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
+                                            "UPDATE "+TABLE_POSITIONEN+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
+                                            "UPDATE "+TABLE_ZAEHLER+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
+                                            "UPDATE "+TABLE_VDE+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
+                                            "UPDATE "+TABLE_UNTERSCHRIFT+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';";
                             Log.d("UPDATE: ",abfrage);
 
                             Cursor updateresult = sdb.rawQuery(abfrage,null);
@@ -923,8 +1011,8 @@ public class DBManager extends SQLiteOpenHelper {
                             updateresult.close();
                             sdb.setTransactionSuccessful();
                             sdb.endTransaction();
-
-                            if(mLoeschen){
+                            sdb.close();
+                           /* if(mLoeschen){
 
                                 sdb.beginTransaction();
                                 String delete=  "DELETE FROM "+TABLE_SCHEIN+" WHERE `srn`='"+mIds[0]+"' AND `ticketnr` = '"+mIds[1]+"';" +
@@ -985,7 +1073,7 @@ public class DBManager extends SQLiteOpenHelper {
 
                                 queue.add(jsObjRequest);
 
-                            }
+                            }*/
 
 
                         }
@@ -997,7 +1085,7 @@ public class DBManager extends SQLiteOpenHelper {
 
                 @Override
                 public void onErrorResponse(VolleyError response) {
-                    Log.d("Response: ", response.toString());
+                    Log.e("Response: ", response.toString());
 
                     Toast.makeText(mContext, "Übertragung fehl geschlagen", Toast.LENGTH_SHORT).show();
                 }

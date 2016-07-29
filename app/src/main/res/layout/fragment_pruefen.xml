@@ -408,15 +408,6 @@
         android:id="@+id/linearLayout">
 
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/hoell_blau"
-        android:src="@drawable/ic_save_black_24dp"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        android:layout_gravity="start|bottom"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_unterschrift"
@@ -429,7 +420,7 @@
         android:layout_gravity="bottom|center_horizontal"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_end"
+        android:id="@+id/fab_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/hoell_blau"

@@ -554,112 +554,106 @@ public class DBManager extends SQLiteOpenHelper {
         @Override
         protected Integer doInBackground(String... args) {
 
-            Log.d("in background","speichereSchein");
+            Log.d("in background", "speichereSchein");
             SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
             /*********************Schein**********************************************************************************/
 
-            String columns = COLUMN_SCHEINID + ", " + COLUMN_SRN + ", " + COLUMN_TICKETNR+ ", " +COLUMN_TECHNR + ", " +COLUMN_ANSPRECHPARTNER + ", " +COLUMN_ERROR + ", " +COLUMN_EMAIL + ", " +COLUMN_BEMERKUNG;
+            String columns = COLUMN_SCHEINID + ", " + COLUMN_SRN + ", " + COLUMN_TICKETNR + ", " + COLUMN_TECHNR + ", " + COLUMN_ANSPRECHPARTNER + ", " + COLUMN_ERROR + ", " + COLUMN_EMAIL + ", " + COLUMN_BEMERKUNG;
             String str1s = "INSERT OR REPLACE INTO " + TABLE_SCHEIN + " (" + columns + ") values(";
-
 
 
             sdb.beginTransaction();
 
             String Srn = mBundle.getString("Srn");
-            String TicketID="";
-            if ( mBundle.containsKey("TicketID")) {
+            String TicketID = "";
+            if (mBundle.containsKey("TicketID")) {
 
-                TicketID= mBundle.getString("TicketID");
+                TicketID = mBundle.getString("TicketID");
 
             }
             SessionManager session = new SessionManager(mContext);
-            String Technr =String.valueOf(session.getTechNum());
+            String Technr = String.valueOf(session.getTechNum());
             String Error = mBundle.getString("Error");
             String Ansprechpartner = mBundle.getString("Name");
 
-            String email="";
-            if ( mBundle.containsKey("email")) {
+            String email = "";
+            if (mBundle.containsKey("email")) {
 
-                email= mBundle.getString("email");
-
-            }
-            String bemerkung="";
-            if ( mBundle.containsKey("bemerkung")) {
-
-                bemerkung= mBundle.getString("bemerkung");
+                email = mBundle.getString("email");
 
             }
-                String values="'" +mScheinID+"','"+ Srn+"','"+TicketID+"','"+ Technr+"','"+ Ansprechpartner +"',COALESCE((SELECT "+COLUMN_ERROR+" FROM "+TABLE_SCHEIN+" WHERE "+COLUMN_SCHEINID+" = "+mScheinID+"),'') || ' ;"+Error+"'," +
-                        "'"+ email+"'," +
-                        "COALESCE((SELECT "+COLUMN_BEMERKUNG+" FROM "+TABLE_SCHEIN+" WHERE "+COLUMN_SCHEINID+" = "+mScheinID+"), '') || ' ;"+bemerkung+"');";
+            String bemerkung = "";
+            if (mBundle.containsKey("bemerkung")) {
 
-                String abfrage=str1s+values;
-                Log.d("INSERT: ",abfrage);
-                sdb.execSQL(abfrage);
+                bemerkung = mBundle.getString("bemerkung");
 
+            }
+            String values = "'" + mScheinID + "','" + Srn + "','" + TicketID + "','" + Technr + "','" + Ansprechpartner + "',COALESCE((SELECT " + COLUMN_ERROR + " FROM " + TABLE_SCHEIN + " WHERE " + COLUMN_SCHEINID + " = " + mScheinID + "),'') || ' ;" + Error + "'," +
+                    "'" + email + "'," +
+                    "COALESCE((SELECT " + COLUMN_BEMERKUNG + " FROM " + TABLE_SCHEIN + " WHERE " + COLUMN_SCHEINID + " = " + mScheinID + "), '') || ' ;" + bemerkung + "');";
+
+            String abfrage = str1s + values;
+            Log.d("INSERT: ", abfrage);
+            sdb.execSQL(abfrage);
 
 
             /*********************Positionen**********************************************************************************/
 
-            String columnp = COLUMN_SCHEINID + ", " + COLUMN_POSART + ", " + COLUMN_ARTNR+ ", " +COLUMN_DATUM + ", " +COLUMN_TECHNR + ", " +COLUMN_MENGE_AW + ", " +COLUMN_WEGAW + ", " +COLUMN_TEXT + ", " + COLUMN_PRUEFEN;
+            String columnp = COLUMN_SCHEINID + ", " + COLUMN_POSART + ", " + COLUMN_ARTNR + ", " + COLUMN_DATUM + ", " + COLUMN_TECHNR + ", " + COLUMN_MENGE_AW + ", " + COLUMN_WEGAW + ", " + COLUMN_TEXT + ", " + COLUMN_PRUEFEN;
             String str1p = "INSERT INTO " + TABLE_POSITIONEN + " (" + columnp + ") values(";
-
-
-
-
 
 
             int pruefen = mBundle.getInt("pruefen");
 
 
-            for ( int i=0; i <= mBundle.getInt("Pos");i++) {
+            for (int i = 0; i <= mBundle.getInt("Pos"); i++) {
 
 
                 int Posart = 1;
                 String ArtNr = mBundle.getString("LohnArtNr" + String.valueOf(i));
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN);
-                Date Datum= null;
-                String formated="null";
+                Date Datum = null;
+                String formated = "null";
                 try {
-                    Datum = sdf.parse( mBundle.getString("Datum" + String.valueOf(i)));
-                    formated= new SimpleDateFormat("yyyy-MM-dd",Locale.GERMAN).format(Datum);
-                    Log.d("formated",formated);
+                    Datum = sdf.parse(mBundle.getString("Datum" + String.valueOf(i)));
+                    formated = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN).format(Datum);
+                    Log.d("formated", formated);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                String Techniker=mBundle.getString("TechNr" + String.valueOf(i));
-                String MengeAW=mBundle.getString("AW" + String.valueOf(i));
-                String WegAW=mBundle.getString("WEG" + String.valueOf(i));
+                String Techniker = mBundle.getString("TechNr" + String.valueOf(i));
+                String MengeAW = mBundle.getString("AW" + String.valueOf(i));
+                String WegAW = mBundle.getString("WEG" + String.valueOf(i));
                 String Text = mBundle.getString("Arbeit" + String.valueOf(i));
 
 
-                String valuep="'" + mScheinID+"','"+Posart+"','"+ArtNr+"','"+formated +"','"+Techniker+"','"+MengeAW+"','"+WegAW+"','"+Text+"','"+pruefen+"');";
+                String valuep = "'" + mScheinID + "','" + Posart + "','" + ArtNr + "','" + formated + "','" + Techniker + "','" + MengeAW + "','" + WegAW + "','" + Text + "','" + pruefen + "');";
 
-                String abfragep=str1p+valuep;
-                Log.d("INSERT: ",abfragep);
+                String abfragep = str1p + valuep;
+                Log.d("INSERT: ", abfragep);
                 sdb.execSQL(abfragep);
 
 
             }
 
-            for ( int t=0; t <= mBundle.getInt("TeilePos");t++){
-                if ( mBundle.containsKey("Anz"+ String.valueOf(t))) {
-                    String columnst =COLUMN_SCHEINID + ", " +  COLUMN_POSART + ", "
-                            + COLUMN_ARTNR+ ", " +COLUMN_MENGE_AW + ", "+COLUMN_TECHNR + ", " +COLUMN_TEXT+ ", " +COLUMN_PRUEFEN;
+            for (int t = 0; t <= mBundle.getInt("TeilePos"); t++) {
+                if (mBundle.containsKey("Anz" + String.valueOf(t))) {
+                    String columnst = COLUMN_SCHEINID + ", " + COLUMN_POSART + ", "
+                            + COLUMN_ARTNR + ", " + COLUMN_MENGE_AW + ", " + COLUMN_TECHNR + ", " + COLUMN_TEXT + ", " + COLUMN_PRUEFEN;
                     String str1t = "INSERT INTO " + TABLE_POSITIONEN + " (" + columnst + ") values(";
                     int Posart = 2;
-                    String MengeAW=mBundle.getString("Anz" + String.valueOf(t));
+                    String MengeAW = mBundle.getString("Anz" + String.valueOf(t));
 
                     String ArtNr = mBundle.getString("ArtNr" + String.valueOf(t));
 
                     String Bez = mBundle.getString("Bez" + String.valueOf(t));
-                    String Techniker=mBundle.getString("TechNr0");
+                    String Techniker = mBundle.getString("TechNr0");
 
-                    String valuet="'" +mScheinID+"','"+Posart+"','"+ArtNr+"','"+ MengeAW+"','"+ Techniker+"','"+ Bez+"','"+pruefen+"');";
+                    String valuet = "'" + mScheinID + "','" + Posart + "','" + ArtNr + "','" + MengeAW + "','" + Techniker + "','" + Bez + "','" + pruefen + "');";
 
-                    String abfraget=str1t+valuet;
-                    Log.d("INSERT: ",abfraget);
+                    String abfraget = str1t + valuet;
+                    Log.d("INSERT: ", abfraget);
                     sdb.execSQL(abfraget);
 
                 }
@@ -668,53 +662,53 @@ public class DBManager extends SQLiteOpenHelper {
             /*********************Zähler**********************************************************************************/
 
 
-            String columnsz = COLUMN_SCHEINID + ", " +COLUMN_Z1 + ", " +COLUMN_Z2;
+            String columnsz = COLUMN_SCHEINID + ", " + COLUMN_Z1 + ", " + COLUMN_Z2;
             String str1z = "INSERT OR REPLACE INTO " + TABLE_ZAEHLER + " (" + columnsz + ") values(";
 
-            String Sw =mBundle.getString("Sw");
-            String Farb =mBundle.getString("Farb");
+            String Sw = mBundle.getString("Sw");
+            String Farb = mBundle.getString("Farb");
 
-            String valuesz="'" + mScheinID+"','"+Sw +"','"+Farb+"')";
+            String valuesz = "'" + mScheinID + "','" + Sw + "','" + Farb + "')";
 
-            String abfragez=str1z+valuesz;
-            Log.d("INSERT: ",abfragez);
+            String abfragez = str1z + valuesz;
+            Log.d("INSERT: ", abfragez);
             sdb.execSQL(abfragez);
 
             /********************VDE**************************************************************************************/
 
-            if(mBundle.getBoolean("VDE")){
+            if (mBundle.getBoolean("VDE")) {
                 sdb.execSQL(VDE_CREATE);
-                String columnv = COLUMN_SCHEINID + ", " +COLUMN_RPE +  ", " +COLUMN_RISO + ", " +COLUMN_LEAK;
+                String columnv = COLUMN_SCHEINID + ", " + COLUMN_RPE + ", " + COLUMN_RISO + ", " + COLUMN_LEAK;
                 String str1v = "INSERT OR REPLACE INTO " + TABLE_VDE + " (" + columnv + ") values(";
 
-                String RPE =mBundle.getString("RPE");
-                String RISO =mBundle.getString("RISO");
-                String LEAK =mBundle.getString("ILEAK");
+                String RPE = mBundle.getString("RPE");
+                String RISO = mBundle.getString("RISO");
+                String LEAK = mBundle.getString("ILEAK");
 
 
+                String valuev = "'" + mScheinID + "','" + RPE + "','" + RISO + "','" + LEAK + "'); ";
 
-                String valuev="'" + mScheinID+"','"+RPE+"','"+RISO+"','"+LEAK+"'); ";
-
-                String abfragev=str1v+valuev;
-                Log.d("INSERT: ",abfragev);
+                String abfragev = str1v + valuev;
+                Log.d("INSERT: ", abfragev);
                 sdb.execSQL(abfragev);
 
             }
 
             /*********************Unterschrift**********************************************************************************/
+            if (mBundle.containsKey("BLOB")) {
 
-            String columnsu = COLUMN_SCHEINID + ", " +COLUMN_UNTERSCHRIFT;
+            String columnsu = COLUMN_SCHEINID + ", " + COLUMN_UNTERSCHRIFT;
             String str1u = "INSERT OR REPLACE INTO " + TABLE_UNTERSCHRIFT + " (" + columnsu + ") values(";
 
             String BLOB = mBundle.getString("BLOB");
 
-            String valuesu="'" +mScheinID+"','"+ BLOB+"');";
+            String valuesu = "'" + mScheinID + "','" + BLOB + "');";
 
-            String abfrageu=str1u+valuesu;
-            Log.d("INSERT: ",abfrageu);
+            String abfrageu = str1u + valuesu;
+            Log.d("INSERT: ", abfrageu);
             sdb.execSQL(abfrageu);
-
-            /************************************************************************************************************/
+        }
+        /************************************************************************************************************/
 
 
 
@@ -732,7 +726,7 @@ public class DBManager extends SQLiteOpenHelper {
          * **/
         @Override
         protected void onPostExecute(Integer scheinid) {
-            // dismiss the dialog after the file was downloaded
+            //dismiss the dialog after the file was downloaded
             //mCSV.delete();
             Log.i("erfolgreich", "fillScheinDB");
             //TODO: Daten an den Server übertragen wenn scheinid !=0

@@ -4,11 +4,11 @@
     android:layout_height="match_parent">
 
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2016-07-33"
-            android:id="@+id/editTextDatumContent"
+            android:id="@+id/TextViewDatumContent"
             android:textStyle="normal"
 
             android:gravity="center_horizontal"
@@ -16,11 +16,11 @@
             android:background="@android:color/transparent"
             style="@style/Base.TextAppearance.AppCompat.Medium" />
 
-        <EditText
+        <TextView
             android:layout_width="47dp"
             android:layout_height="wrap_content"
             android:text="TechNr"
-            android:id="@+id/editTextTechNrContent"
+            android:id="@+id/TextViewTechNrContent"
             android:textStyle="normal"
 
             android:layout_gravity="center_horizontal"
@@ -29,11 +29,11 @@
             android:background="@android:color/transparent"
             style="@style/Base.TextAppearance.AppCompat.Medium" />
 
-        <EditText
+        <TextView
             android:layout_width="47dp"
             android:layout_height="wrap_content"
             android:text="AW"
-            android:id="@+id/editTextAWContent"
+            android:id="@+id/TextViewAWContent"
             android:textStyle="normal"
 
             android:gravity="center_horizontal"
@@ -41,11 +41,11 @@
             android:background="@android:color/transparent"
             style="@style/Base.TextAppearance.AppCompat.Medium" />
 
-        <EditText
+        <TextView
             android:layout_width="47dp"
             android:layout_height="wrap_content"
             android:text="Weg"
-            android:id="@+id/editTextWegContent"
+            android:id="@+id/TextViewWegContent"
             android:textStyle="normal"
 
             android:layout_gravity="center_horizontal"
@@ -54,11 +54,11 @@
             android:background="@android:color/transparent"
             style="@style/Base.TextAppearance.AppCompat.Medium" />
 
-        <EditText
+        <TextView
             android:layout_width="123dp"
             android:layout_height="wrap_content"
             android:text="Ausgeführte Arbeitdffdfsddfsdfsdfsfdsf"
-            android:id="@+id/editTextAusArbeitContent"
+            android:id="@+id/TextViewAusArbeitContent"
             android:textStyle="normal"
             android:background="@android:color/transparent"
             style="@style/Base.TextAppearance.AppCompat.Medium" />

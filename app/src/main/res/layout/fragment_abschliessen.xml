@@ -58,11 +58,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <TextView
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/anschrift"
-                    android:id="@+id/TextViewAnschriftContent"
+                    android:id="@+id/editTextAnschriftContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -90,11 +90,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <TextView
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ger"
-                    android:id="@+id/TextViewGerContent"
+                    android:id="@+id/editTextGerContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -122,11 +122,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <TextView
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ger"
-                    android:id="@+id/TextViewSrnContent"
+                    android:id="@+id/editTextSrnContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -166,11 +166,11 @@
                         android:id="@+id/textView28"
                         android:textStyle="italic" />
 
-                    <TextView
+                    <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sw"
-                        android:id="@+id/TextViewSWContent"
+                        android:id="@+id/editTextSWContent"
                         android:textStyle="normal"
                         android:inputType="number"
                         style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -182,11 +182,11 @@
                         android:id="@+id/textView29"
                         android:textStyle="italic" />
 
-                    <TextView
+                    <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/farb"
-                        android:id="@+id/TextViewFarbContent"
+                        android:id="@+id/editTextFarbContent"
                         android:textStyle="normal"
                         android:inputType="number"
                         style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -371,6 +371,7 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextBemerkung"
@@ -392,6 +393,20 @@
                     android:layout_gravity="center_horizontal" />
             </TableRow>
 
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <ImageView
+                    android:layout_width="222dp"
+                    android:layout_height="87dp"
+                    android:id="@+id/img_sign"
+                    android:src="@drawable/sign"
+                    android:contentDescription="Sign pls"
+                    android:background="@xml/img_background"
+                    android:layout_gravity="top" />
+            </TableRow>
+
 
         </TableLayout>
 
@@ -401,6 +416,35 @@
     </ScrollView>
 
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/SignLayout"
+        android:background="@drawable/sign_"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sign_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#0eb700"
+        android:src="@drawable/ic_check_rotated"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:layout_gravity="top|center_horizontal"
+        android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sign_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#d10303"
+        android:src="@drawable/ic_clear_black_24dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_next"

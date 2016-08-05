@@ -14,9 +14,7 @@ import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * Created by mstaeglich on 25.02.2016.
- */
+
 public class SignatureView extends View {
 
     private static final float STROKE_WIDTH = 5f;

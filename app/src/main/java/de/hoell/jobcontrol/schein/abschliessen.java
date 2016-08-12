@@ -2,6 +2,7 @@ package de.hoell.jobcontrol.schein;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -15,10 +16,12 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +36,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hoell.jobcontrol.Jobcontrol;
+import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
@@ -42,6 +47,8 @@ public class abschliessen extends Fragment {
 
         private Context context;
         SignatureView mSig;
+         boolean issign =false;
+        String myBase64Image="";
         EditText editTextTeileNr,editTextBezeichnung;
         public abschliessen() {
         }
@@ -68,19 +75,20 @@ public class abschliessen extends Fragment {
             final TextView sw = (TextView) rootView.findViewById(R.id.EditTextSWContent);
             final TextView Farb = (TextView) rootView.findViewById(R.id.EditTextFarbContent);
             final EditText Bemerkung = (EditText) rootView.findViewById(R.id.editTextBemerkung);
+            final EditText Klarname = (EditText) rootView.findViewById(R.id.editTextKlarname);
 
             ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
             ExpandableHeightListView teileliste = (ExpandableHeightListView) rootView.findViewById(R.id.teileList);
-
+            final FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
             final FloatingActionButton fab_remove = (FloatingActionButton) rootView.findViewById(R.id.fab_sign_remove);
             final FloatingActionButton fab_check = (FloatingActionButton) rootView.findViewById(R.id.fab_sign_check);
             final LinearLayout mContent = (LinearLayout) rootView.findViewById(R.id.SignLayout);
 
             context = rootView.getContext();
-            Bundle bundle =getArguments();
+            final Bundle bundle =getArguments();
             final Map<String, String> args=DBManager.GetSchein(context,bundle.getInt("ScheinId"));
 
-            JSONObject DBSchein= null;
+            final  JSONObject DBSchein;
             try {
                 DBSchein = new JSONObject(args.get("scheindata"));
                 Log.d("DBSchein",""+DBSchein);
@@ -102,7 +110,7 @@ public class abschliessen extends Fragment {
 
             Ger.setText(bundle.getString("Ger"));
             Srn.setText(DBSchein.getString("srn"));
-            String ges="Zähler("+DBZaehler.getInt("z1")+DBZaehler.getInt("z2")+")";
+            String ges="Zähler("+(DBZaehler.getInt("z1")+DBZaehler.getInt("z2"))+")";
             Zaehler.setText(ges);
             sw.setText(String.valueOf(DBZaehler.getInt("z1")));
             Farb.setText(String.valueOf(DBZaehler.getInt("z2")));
@@ -464,7 +472,6 @@ public class abschliessen extends Fragment {
 
 
 
-
             final ImageView unterschrift = (ImageView) rootView.findViewById(R.id.img_sign);
             unterschrift.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -477,7 +484,7 @@ public class abschliessen extends Fragment {
                     mContent.setVisibility(View.VISIBLE);
                     mSig=new SignatureView(context,null);
                     mContent.addView(mSig, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
+                    fab_next.setVisibility(View.GONE);
                     fab_remove.setVisibility(View.VISIBLE);
                     fab_remove.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -487,10 +494,12 @@ public class abschliessen extends Fragment {
                                fab_remove.setVisibility(View.GONE);
                                fab_check.setVisibility(View.GONE);
                                mContent.setVisibility(View.GONE);
+                               fab_next.setVisibility(View.VISIBLE);
+                               issign=false;
                            }else{
                                mContent.setBackgroundResource(R.drawable.sign_);
                                mSig.clear();
-
+                               issign=false;
                            }
 
 
@@ -507,12 +516,14 @@ public class abschliessen extends Fragment {
                             mContent.setBackground(null);
                             Log.d("BLOB?", Arrays.toString(signature));
                             Bitmap bitsignature = mSig.getBitmap();
-                            String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
                             Bitmap rotatedbitmap=RotateBitmap(bitsignature,90);
+                            myBase64Image = encodeToBase64(rotatedbitmap, Bitmap.CompressFormat.PNG, 100);
                             unterschrift.setImageBitmap(rotatedbitmap);
                             fab_remove.setVisibility(View.GONE);
                             fab_check.setVisibility(View.GONE);
                             mContent.setVisibility(View.GONE);
+                            fab_next.setVisibility(View.VISIBLE);
+                            issign=true;
                             mSig.clear();
                             mContent.removeAllViews();
                         }
@@ -523,78 +534,26 @@ public class abschliessen extends Fragment {
                 }
             });
 
-          /*  FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
+
             fab_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSig!=null){
+
+                    if (issign && Klarname.length()>3 ){
                         CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
                         Log.i("save","klickedd");
-                        args.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
+                        //bundle.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
+                        bundle.putString("BLOB",myBase64Image);
+                        //bundle.putString("bemerkung", String.valueOf(Bemerkung.getText()));
 
-                        byte[] signature = mSig.getBytes();
-
-                        Log.d("BLOB?", Arrays.toString(signature));
-                        Bitmap bitsignature = mSig.getBitmap();
-                        String myBase64Image = encodeToBase64(bitsignature, Bitmap.CompressFormat.PNG, 100);
-                        args.putString("BLOB",myBase64Image);
-                        args.putString("bemerkung", String.valueOf(Bemerkung.getText()));
-
-                        RequestQueue queue = MyVolley.getRequestQueue();
-                        String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                        Map<String, String> postparams = new HashMap<String, String>();
-                        postparams.put("tag", "scheinid");
-                        postparams.put("srn", args.getString("Srn"));
-                        postparams.put("ticketnr", args.getString("TicketID"));
-
-                        Log.i("volley",postparams.toString());
-
-                        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
-
-                            @Override
-                            public void onResponse(JSONObject json) {
-                                Log.d("Response Volley: ", json.toString());
-                                //  showProgress(false);
-                                try {
-                                    if (json.getInt("success")==1) {
-                                        Log.e("succsess","yaaaaaaaaaay");
-                                        new DBManager.FillScheinDB(context,args,json.getInt("ScheinId")).execute();
-                                        //TODO: FillSchein mit schein id
-                                    } else {
-                                        Log.e("GetScheinID","Failed succsess != 1");
-
-                                        Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+                        DBManager.UpdateBemerkung(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()));
+                        DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image);
 
 
 
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Log.e("GetScheinID","Something went wrong w/ the json");
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError response) {
-                                Log.e("eror_Response: ", response.toString());
-                                new DBManager.FillScheinDB(context,args,0).execute();
-                                //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
-
-                            }
-                        });
-
-                        queue.add(jsObjRequest);
-
-
-
-
-
-
-                    *//* Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);*//*
+                    startActivity(i);
 
                     }else{
                         Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
@@ -603,7 +562,7 @@ public class abschliessen extends Fragment {
 
                 }
             });
-*/
+
             return rootView;
         }
 

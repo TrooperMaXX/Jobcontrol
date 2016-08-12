@@ -20,7 +20,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.R;
+import de.hoell.jobcontrol.query.CustomRequest;
+import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.query.MyVolley;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -132,21 +147,72 @@ public class zaehler extends Fragment {
                 if (Sw >= next_args.getInt("z2") && Farb >= next_args.getInt("z2")) {
 
 
-                    Bundle next = addValues(next_args);
+                    final Bundle next = addValues(next_args);
                     Log.e("final next", "" + next);
 
-                    pruefen nextFragment = new pruefen();
 
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction.replace(R.id.frame_container, nextFragment);
-                    transaction.addToBackStack(null);
+                    RequestQueue queue = MyVolley.getRequestQueue();
+                    String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
 
-                    nextFragment.setArguments(next);
-                    // Commit the transaction
-                    transaction.commit();
+                    Map<String, String> postparams = new HashMap<String, String>();
+                    postparams.put("tag", "scheinid");
+                    postparams.put("srn", next.getString("Srn"));
+                    postparams.put("ticketnr", next.getString("TicketID"));
+
+                    Log.i("volley",postparams.toString());
+
+                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject json) {
+                            Log.d("Response Volley: ", json.toString());
+                            //  showProgress(false);
+                            try {
+                                if (json.getInt("success")==1) {
+                                    Log.e("succsess","yaaaaaaaaaay");
+                                    new DBManager.FillScheinDB(context,next,json.getInt("ScheinId")).execute();
+                                    //TODO: FillSchein mit schein id
+
+                                    abschliessen nextFragment = new abschliessen();
+
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                                    // Replace whatever is in the fragment_container view with this fragment,
+                                    // and add the transaction to the back stack so the user can navigate back
+                                    transaction.replace(R.id.frame_container, nextFragment);
+                                    transaction.addToBackStack(null);
+
+                                    next.putInt("ScheinId",json.getInt("ScheinId"));
+                                    nextFragment.setArguments(next);
+                                    //nextFragment.setArguments(next);
+                                    // Commit the transaction
+                                    transaction.commit();
+                                } else {
+                                    Log.e("GetScheinID","Failed succsess != 1");
+
+                                    Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.e("GetScheinID","Something went wrong w/ the json");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.e("eror_Response: ", response.toString());
+                            new DBManager.FillScheinDB(context,next,0).execute();
+                            //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
+
+                        }
+                    });
+
+                    queue.add(jsObjRequest);
 
                     Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();
                 } else {
@@ -167,7 +233,7 @@ public class zaehler extends Fragment {
                     mBuilder.setTitle(getString(R.string.zaehpruefen));
                     mBuilder.setPositiveButton(getString(R.string.save), new Dialog.OnClickListener() {
                         public void onClick(DialogInterface mDialogInterface, int mWhich) {
-                            Bundle next = new Bundle(next_args);
+                            final Bundle next = new Bundle(next_args);
 
 
                             String Farb = String.valueOf(mNewFarb.getText());
@@ -178,21 +244,70 @@ public class zaehler extends Fragment {
                             next.putString("Ges", Ges);
                             next.putString("Sw", Sw);
 
-
                             Log.e("NextBundle", "" + next);
-                            pruefen nextFragment = new pruefen();
 
-                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                            // Replace whatever is in the fragment_container view with this fragment,
-                            // and add the transaction to the back stack so the user can navigate back
-                            transaction.replace(R.id.frame_container, nextFragment);
-                            transaction.addToBackStack(null);
+                            RequestQueue queue = MyVolley.getRequestQueue();
+                            String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
 
-                            nextFragment.setArguments(next);
-                            // Commit the transaction
-                            transaction.commit();
+                            Map<String, String> postparams = new HashMap<String, String>();
+                            postparams.put("tag", "scheinid");
+                            postparams.put("srn", next.getString("Srn"));
+                            postparams.put("ticketnr", next.getString("TicketID"));
 
+                            Log.i("volley",postparams.toString());
+
+                            CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                                @Override
+                                public void onResponse(JSONObject json) {
+                                    Log.d("Response Volley: ", json.toString());
+                                    //  showProgress(false);
+                                    try {
+                                        if (json.getInt("success")==1) {
+                                            Log.e("succsess","yaaaaaaaaaay");
+                                            new DBManager.FillScheinDB(context,next,json.getInt("ScheinId")).execute();
+                                            //TODO: FillSchein mit schein id
+
+                                            abschliessen nextFragment = new abschliessen();
+
+                                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                                            // Replace whatever is in the fragment_container view with this fragment,
+                                            // and add the transaction to the back stack so the user can navigate back
+                                            transaction.replace(R.id.frame_container, nextFragment);
+                                            transaction.addToBackStack(null);
+
+                                            next.putInt("ScheinId",json.getInt("ScheinId"));
+                                            nextFragment.setArguments(next);
+                                            //nextFragment.setArguments(next);
+                                            // Commit the transaction
+                                            transaction.commit();
+                                        } else {
+                                            Log.e("GetScheinID","Failed succsess != 1");
+
+                                            Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Log.e("GetScheinID","Something went wrong w/ the json");
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError response) {
+                                    Log.e("eror_Response: ", response.toString());
+                                    new DBManager.FillScheinDB(context,next,0).execute();
+                                    //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
+
+                                }
+                            });
+
+                            queue.add(jsObjRequest);
                             Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();
                         }
                     });

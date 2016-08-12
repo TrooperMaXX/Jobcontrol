@@ -243,6 +243,47 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
+    public static void UpdateBemerkung(Context mContext, int ScheinId, String bemerkung){
+
+        SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
+
+        String update= "UPDATE "+TABLE_SCHEIN+
+                " SET "+
+                COLUMN_BEMERKUNG+" = '"+bemerkung+ "'" +
+
+                " WHERE "+COLUMN_SCHEINID +" = "+ScheinId;
+
+
+        sdb.beginTransaction();
+
+        Log.d("UPDATE: ", update);
+        sdb.execSQL(update);
+        sdb.setTransactionSuccessful();
+        sdb.endTransaction();
+        sdb.close();
+
+
+
+    }
+
+    public static void InsterUnterschrift(Context context, int scheinId, String klarname, String BLOB) {
+        SQLiteDatabase sdb = new DBManager(context).getWritableDatabase();
+
+        String update= "INSERT OR REPLACE INTO "+TABLE_UNTERSCHRIFT+
+                " ( "+COLUMN_SCHEINID + ", " + COLUMN_UNTERSCHRIFT+ ", " + COLUMN_KLARNAME+") VALUES("
+        +"'" + scheinId + "','" + BLOB + "','" + klarname + "');";
+
+        sdb.beginTransaction();
+
+        Log.d("UPDATE: ", update);
+        sdb.execSQL(update);
+        sdb.setTransactionSuccessful();
+        sdb.endTransaction();
+        sdb.close();
+
+        new UebertrageDaten(context,scheinId).execute();
+    }
+
     public static class FillArtDB extends AsyncTask<String, String, String> {
 
         private Context mContext;
@@ -801,7 +842,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 
             String selectfrom = "SELECT * FROM ";
-            String where = " WHERE scheinid = '"+mId+"' AND uebertragen = '0';";
+            String where = " WHERE scheinid = '"+mId+"' ;";
             SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
             sdb.beginTransaction();
 
@@ -996,7 +1037,7 @@ public class DBManager extends SQLiteOpenHelper {
                         if (json.getInt("success")==1) {
 
                             Log.d("übertragung", "succsess wub wub");
-                            SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
+                            /*SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
                             sdb.beginTransaction();
                             String abfrage= "UPDATE "+TABLE_SCHEIN+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
                                             "UPDATE "+TABLE_POSITIONEN+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
@@ -1018,7 +1059,7 @@ public class DBManager extends SQLiteOpenHelper {
                             updateresult.close();
                             sdb.setTransactionSuccessful();
                             sdb.endTransaction();
-                            sdb.close();
+                            sdb.close();*/
                            /* if(mLoeschen){
 
                                 sdb.beginTransaction();
@@ -1321,8 +1362,8 @@ public class DBManager extends SQLiteOpenHelper {
 
                         String updatezaehler= "UPDATE "+TABLE_ZAEHLER+
                                 " SET "+
-                                COLUMN_Z1+" = '"+mZaehler.getString("riso")+ "'," +
-                                COLUMN_Z2+" = '"+mZaehler.getString("rpe")+ "'," +
+                                COLUMN_Z1+" = '"+mZaehler.getString("z1")+ "'," +
+                                COLUMN_Z2+" = '"+mZaehler.getString("z2")+ "'," +
                                 COLUMN_TIMESTAMP+" = '"+mZaehler.getString("timestamp")+ "'" +
                                 " WHERE "+COLUMN_SCHEINID +" = "+ScheinId;
 
@@ -1675,5 +1716,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         return postparams;
     }
+
+
 }
 

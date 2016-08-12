@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.CustomRequest;
+import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.Functions;
 import de.hoell.jobcontrol.query.MyVolley;
 import de.hoell.jobcontrol.session.SessionManager;
@@ -86,44 +87,381 @@ public class TicketFragment extends ListFragment {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
 
 
 
-           final Functions Function = new Functions();
+               final Functions Function = new Functions();
 
-            if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
-                //JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
-
-
-
-
-                RequestQueue queue = MyVolley.getRequestQueue();
-
-                String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                Map<String, String> postparams = new HashMap<String, String>();
-                postparams.put("tag", "mytickets");
-                postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
+                if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
+                    //JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
 
 
 
-                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject json) {
-                        Log.d("Response Volley: ", json.toString());
-                      //  showProgress(false);
+                    RequestQueue queue = MyVolley.getRequestQueue();
+
+                    String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                    Map<String, String> postparams = new HashMap<String, String>();
+                    postparams.put("tag", "mytickets");
+                    postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
+
+
+
+                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject json) {
+                            Log.d("Response Volley: ", json.toString());
+                          //  showProgress(false);
+                            try {
+                                if (json.getInt("success")==1) {
+
+                                    Log.e("succsess", "yay");
+
+
+
+
+
+
+                                    Ticketliste = json.getJSONArray("tickets");
+                                    for (int i = 0; i < Ticketliste.length(); i++) {
+                                        JSONObject c = Ticketliste.getJSONObject(i);
+                                        String Farbe="#ffffffff";
+
+                                        int imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
+                                        int TicketID = c.getInt("ID");
+
+                                        String Firma = c.getString("Firma");
+                                        int Statusnum = c.getInt("Status");
+
+
+                                        switch (Statusnum) {
+
+                                            case 10:
+                                                Status = "Unbearbeitet";
+                                                DropPos = 0;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 11:
+                                                Status = "Fahrt";
+                                                DropPos = 1;
+                                                Farbe="#ffff4d00";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 12:
+                                                Status = "In arbeit";
+                                                DropPos = 2;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 13:
+                                                Status = "offen";
+                                                DropPos = 3;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 15:
+                                                Status = "Erledigt";
+                                                DropPos = 4;
+
+                                                break;
+                                            case 16:
+                                                Status = "wartet";
+                                                DropPos = 5;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 17:
+                                                Status = "Ware bestellt";
+                                                DropPos = 6;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 18:
+                                                Status = "Ware da";
+                                                DropPos = 7;
+                                                Farbe="#ffff4d00";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 19:
+                                                Status = "Ware benötigt";
+                                                DropPos = 8;
+                                                Farbe="#ffffffff";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 20:
+                                                Status = "installiert";
+                                                DropPos = 9;
+                                                Farbe="#FF0000";
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 99:
+                                                Status = "Eskalation";
+                                                DropPos = 10;
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+                                            case 100:
+                                                Status = "Eskalation in arbeit";
+                                                DropPos = 10;
+                                                imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
+                                                break;
+
+                                        }
+
+                                        String Modell = c.getString("Modell");
+
+                                        String Strasse = c.getString("Strasse");
+                                        String Plz = c.getString("Plz");
+                                        String Ort = c.getString("Ort");
+
+                                        String ort = Plz + " " + Ort;
+
+                                        String Fehler = c.getString("Stoerung");
+
+                                        ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
+                                        int hintergrundid ;
+
+                                        String Termintag = c.getString("terminTag");
+                                        String Terminende = c.getString("terminEnde");
+                                        int Termintyp = c.getInt("terminTyp");
+                                        Log.e("terminTag",":"+Termintag);
+                                        String formated_termintag="",formated_terminende;
+                                        String finalTermin="";
+                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
+                                        SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
+
+                                        boolean isheute=false;
+
+
+
+
+                                        switch (Termintyp){
+
+                                            case 99://beliebig
+
+
+                                                finalTermin="";
+
+
+
+                                                break;
+                                            case 0://monat
+
+                                                if(!Termintag.equals("null")) {
+                                                    Terminsdf = sdf.parse(Termintag);
+                                                    formated_termintag = edf.format(Terminsdf);
+                                                    finalTermin = "Termin: " + formated_termintag;
+
+
+                                                    isheute = Function.isTerminheute(Terminsdf);
+                                                } else {
+                                                    Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen" +
+                                                            "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                                }
+                                                break;
+                                            case 1: //ab /bis
+                                                if(!Termintag.equals("null")&&Terminende.equals("null")){//ab
+                                                    Terminsdf = sdf.parse(Termintag);
+                                                    formated_termintag = edf.format(Terminsdf);
+                                                    finalTermin="Ab "+formated_termintag;
+                                                    isheute =Function.isTerminheute(Terminsdf);
+                                                }else if(!Terminende.equals("null")&&Termintag.equals("null")){//bis
+
+                                                    Terminsdfend = sdf.parse(Terminende);
+                                                    formated_terminende = edf.format(Terminsdfend);
+                                                    finalTermin="Bis "+ formated_terminende;
+
+
+                                                    isheute =Function.isTerminheute(Terminsdfend);
+                                                } else if(Termintag.equals("null")&&Terminende.equals("null")){
+                                                    Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
+                                                            "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                                }else{
+                                                    Terminsdf = sdf.parse(Termintag);
+                                                    formated_termintag = edf.format(Terminsdf);
+                                                    Terminsdfend = sdf.parse(Terminende);
+                                                    formated_terminende = edf.format(Terminsdfend);
+                                                    finalTermin="Ab "+formated_termintag+ " Bis "+ formated_terminende;
+                                                    isheute =Function.isTerminheute(Terminsdf);
+                                                }
+                                                break;
+                                            case 2:// von /bis
+                                                if(!Terminende.equals("null")&&!Termintag.equals("null")){
+                                                    Terminsdf = sdf.parse(Termintag);
+                                                    formated_termintag = edf.format(Terminsdf);
+                                                    Terminsdfend = sdf.parse(Terminende);
+                                                    formated_terminende = edf.format(Terminsdfend);
+                                                    finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
+
+
+                                                    isheute =Function.isTerminheute(Terminsdf);
+                                                }
+                                                else {
+                                                    Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen!! " +
+                                                            "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                                }
+                                                break;
+                                            case 3://Termin
+                                                if(!Termintag.equals("null")) {
+                                                    Terminsdf = sdf.parse(Termintag);
+                                                    formated_termintag = edf.format(Terminsdf);
+                                                    finalTermin="Termin: "+formated_termintag;
+
+
+                                                    isheute =Function.isTerminheute(Terminsdf);} else {
+                                                    Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
+                                                            "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
+
+                                                }
+                                                break;
+                                        }
+
+
+
+
+
+
+                                        if (isheute){
+                                            System.out.println("yay");
+                                            hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+
+                                        }
+                                        else{
+                                            hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                        }
+
+                                        String Oeffnung = c.getString("oeffnung");
+                                        int imgsichtbar=0;
+                                        boolean sichtbar=false;
+                                        if(Oeffnung.equals("")){
+                                            Log.e("WARUNG","unsichtbar");
+                                            sichtbar=false;
+                                        }
+                                        else{
+                                            Log.e("WARUNG", "sichtbar");
+                                            sichtbar=true;
+                                            imgsichtbar= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
+                                        }
+
+                                        String auanr = c.getString("Auftragtkd");
+
+
+                                        HashMap<String, String> map = new HashMap<String, String>();
+
+
+                                        Jobcontrol.getAppCtx().getResources().getConfiguration();
+                                        if (Jobcontrol.getAppCtx().getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT&& Firma.length()>20){
+                                            Firma = Firma.substring(0,20)+".";
+                                        }
+
+
+                                        map.put("Firma", Firma);
+                                        map.put("Status", Status);
+                                        map.put("Termin", finalTermin);
+                                        map.put("AuaNr", auanr);
+                                        map.put("Model",Modell);
+                                        map.put("Adresse",Strasse);
+                                        map.put("Ort",ort);
+                                        map.put("Fehler",Fehler);
+                                        map.put("Farbe",Farbe);
+                                        map.put("Sichtbar", String.valueOf(imgsichtbar));
+                                        map.put("Status_ic", String.valueOf(imgid));
+                                        map.put("Hintergrund", String.valueOf(hintergrundid));
+
+
+                                        Log.e("Statusid", "" + imgid);
+
+                                        TheTickets.add(map);
+
+
+                                    }
+                                    System.out.println("Abfrage" + TheTickets);
+
+
+
+                                    Activity activity = getActivity();
+                                    if (activity != null){
+
+
+                                        setListAdapter(new SpecialAdapter(activity,TheTickets,R.layout.row_list,
+                                                new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
+                                                new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
+                                    }else{
+                                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                        Toast.makeText(Jobcontrol.getAppCtx(), "Error selfrestatr :/", Toast.LENGTH_SHORT).show();
+                                        startActivity(i);
+                                    }
+
+                                    neueTickets(json, Jobcontrol.getAppCtx());
+                                    String jstring = json.toString();
+                                    System.out.println("is JSONstring null?" + jstring);
+                                    new SessionManager(Jobcontrol.getAppCtx()).saveJSON(jstring);
+
+
+                                } else {
+                                    Log.e("succsess","NOOOOOOOOOOOOOOOO");
+
+
+                                    Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                                    Fragment fragment = null;
+                                    fragment = new OfflineFragment();
+                                    if (fragment != null) {
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        fragmentManager.beginTransaction()
+                                                .replace(R.id.frame_container, fragment).commit();
+
+                                    }
+
+
+                                }
+                            } catch (JSONException | ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.d("Response: ", response.toString());
+                            //showProgress(false);
+                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                            Fragment fragment = null;
+                            fragment = new OfflineFragment();
+                            if (fragment != null) {
+                                FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.frame_container, fragment).commit();
+
+                            }
+
+                        }
+                    });
+
+                queue.add(jsObjRequest);
+
+
+
+                   /* SessionManager sessionManager = new SessionManager(Jobcontrol.appCtx);
+                    String jsonstring=sessionManager.getJstring();
+                    JSONObject json = null;
+
+                        json = new JSONObject(jsonstring);
+
+                    if (json != null) {
                         try {
-                            if (json.getInt("success")==1) {
 
-                                Log.e("succsess", "yay");
+                            int success = json.getInt(TAG_SUCCESS);
 
-
-
-
-
+                            if (success == 1) {
 
                                 Ticketliste = json.getJSONArray("tickets");
                                 for (int i = 0; i < Ticketliste.length(); i++) {
@@ -271,13 +609,13 @@ public class TicketFragment extends ListFragment {
                                                 isheute =Function.isTerminheute(Terminsdf);
                                             }else if(!Terminende.equals("null")&&Termintag.equals("null")){//bis
 
-                                                Terminsdfend = sdf.parse(Terminende);
-                                                formated_terminende = edf.format(Terminsdfend);
-                                                finalTermin="Bis "+ formated_terminende;
+                                            Terminsdfend = sdf.parse(Terminende);
+                                            formated_terminende = edf.format(Terminsdfend);
+                                            finalTermin="Bis "+ formated_terminende;
 
 
-                                                isheute =Function.isTerminheute(Terminsdfend);
-                                            } else if(Termintag.equals("null")&&Terminende.equals("null")){
+                                            isheute =Function.isTerminheute(Terminsdfend);
+                                        } else if(Termintag.equals("null")&&Terminende.equals("null")){
                                                 Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
                                                         "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
 
@@ -309,12 +647,12 @@ public class TicketFragment extends ListFragment {
                                             break;
                                         case 3://Termin
                                             if(!Termintag.equals("null")) {
-                                                Terminsdf = sdf.parse(Termintag);
-                                                formated_termintag = edf.format(Terminsdf);
-                                                finalTermin="Termin: "+formated_termintag;
+                                            Terminsdf = sdf.parse(Termintag);
+                                            formated_termintag = edf.format(Terminsdf);
+                                            finalTermin="Termin: "+formated_termintag;
 
 
-                                                isheute =Function.isTerminheute(Terminsdf);} else {
+                                            isheute =Function.isTerminheute(Terminsdf);} else {
                                                 Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
                                                         "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
 
@@ -327,14 +665,14 @@ public class TicketFragment extends ListFragment {
 
 
 
-                                    if (isheute){
-                                        System.out.println("yay");
-                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
+                                        if (isheute){
+                                            System.out.println("yay");
+                                            hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
 
-                                    }
-                                    else{
-                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                                    }
+                                        }
+                                        else{
+                                            hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
+                                        }
 
                                     String Oeffnung = c.getString("oeffnung");
                                     int imgsichtbar=0;
@@ -370,12 +708,12 @@ public class TicketFragment extends ListFragment {
                                     map.put("Ort",ort);
                                     map.put("Fehler",Fehler);
                                     map.put("Farbe",Farbe);
-                                    map.put("Sichtbar", String.valueOf(imgsichtbar));
-                                    map.put("Status_ic", String.valueOf(imgid));
-                                    map.put("Hintergrund", String.valueOf(hintergrundid));
+                                    map.put("Sichtbar",String.valueOf(imgsichtbar));
+                                    map.put("Status_ic",String.valueOf(imgid));
+                                    map.put("Hintergrund",String.valueOf(hintergrundid));
 
 
-                                    Log.e("Statusid", "" + imgid);
+                                    Log.e("Statusid",""+imgid);
 
                                     TheTickets.add(map);
 
@@ -383,55 +721,29 @@ public class TicketFragment extends ListFragment {
                                 }
                                 System.out.println("Abfrage" + TheTickets);
 
-
-
-                                Activity activity = getActivity();
-                                if (activity != null){
-
-
-                                    setListAdapter(new SpecialAdapter(activity,TheTickets,R.layout.row_list,
-                                            new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
-                                            new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
-                                }else{
-                                    Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
-                                    Toast.makeText(Jobcontrol.getAppCtx(), "Error selfrestatr :/", Toast.LENGTH_SHORT).show();
-                                    startActivity(i);
-                                }
-
-                                neueTickets(json, Jobcontrol.getAppCtx());
-                                String jstring = json.toString();
-                                System.out.println("is JSONstring null?" + jstring);
-                                new SessionManager(Jobcontrol.getAppCtx()).saveJSON(jstring);
-
-
                             } else {
-                                Log.e("succsess","NOOOOOOOOOOOOOOOO");
-
-
-                                Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
-
-                                Fragment fragment = null;
-                                fragment = new OfflineFragment();
-                                if (fragment != null) {
-                                    FragmentManager fragmentManager = getFragmentManager();
-                                    fragmentManager.beginTransaction()
-                                            .replace(R.id.frame_container, fragment).commit();
-
-                                }
 
 
                             }
+
                         } catch (JSONException | ParseException e) {
                             e.printStackTrace();
                         }
-                    }
-                }, new Response.ErrorListener() {
+                            Activity activity = getActivity();
+                        if (activity != null){
 
-                    @Override
-                    public void onErrorResponse(VolleyError response) {
-                        Log.d("Response: ", response.toString());
-                        //showProgress(false);
-                        Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                        setListAdapter(new SpecialAdapter(activity,TheTickets,R.layout.row_list,
+                                new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
+                                new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
+                        }else{
+                            Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                            Toast.makeText(Jobcontrol.getAppCtx(), "Error selfrestatr :/", Toast.LENGTH_SHORT).show();
+                            startActivity(i);
+                        }
+                    } else{
+
+                        Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                         Fragment fragment = null;
                         fragment = new OfflineFragment();
@@ -441,308 +753,11 @@ public class TicketFragment extends ListFragment {
                                     .replace(R.id.frame_container, fragment).commit();
 
                         }
-
                     }
-                });
+                }
+                else{
 
-            queue.add(jsObjRequest);
-
-
-
-               /* SessionManager sessionManager = new SessionManager(Jobcontrol.appCtx);
-                String jsonstring=sessionManager.getJstring();
-                JSONObject json = null;
-
-                    json = new JSONObject(jsonstring);
-
-                if (json != null) {
-                    try {
-
-                        int success = json.getInt(TAG_SUCCESS);
-
-                        if (success == 1) {
-
-                            Ticketliste = json.getJSONArray("tickets");
-                            for (int i = 0; i < Ticketliste.length(); i++) {
-                                JSONObject c = Ticketliste.getJSONObject(i);
-                                String Farbe="#ffffffff";
-
-                                int imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red", "mipmap", "de.hoell.jobcontrol");
-                                int TicketID = c.getInt("ID");
-
-                                String Firma = c.getString("Firma");
-                                int Statusnum = c.getInt("Status");
-
-
-                                switch (Statusnum) {
-
-                                    case 10:
-                                        Status = "Unbearbeitet";
-                                        DropPos = 0;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 11:
-                                        Status = "Fahrt";
-                                        DropPos = 1;
-                                        Farbe="#ffff4d00";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 12:
-                                        Status = "In arbeit";
-                                        DropPos = 2;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 13:
-                                        Status = "offen";
-                                        DropPos = 3;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 15:
-                                        Status = "Erledigt";
-                                        DropPos = 4;
-
-                                        break;
-                                    case 16:
-                                        Status = "wartet";
-                                        DropPos = 5;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 17:
-                                        Status = "Ware bestellt";
-                                        DropPos = 6;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 18:
-                                        Status = "Ware da";
-                                        DropPos = 7;
-                                        Farbe="#ffff4d00";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_green","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 19:
-                                        Status = "Ware benötigt";
-                                        DropPos = 8;
-                                        Farbe="#ffffffff";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 20:
-                                        Status = "installiert";
-                                        DropPos = 9;
-                                        Farbe="#FF0000";
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_red","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 99:
-                                        Status = "Eskalation";
-                                        DropPos = 10;
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-                                    case 100:
-                                        Status = "Eskalation in arbeit";
-                                        DropPos = 10;
-                                        imgid= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_status_orange","mipmap","de.hoell.jobcontrol");
-                                        break;
-
-                                }
-
-                                String Modell = c.getString("Modell");
-
-                                String Strasse = c.getString("Strasse");
-                                String Plz = c.getString("Plz");
-                                String Ort = c.getString("Ort");
-
-                                String ort = Plz + " " + Ort;
-
-                                String Fehler = c.getString("Stoerung");
-
-                                ticketsList.add(new Tickets(Firma + ", " + Modell + ", " + Status));
-                                int hintergrundid ;
-
-                                String Termintag = c.getString("terminTag");
-                                String Terminende = c.getString("terminEnde");
-                                int Termintyp = c.getInt("terminTyp");
-                                Log.e("terminTag",":"+Termintag);
-                                String formated_termintag="",formated_terminende;
-                                String finalTermin="";
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.GERMAN);
-                                SimpleDateFormat edf = new SimpleDateFormat("dd-MM-yyyy  HH:mm", Locale.GERMAN);
-
-                                boolean isheute=false;
-
-
-
-
-                                switch (Termintyp){
-
-                                    case 99://beliebig
-
-
-                                        finalTermin="";
-
-
-
-                                        break;
-                                    case 0://monat
-
-                                        if(!Termintag.equals("null")) {
-                                            Terminsdf = sdf.parse(Termintag);
-                                            formated_termintag = edf.format(Terminsdf);
-                                            finalTermin = "Termin: " + formated_termintag;
-
-
-                                            isheute = Function.isTerminheute(Terminsdf);
-                                        } else {
-                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen" +
-                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
-
-                                        }
-                                        break;
-                                    case 1: //ab /bis
-                                        if(!Termintag.equals("null")&&Terminende.equals("null")){//ab
-                                            Terminsdf = sdf.parse(Termintag);
-                                            formated_termintag = edf.format(Terminsdf);
-                                            finalTermin="Ab "+formated_termintag;
-                                            isheute =Function.isTerminheute(Terminsdf);
-                                        }else if(!Terminende.equals("null")&&Termintag.equals("null")){//bis
-
-                                        Terminsdfend = sdf.parse(Terminende);
-                                        formated_terminende = edf.format(Terminsdfend);
-                                        finalTermin="Bis "+ formated_terminende;
-
-
-                                        isheute =Function.isTerminheute(Terminsdfend);
-                                    } else if(Termintag.equals("null")&&Terminende.equals("null")){
-                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
-                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
-
-                                        }else{
-                                            Terminsdf = sdf.parse(Termintag);
-                                            formated_termintag = edf.format(Terminsdf);
-                                            Terminsdfend = sdf.parse(Terminende);
-                                            formated_terminende = edf.format(Terminsdfend);
-                                            finalTermin="Ab "+formated_termintag+ " Bis "+ formated_terminende;
-                                            isheute =Function.isTerminheute(Terminsdf);
-                                        }
-                                        break;
-                                    case 2:// von /bis
-                                        if(!Terminende.equals("null")&&!Termintag.equals("null")){
-                                            Terminsdf = sdf.parse(Termintag);
-                                            formated_termintag = edf.format(Terminsdf);
-                                            Terminsdfend = sdf.parse(Terminende);
-                                            formated_terminende = edf.format(Terminsdfend);
-                                            finalTermin="Von "+formated_termintag+" bis "+ formated_terminende;
-
-
-                                            isheute =Function.isTerminheute(Terminsdf);
-                                        }
-                                        else {
-                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen!! " +
-                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
-
-                                        }
-                                        break;
-                                    case 3://Termin
-                                        if(!Termintag.equals("null")) {
-                                        Terminsdf = sdf.parse(Termintag);
-                                        formated_termintag = edf.format(Terminsdf);
-                                        finalTermin="Termin: "+formated_termintag;
-
-
-                                        isheute =Function.isTerminheute(Terminsdf);} else {
-                                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR Da ist wohl was schief gelaufen! " +
-                                                    "\n Termin im Ticket "+ TicketID +"falsch eingetragen" , Toast.LENGTH_LONG).show();
-
-                                        }
-                                        break;
-                                }
-
-
-
-
-
-
-                                    if (isheute){
-                                        System.out.println("yay");
-                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("rot","drawable","de.hoell.jobcontrol");
-
-                                    }
-                                    else{
-                                        hintergrundid= Jobcontrol.getAppCtx().getResources().getIdentifier("weis","drawable","de.hoell.jobcontrol");
-                                    }
-
-                                String Oeffnung = c.getString("oeffnung");
-                                int imgsichtbar=0;
-                                boolean sichtbar=false;
-                                if(Oeffnung.equals("")){
-                                    Log.e("WARUNG","unsichtbar");
-                                    sichtbar=false;
-                                }
-                                else{
-                                    Log.e("WARUNG", "sichtbar");
-                                    sichtbar=true;
-                                    imgsichtbar= Jobcontrol.getAppCtx().getResources().getIdentifier("ic_warning","drawable","de.hoell.jobcontrol");
-                                }
-
-                                String auanr = c.getString("Auftragtkd");
-
-
-                                HashMap<String, String> map = new HashMap<String, String>();
-
-
-                                Jobcontrol.getAppCtx().getResources().getConfiguration();
-                                if (Jobcontrol.getAppCtx().getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT&& Firma.length()>20){
-                                    Firma = Firma.substring(0,20)+".";
-                                }
-
-
-                                map.put("Firma", Firma);
-                                map.put("Status", Status);
-                                map.put("Termin", finalTermin);
-                                map.put("AuaNr", auanr);
-                                map.put("Model",Modell);
-                                map.put("Adresse",Strasse);
-                                map.put("Ort",ort);
-                                map.put("Fehler",Fehler);
-                                map.put("Farbe",Farbe);
-                                map.put("Sichtbar",String.valueOf(imgsichtbar));
-                                map.put("Status_ic",String.valueOf(imgid));
-                                map.put("Hintergrund",String.valueOf(hintergrundid));
-
-
-                                Log.e("Statusid",""+imgid);
-
-                                TheTickets.add(map);
-
-
-                            }
-                            System.out.println("Abfrage" + TheTickets);
-
-                        } else {
-
-
-                        }
-
-                    } catch (JSONException | ParseException e) {
-                        e.printStackTrace();
-                    }
-                        Activity activity = getActivity();
-                    if (activity != null){
-
-
-                    setListAdapter(new SpecialAdapter(activity,TheTickets,R.layout.row_list,
-                            new String[] {"Firma", "Status", "Adresse","Ort", "Model", "Fehler", "Farbe", "Status_ic","Hintergrund","Termin","AuaNr","Sichtbar"},
-                            new int[] {R.id.FIRMA_CELL,R.id.STATUS_CELL, R.id.ADRESSE_CELL, R.id.ORT_CELL, R.id.MODEL_CELL, R.id.FEHLER_CELL,R.color.ticket_list,R.id.Status_img,R.id.BACKGROUD_all,R.id.TERMIN_CELL,R.id.AUA_CELL,R.id.img_warning}));
-                    }else{
-                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
-                        Toast.makeText(Jobcontrol.getAppCtx(), "Error selfrestatr :/", Toast.LENGTH_SHORT).show();
-                        startActivity(i);
-                    }
-                } else{
-
-                    Toast.makeText(Jobcontrol.getAppCtx(), "TIMEOUT!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+                 Toast.makeText(Jobcontrol.getAppCtx(), "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
 
                     Fragment fragment = null;
                     fragment = new OfflineFragment();
@@ -751,103 +766,117 @@ public class TicketFragment extends ListFragment {
                         fragmentManager.beginTransaction()
                                 .replace(R.id.frame_container, fragment).commit();
 
+                    }*/
+                }
+    //
+
+              ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+                //SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
+                //int zeit=session.getZeit();
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Jobcontrol.getAppCtx());
+    // then you use
+                int zeit= Integer.parseInt(prefs.getString("update_list", "15"));
+
+                System.out.println("UpdateTimer auf " + zeit + " gesetzt");
+    // This schedule a runnable task every 15 minutes
+                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+                        final Functions Function = new Functions();
+
+                if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
+                    //JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
+
+
+
+
+                    RequestQueue queue = MyVolley.getRequestQueue();
+
+                    String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                    Map<String, String> postparams = new HashMap<String, String>();
+                    postparams.put("tag", "mytickets");
+                    postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
+
+
+
+                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject json) {
+                            Log.d("Response Volley: ", json.toString());
+                          //  showProgress(false);
+                    try {
+                          if (json.getInt("success")==1) {
+
+                                    Log.e("succsess_background", "yay");
+                                     neueTickets(json, Jobcontrol.getAppCtx());
+                                    String jstring = json.toString();
+                                    System.out.println("is JSONstring null?" + jstring);
+                                    new SessionManager(Jobcontrol.getAppCtx()).saveJSON(jstring);
+                              Log.d("schein.length"," : "+json.getJSONArray("schein").length());
+                              if(json.getJSONArray("schein").length()>0){
+
+                                  for (int i = 0; i <json.getJSONArray("schein").length(); i++) {
+
+                                      JSONObject ScheinObj = json.getJSONArray("schein").getJSONObject(i);
+
+                                      JSONObject Schein = ScheinObj.optJSONObject("schein");
+                                      Log.d("Schrein",Schein.toString());
+
+                                      JSONObject Vde = ScheinObj.optJSONObject("vde");
+                                      Log.d("Vde",""+Vde);
+                                      JSONObject Unterschrift = ScheinObj.optJSONObject("sign");
+                                      Log.d("Unterscrift",""+Unterschrift);
+                                      JSONObject Zaehler = ScheinObj.optJSONObject("zaehler");
+                                      Log.d("Zaehler",""+Zaehler);
+                                      JSONArray TeileObj = ScheinObj.optJSONArray("eteile");
+                                      Log.d("TeileObj",""+TeileObj);
+                                      //TODO: schleife einzelne Teile
+                                      JSONArray ArbeitObj = ScheinObj.optJSONArray("arbeit");
+                                      Log.d("ArbeitObj",""+ArbeitObj);
+                                      //TODO: schleife einzelne AWs
+
+                                      new DBManager.SyncScheinDB(Jobcontrol.getAppCtx(),Schein,Vde,Unterschrift,Zaehler,ArbeitObj,TeileObj).execute();
+                                  }
+
+
+                              }
+
+                        }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError response) {
+                            Log.e("Response: ", response.toString());
+                          /*  //showProgress(false);
+                            Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
+
+                            Fragment fragment = null;
+                            fragment = new OfflineFragment();
+                            if (fragment != null) {
+                                FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.frame_container, fragment).commit();
+
+                            }*/
+
+                        }
+                    });
+
+                queue.add(jsObjRequest);
+
                     }
                 }
-            }
-            else{
-
-             Toast.makeText(Jobcontrol.getAppCtx(), "Keine Internet verbindung Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
-
-                Fragment fragment = null;
-                fragment = new OfflineFragment();
-                if (fragment != null) {
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.frame_container, fragment).commit();
-
-                }*/
-            }
-//
-
-          ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-            //SessionManager session=new SessionManager(Jobcontrol.getAppCtx());
-            //int zeit=session.getZeit();
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Jobcontrol.getAppCtx());
-// then you use
-            int zeit= Integer.parseInt(prefs.getString("update_list", "15"));
-
-            System.out.println("UpdateTimer auf " + zeit + " gesetzt");
-// This schedule a runnable task every 15 minutes
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    final Functions Function = new Functions();
-
-            if( Function.isNetworkOnline(Jobcontrol.getAppCtx())) {
-                //JSONObject json = new JSONMyTickets(Jobcontrol.getAppCtx()).execute().get(30000, TimeUnit.MILLISECONDS);
+    //InterruptedException | ExecutionException | TimeoutException |
 
 
 
-
-                RequestQueue queue = MyVolley.getRequestQueue();
-
-                String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                Map<String, String> postparams = new HashMap<String, String>();
-                postparams.put("tag", "mytickets");
-                postparams.put("user", new SessionManager(Jobcontrol.getAppCtx()).getUser());
-
-
-
-                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject json) {
-                        Log.d("Response Volley: ", json.toString());
-                      //  showProgress(false);
-                try {
-                      if (json.getInt("success")==1) {
-
-                                Log.e("succsess_background", "yay");
-                                 neueTickets(json, Jobcontrol.getAppCtx());
-                                String jstring = json.toString();
-                                System.out.println("is JSONstring null?" + jstring);
-                                new SessionManager(Jobcontrol.getAppCtx()).saveJSON(jstring);
-
-                    }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError response) {
-                        Log.e("Response: ", response.toString());
-                      /*  //showProgress(false);
-                        Toast.makeText(Jobcontrol.getAppCtx(), "ERROR!!! Bitte zum Offlinemodus wechseln", Toast.LENGTH_LONG).show();
-
-                        Fragment fragment = null;
-                        fragment = new OfflineFragment();
-                        if (fragment != null) {
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction()
-                                    .replace(R.id.frame_container, fragment).commit();
-
-                        }*/
-
-                    }
-                });
-
-            queue.add(jsObjRequest);
-
-                }
-            }
-//InterruptedException | ExecutionException | TimeoutException |
-
-
-
-    }, 0, zeit, TimeUnit.MINUTES);
+        }, 0, zeit, TimeUnit.MINUTES);
     }
 
 

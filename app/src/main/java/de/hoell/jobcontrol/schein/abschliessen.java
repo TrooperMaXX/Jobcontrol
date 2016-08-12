@@ -7,24 +7,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,12 +33,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
-import de.hoell.jobcontrol.query.CustomRequest;
+import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.DBManager;
-import de.hoell.jobcontrol.query.MyVolley;
 
 public class abschliessen extends Fragment {
 
@@ -71,8 +65,8 @@ public class abschliessen extends Fragment {
             TextView Ger = (TextView) rootView.findViewById(R.id.TextViewGerContent);
             TextView Srn = (TextView) rootView.findViewById(R.id.TextViewSrnContent);
             final TextView Zaehler = (TextView) rootView.findViewById(R.id.textViewZaehler);
-            final TextView sw = (TextView) rootView.findViewById(R.id.TextViewSWContent);
-            final TextView Farb = (TextView) rootView.findViewById(R.id.TextViewFarbContent);
+            final TextView sw = (TextView) rootView.findViewById(R.id.EditTextSWContent);
+            final TextView Farb = (TextView) rootView.findViewById(R.id.EditTextFarbContent);
             final EditText Bemerkung = (EditText) rootView.findViewById(R.id.editTextBemerkung);
 
             ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
@@ -83,31 +77,45 @@ public class abschliessen extends Fragment {
             final LinearLayout mContent = (LinearLayout) rootView.findViewById(R.id.SignLayout);
 
             context = rootView.getContext();
+            Bundle bundle =getArguments();
+            final Map<String, String> args=DBManager.GetSchein(context,bundle.getInt("ScheinId"));
 
-            final Bundle args=getArguments();
+            JSONObject DBSchein= null;
+            try {
+                DBSchein = new JSONObject(args.get("scheindata"));
+                Log.d("DBSchein",""+DBSchein);
+                JSONObject DBVde=new JSONObject(args.get("vdedata"));
+                Log.d("DBVde",""+DBVde);
+                JSONObject DBUnterschrift=new JSONObject(args.get("unterschriftdata"));
+                Log.d("DBUnterschrift",""+DBUnterschrift);
+                JSONArray DBTeile =new JSONArray(args.get("teiledata"));
+                Log.d("DBTeile",""+DBTeile);
+                JSONArray DBArbeit =new JSONArray(args.get("arbeitdata"));
+                Log.d("DBArbeit",""+DBArbeit);
+                JSONObject DBZaehler=new JSONObject(args.get("zaehlerdata"));
+                Log.d("DBZaehler",""+DBZaehler);
 
 
-
-
-/*
-            String anschrift=args.getString("Firma")+"\n"+args.getString("Str")+"\n"+args.getString("Ort");
+            String anschrift=bundle.getString("Firma")+"\n"+bundle.getString("Str")+"\n"+bundle.getString("Ort");
             Anschrift.setText(anschrift);
 
 
-            Ger.setText(args.getString("Ger"));
-            Srn.setText(args.getString("Srn"));
-            String ges="Zähler("+args.getString("Ges")+")";
+            Ger.setText(bundle.getString("Ger"));
+            Srn.setText(DBSchein.getString("srn"));
+            String ges="Zähler("+DBZaehler.getInt("z1")+DBZaehler.getInt("z2")+")";
             Zaehler.setText(ges);
-            sw.setText(args.getString("Sw"));
-            Farb.setText(args.getString("Farb"));
+            sw.setText(String.valueOf(DBZaehler.getInt("z1")));
+            Farb.setText(String.valueOf(DBZaehler.getInt("z2")));
 
-            for ( int i=0; i <= args.getInt("Pos");i++){
+            for ( int i=0; i < DBArbeit.length();i++){
+                JSONObject Arbeit = DBArbeit.getJSONObject(i);
+                Log.e("arbeit",Arbeit.toString());
                 HashMap<String, String> map = new HashMap<String, String>();
-                map.put("Datum", args.getString("Datum" + String.valueOf(i)));
-                map.put("Technr", args.getString("TechNr" + String.valueOf(i)));
-                map.put("AW", args.getString("AW" + String.valueOf(i)));
-                map.put("Weg", args.getString("WEG" + String.valueOf(i)));
-                map.put("Arbeit", args.getString("Arbeit" + String.valueOf(i)));
+                map.put("Datum",Arbeit.getString("datum"));
+                map.put("Technr", Arbeit.getString("technr"));
+                map.put("AW", Arbeit.getString("mengeaw"));
+                map.put("Weg",Arbeit.getString("wegaw"));
+                map.put("Arbeit", Arbeit.getString("text"));
                 arbeitlist.add(map);
 
             }
@@ -119,11 +127,12 @@ public class abschliessen extends Fragment {
                     R.id.TextViewWegContent,
                     R.id.TextViewAusArbeitContent}));
 
-            for ( int t=0; t <= args.getInt("TeilePos");t++){
+            for ( int t=0; t < DBTeile.length();t++){
+                JSONObject Teile = DBTeile.getJSONObject(t);
                 HashMap<String, String> map = new HashMap<String, String>();
-                map.put("Menge", args.getString("Anz" + String.valueOf(t)));
-                map.put("TeilehNr", args.getString("TeileNr" + String.valueOf(t)));
-                map.put("Bez", args.getString("Bez" + String.valueOf(t)));
+                map.put("Menge", Teile.getString("mengeaw"));
+                map.put("TeilehNr", Teile.getString("artnr"));
+                map.put("Bez", Teile.getString("text"));
 
                 teilelist.add(map);
             }
@@ -187,7 +196,6 @@ public class abschliessen extends Fragment {
                 }
             });
 
-*/
 
 
 
@@ -417,14 +425,14 @@ public class abschliessen extends Fragment {
                                 startActivity(i);
                             }
 
-                           *//* try {
+                            try {
                                 if(json.getInt("success")==1){
                                     Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
                                     startActivity(i);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }*//*
+                            }
 
                         }
                     }, new Response.ErrorListener() {
@@ -448,9 +456,10 @@ public class abschliessen extends Fragment {
                     e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-*/
-
+                }*/
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
 
@@ -514,7 +523,7 @@ public class abschliessen extends Fragment {
                 }
             });
 
-            FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
+          /*  FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
             fab_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -583,9 +592,9 @@ public class abschliessen extends Fragment {
 
 
 
-                    /* Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                    *//* Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);*/
+                    startActivity(i);*//*
 
                     }else{
                         Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
@@ -594,7 +603,7 @@ public class abschliessen extends Fragment {
 
                 }
             });
-
+*/
             return rootView;
         }
 

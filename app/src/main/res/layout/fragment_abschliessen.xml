@@ -58,11 +58,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <EditText
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/anschrift"
-                    android:id="@+id/editTextAnschriftContent"
+                    android:id="@+id/TextViewAnschriftContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -90,11 +90,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <EditText
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ger"
-                    android:id="@+id/editTextGerContent"
+                    android:id="@+id/TextViewGerContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -122,11 +122,11 @@
                 android:layout_height="wrap_content"
                 >
 
-                <EditText
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/ger"
-                    android:id="@+id/editTextSrnContent"
+                    android:id="@+id/TextViewSrnContent"
                     android:textStyle="normal"
                     android:layout_column="0"
                     style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -170,7 +170,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sw"
-                        android:id="@+id/editTextSWContent"
+                        android:id="@+id/EditTextSWContent"
                         android:textStyle="normal"
                         android:inputType="number"
                         style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -186,7 +186,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/farb"
-                        android:id="@+id/editTextFarbContent"
+                        android:id="@+id/EditTextFarbContent"
                         android:textStyle="normal"
                         android:inputType="number"
                         style="@style/Base.TextAppearance.AppCompat.Medium"

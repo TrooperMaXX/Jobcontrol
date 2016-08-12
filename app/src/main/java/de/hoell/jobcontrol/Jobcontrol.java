@@ -10,7 +10,6 @@ import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.MyVolley;
 
 
-
 /**
  * Created by Hoell on 30.06.2015.
  */
@@ -22,10 +21,12 @@ public class Jobcontrol extends Application {
     public void onCreate(){
         super.onCreate();
         appCtx=getApplicationContext();
-        DBManager dbManager =new DBManager(appCtx);
+        new DBManager(appCtx);
+
 
         Stetho.initializeWithDefaults(this);
         Log.e("Stetho", "done");
+
         init();
 
     }

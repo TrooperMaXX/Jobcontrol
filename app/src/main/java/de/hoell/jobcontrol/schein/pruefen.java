@@ -154,6 +154,21 @@ public class pruefen extends Fragment {
                                     Log.e("succsess","yaaaaaaaaaay");
                                     new DBManager.FillScheinDB(context,args,json.getInt("ScheinId")).execute();
                                     //TODO: FillSchein mit schein id
+
+                                    abschliessen nextFragment = new abschliessen();
+
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                                    // Replace whatever is in the fragment_container view with this fragment,
+                                    // and add the transaction to the back stack so the user can navigate back
+                                    transaction.replace(R.id.frame_container, nextFragment);
+                                    transaction.addToBackStack(null);
+
+                                    args.putInt("ScheinId",json.getInt("ScheinId"));
+                                    nextFragment.setArguments(args);
+                                    //nextFragment.setArguments(next);
+                                    // Commit the transaction
+                                    transaction.commit();
                                 } else {
                                     Log.e("GetScheinID","Failed succsess != 1");
 
@@ -182,18 +197,6 @@ public class pruefen extends Fragment {
 
 
 
-                abschliessen nextFragment = new abschliessen();
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.frame_container, nextFragment);
-                transaction.addToBackStack(null);
-
-                //nextFragment.setArguments(next);
-                // Commit the transaction
-                transaction.commit();
 
                 Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();
 

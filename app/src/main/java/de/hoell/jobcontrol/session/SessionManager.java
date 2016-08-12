@@ -2,6 +2,7 @@ package de.hoell.jobcontrol.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 import java.util.HashMap;
 
@@ -44,6 +45,9 @@ public class SessionManager {
         // All Shared Preferences Keys
         private static final String IS_ZEIT = "IsZeitOn";
 
+    // All Shared Preferences Keys
+    private static final String IS_ID = "IsID";
+
         // User name (make variable public to access from outside)
         public static final String KEY_USER = "user";
 
@@ -67,6 +71,8 @@ public class SessionManager {
 
     // Email address (make variable public to access from outside)
     public static final String KEY_DB = "DB";
+
+    public static final String KEY_ID = "ID";
 
         // Constructor
         public SessionManager(Context context){
@@ -139,6 +145,18 @@ public class SessionManager {
         // commit changes
         editor.commit();
         System.out.println("Daten gespeichert:"+zeit);
+    }
+
+    public void saveID(int ID){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_ID, true);
+
+        // Storing jsonstring in pref
+        editor.putInt(KEY_ID, ID);
+
+        // commit changes
+        editor.commit();
+        System.out.println("Daten gespeichert:"+ID);
     }
 
 
@@ -266,6 +284,15 @@ public class SessionManager {
     public String getDB() {
 
         return pref.getString(KEY_DB, "null");
+
+    }
+
+    public String getID() {
+        saveID(pref.getInt(KEY_ID, 0)+1);
+        String android_id = Settings.Secure.getString(_context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        return android_id +"-"+pref.getInt(KEY_ID, 0);
 
     }
 }

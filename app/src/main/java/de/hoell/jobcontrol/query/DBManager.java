@@ -243,13 +243,14 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    public static void UpdateBemerkung(Context mContext, int ScheinId, String bemerkung){
+    public static void UpdateSchein(Context mContext, int ScheinId, String bemerkung,String email){
 
         SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
 
         String update= "UPDATE "+TABLE_SCHEIN+
                 " SET "+
-                COLUMN_BEMERKUNG+" = '"+bemerkung+ "'" +
+                COLUMN_BEMERKUNG+" = '"+bemerkung+ "'," +
+                COLUMN_EMAIL+" = '"+email+ "'" +
 
                 " WHERE "+COLUMN_SCHEINID +" = "+ScheinId;
 

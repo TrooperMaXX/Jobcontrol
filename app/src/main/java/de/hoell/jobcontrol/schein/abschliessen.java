@@ -76,6 +76,7 @@ public class abschliessen extends Fragment {
             final TextView Farb = (TextView) rootView.findViewById(R.id.EditTextFarbContent);
             final EditText Bemerkung = (EditText) rootView.findViewById(R.id.editTextBemerkung);
             final EditText Klarname = (EditText) rootView.findViewById(R.id.editTextKlarname);
+            final EditText Email = (EditText) rootView.findViewById(R.id.editTextEmail);
 
             ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
             ExpandableHeightListView teileliste = (ExpandableHeightListView) rootView.findViewById(R.id.teileList);
@@ -538,6 +539,8 @@ public class abschliessen extends Fragment {
             fab_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(Email.length()>3){
+
 
                     if (issign && Klarname.length()>3 ){
                         CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
@@ -546,7 +549,7 @@ public class abschliessen extends Fragment {
                         bundle.putString("BLOB",myBase64Image);
                         //bundle.putString("bemerkung", String.valueOf(Bemerkung.getText()));
 
-                        DBManager.UpdateBemerkung(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()));
+                        DBManager.UpdateSchein(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()),String.valueOf(Email.getText()));
                         DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image);
 
 
@@ -559,7 +562,9 @@ public class abschliessen extends Fragment {
                         Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
                     }
 
-
+                }else {
+                        Toast.makeText(context, "Bitte eMail eintragen lassen", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

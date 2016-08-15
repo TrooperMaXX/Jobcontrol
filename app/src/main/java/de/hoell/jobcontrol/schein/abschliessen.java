@@ -23,6 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +46,10 @@ import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
+import de.hoell.jobcontrol.query.CustomRequest;
 import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.query.MyVolley;
+import de.hoell.jobcontrol.session.SessionManager;
 
 public class abschliessen extends Fragment {
 
@@ -49,6 +57,7 @@ public class abschliessen extends Fragment {
         SignatureView mSig;
          boolean issign =false;
         String myBase64Image="";
+    JSONObject DBSchein = null;
         EditText editTextTeileNr,editTextBezeichnung;
         public abschliessen() {
         }
@@ -81,6 +90,7 @@ public class abschliessen extends Fragment {
             ExpandableHeightListView arbeitsliste = (ExpandableHeightListView) rootView.findViewById(R.id.arbeitList);
             ExpandableHeightListView teileliste = (ExpandableHeightListView) rootView.findViewById(R.id.teileList);
             final FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
+            final FloatingActionButton fab_save = (FloatingActionButton) rootView.findViewById(R.id.fab_save);
             final FloatingActionButton fab_remove = (FloatingActionButton) rootView.findViewById(R.id.fab_sign_remove);
             final FloatingActionButton fab_check = (FloatingActionButton) rootView.findViewById(R.id.fab_sign_check);
             final LinearLayout mContent = (LinearLayout) rootView.findViewById(R.id.SignLayout);
@@ -89,8 +99,8 @@ public class abschliessen extends Fragment {
             final Bundle bundle =getArguments();
             final Map<String, String> args=DBManager.GetSchein(context,bundle.getInt("ScheinId"));
 
-            final  JSONObject DBSchein;
             try {
+
                 DBSchein = new JSONObject(args.get("scheindata"));
                 Log.d("DBSchein",""+DBSchein);
                 JSONObject DBVde=new JSONObject(args.get("vdedata"));
@@ -486,6 +496,7 @@ public class abschliessen extends Fragment {
                     mSig=new SignatureView(context,null);
                     mContent.addView(mSig, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     fab_next.setVisibility(View.GONE);
+                    fab_save.setVisibility(View.GONE);
                     fab_remove.setVisibility(View.VISIBLE);
                     fab_remove.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -496,6 +507,7 @@ public class abschliessen extends Fragment {
                                fab_check.setVisibility(View.GONE);
                                mContent.setVisibility(View.GONE);
                                fab_next.setVisibility(View.VISIBLE);
+                               fab_save.setVisibility(View.VISIBLE);
                                issign=false;
                            }else{
                                mContent.setBackgroundResource(R.drawable.sign_);
@@ -524,6 +536,7 @@ public class abschliessen extends Fragment {
                             fab_check.setVisibility(View.GONE);
                             mContent.setVisibility(View.GONE);
                             fab_next.setVisibility(View.VISIBLE);
+                            fab_save.setVisibility(View.VISIBLE);
                             issign=true;
                             mSig.clear();
                             mContent.removeAllViews();
@@ -536,7 +549,7 @@ public class abschliessen extends Fragment {
             });
 
 
-            fab_next.setOnClickListener(new View.OnClickListener() {
+            fab_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(Email.length()>3){
@@ -563,6 +576,92 @@ public class abschliessen extends Fragment {
                     }
 
                 }else {
+                        Toast.makeText(context, "Bitte eMail eintragen lassen", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+
+
+            fab_next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(Email.length()>3){
+
+
+                        if (issign && Klarname.length()>3 ){
+                            CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
+                            Log.i("save","klickedd");
+                            //bundle.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
+                            bundle.putString("BLOB",myBase64Image);
+                            //bundle.putString("bemerkung", String.valueOf(Bemerkung.getText()));
+
+                            DBManager.UpdateSchein(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()),String.valueOf(Email.getText()));
+                            DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image);
+
+                            try {
+
+                                RequestQueue queue = MyVolley.getRequestQueue();
+                                final String index = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                                Map<String, String> postparams = new HashMap<String, String>();
+                                postparams.put("tag", "savedetails");
+                                postparams.put("user", new SessionManager(context).getUser());
+                                postparams.put("status", "15");
+                                postparams.put("id", DBSchein.getString("ticketnr"));
+                                postparams.put("xml",String.valueOf(bundle.getInt("ScheinId")));
+
+                                Log.d("Volley Params: ", postparams.toString());
+                                Log.i("volley", postparams.toString());
+
+
+                                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, index, postparams, new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(JSONObject json) {
+                                        Log.d("Response Volley: ", json.toString());
+                                        //  showProgress(false);
+                                        try {
+                                            if (json.getInt("success") == 1) {
+                                                Log.e("succsess", "yaaaaaaaaaay");
+
+                                            } else {
+                                                Log.e("GetScheinID", "Failed succsess != 1");
+
+                                                Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+                                            }
+                                            Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(i);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Log.e("GetScheinID", "Something went wrong w/ the json");
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError response) {
+                                        Log.e("eror_Response: ", response.toString());
+                                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(i);
+
+                                    }
+                                });
+
+                                queue.add(jsObjRequest);
+
+                              } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        }else{
+                            Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else {
                         Toast.makeText(context, "Bitte eMail eintragen lassen", Toast.LENGTH_SHORT).show();
                     }
                 }

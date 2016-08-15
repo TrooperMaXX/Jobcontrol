@@ -483,5 +483,15 @@
         app:pressedTranslationZ="12dp"
         android:layout_gravity="end|bottom"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/hoell_blau"
+        android:src="@drawable/ic_save_black_24dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        android:layout_gravity="start|bottom"/>
+
 </FrameLayout>
 

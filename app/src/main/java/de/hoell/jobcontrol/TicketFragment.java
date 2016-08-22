@@ -832,12 +832,12 @@ public class TicketFragment extends ListFragment {
                                       Log.d("Zaehler",""+Zaehler);
                                       JSONArray TeileObj = ScheinObj.optJSONArray("eteile");
                                       Log.d("TeileObj",""+TeileObj);
-                                      //TODO: schleife einzelne Teile
+
                                       JSONArray ArbeitObj = ScheinObj.optJSONArray("arbeit");
                                       Log.d("ArbeitObj",""+ArbeitObj);
-                                      //TODO: schleife einzelne AWs
 
-                                      new DBManager.SyncScheinDB(Jobcontrol.getAppCtx(),Schein,Vde,Unterschrift,Zaehler,ArbeitObj,TeileObj).execute();
+
+                                      new DBManager.SyncScheinDB(getActivity(),Schein,Vde,Unterschrift,Zaehler,ArbeitObj,TeileObj).execute();
                                   }
 
 
@@ -926,8 +926,14 @@ public class TicketFragment extends ListFragment {
             } else {
                 KundenNr = 0;
             }
-
-
+            String email;
+            isnull = extra.getString("email");
+            if ( isnull!= null && !isnull.isEmpty() && !isnull.equals("null")) {
+                email = extra.getString("email");
+            } else {
+                email = "";
+            }
+            intent.putExtra("value_email",email);
             intent.putExtra("value_kundennr",KundenNr);
             String StringStatusnum = extra.getString("Status");
             Status= getStatus(Statusnum);

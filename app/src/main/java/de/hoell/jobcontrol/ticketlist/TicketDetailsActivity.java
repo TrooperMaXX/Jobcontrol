@@ -53,7 +53,7 @@ public class TicketDetailsActivity extends Activity {
     public boolean fertig=false;
     public static  int Statusnum;
     public TouchImageView img;
-static String ID;
+static String ID,email;
 private static final String TAG_SUCCESS = "success";
 
     AlertDialog.Builder builderSingle;
@@ -99,6 +99,7 @@ private static final String TAG_SUCCESS = "success";
         final String uri = getIntent().getStringExtra("value_uri");
         Statusnum = getIntent().getIntExtra("value_statusnum",0);
         ID = getIntent().getStringExtra("value_id");
+        email = getIntent().getStringExtra("value_email");
 
         Log.d("INTENTEXTRA:", Status + " " + DropPos + " " + Adresse + " " + Standort + " " + Modell + " " + Serienummer + " " + Stoerung + " " + Ansprechpartner + " " + Telefonnummer + " " + Termin + " " + Annahme);
         Log.e("Statusnum",String.valueOf(Statusnum));
@@ -471,6 +472,7 @@ private static final String TAG_SUCCESS = "success";
             i.putExtra("value_name", Ansprechpartner);
             i.putExtra("value_standort", Standort);
             i.putExtra("value_error", Error);
+            i.putExtra("value_email", email);
             i.putExtra("value_id", ID);
             startActivity(i);
 

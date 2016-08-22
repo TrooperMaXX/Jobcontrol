@@ -3,7 +3,6 @@
         import android.app.Activity;
         import android.app.Fragment;
         import android.app.FragmentManager;
-        import android.app.ProgressDialog;
         import android.content.Context;
         import android.content.Intent;
         import android.content.pm.PackageInfo;
@@ -13,7 +12,6 @@
         import android.net.Uri;
         import android.os.AsyncTask;
         import android.os.Bundle;
-        import android.os.Environment;
         import android.support.v4.widget.DrawerLayout;
         import android.support.v7.app.ActionBarDrawerToggle;
         import android.util.Log;
@@ -33,7 +31,6 @@
         import org.json.JSONException;
         import org.json.JSONObject;
 
-        import java.io.File;
         import java.text.ParseException;
         import java.text.SimpleDateFormat;
         import java.util.ArrayList;
@@ -49,7 +46,6 @@
         import de.hoell.jobcontrol.adapter.SpecialAdapter;
         import de.hoell.jobcontrol.model.NavDrawerItem;
         import de.hoell.jobcontrol.preference.SettingsActivity;
-        import de.hoell.jobcontrol.query.DBManager;
         import de.hoell.jobcontrol.query.DownloadFileFromURL;
         import de.hoell.jobcontrol.query.Functions;
         import de.hoell.jobcontrol.schein.srnpruefen;
@@ -115,12 +111,16 @@
 
                 // adding nav drawer items to array
                 // MyTickets
+                //noinspection ResourceType
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
                 // Offlinemodus
+                //noinspection ResourceType
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
                 // NewTickets
+                //noinspection ResourceType
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
                 //Schein
+                //noinspection ResourceType
                 navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
 

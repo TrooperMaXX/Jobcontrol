@@ -2,7 +2,6 @@ package de.hoell.jobcontrol.schein;
 
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,7 +13,6 @@ public class Arbeitsschein extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final String Seriennummer = getIntent().getStringExtra("value_seriennummer");
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.frame_container) != null) {

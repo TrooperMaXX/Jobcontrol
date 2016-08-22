@@ -3,6 +3,7 @@ package de.hoell.jobcontrol.query;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hoell.jobcontrol.Jobcontrol;
+import de.hoell.jobcontrol.MainActivity;
 import de.hoell.jobcontrol.session.SessionManager;
 
 public class DBManager extends SQLiteOpenHelper {
@@ -267,7 +270,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     }
 
-    public static void InsterUnterschrift(Context context, int scheinId, String klarname, String BLOB) {
+    public static void InsterUnterschrift(Context context, int scheinId, String klarname, String BLOB,boolean abschliessen) {
         SQLiteDatabase sdb = new DBManager(context).getWritableDatabase();
 
         String update= "INSERT OR REPLACE INTO "+TABLE_UNTERSCHRIFT+
@@ -282,7 +285,7 @@ public class DBManager extends SQLiteOpenHelper {
         sdb.endTransaction();
         sdb.close();
 
-        new UebertrageDaten(context,scheinId).execute();
+        new UebertrageDaten(context,scheinId,abschliessen).execute();
     }
 
     public static class FillArtDB extends AsyncTask<String, String, String> {
@@ -803,12 +806,13 @@ public class DBManager extends SQLiteOpenHelper {
 
         private Context mContext;
         private int mId;
+        private boolean mAbschliessen;
 
 
         private ProgressDialog pDialog;
-        public UebertrageDaten (Context context,int id){
+        public UebertrageDaten (Context context,int id,boolean abschliessen){
             mContext = context;
-
+            mAbschliessen=abschliessen;
             mId=id;
         }
         /**
@@ -854,7 +858,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             JSONArray schein = new JSONArray();
             JSONObject row;
-
+            String ticketnr="";
 
             while (scheinresult.moveToNext()) {
                 row=new JSONObject();
@@ -866,6 +870,11 @@ public class DBManager extends SQLiteOpenHelper {
                         e.printStackTrace();
                     }
 
+                }
+                try {
+                     ticketnr = row.getString("ticketnr");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 schein.put(row);
 
@@ -1142,7 +1151,7 @@ public class DBManager extends SQLiteOpenHelper {
 
             queue.add(jsObjRequest);
 
-            return null;
+            return ticketnr;
         }
 
 
@@ -1150,10 +1159,65 @@ public class DBManager extends SQLiteOpenHelper {
          * After completing background task Dismiss the progress dialog
          * **/
         @Override
-        protected void onPostExecute(String succsess) {
+        protected void onPostExecute(String ticketnr) {
 
             Log.d("erfolgreich", "ÜbertrageScheinDB");
+            if (mAbschliessen && !ticketnr.equals("")){
 
+                RequestQueue queue = MyVolley.getRequestQueue();
+                final String index = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                Map<String, String> postparams = new HashMap<String, String>();
+                postparams.put("tag", "savedetails");
+                postparams.put("user", new SessionManager(mContext).getUser());
+                postparams.put("status", "15");
+                postparams.put("id", ticketnr);
+                postparams.put("xml", String.valueOf(mId));
+
+                Log.d("Volley Params: ", postparams.toString());
+                Log.i("volley", postparams.toString());
+
+
+                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, index, postparams, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject json) {
+                        Log.d("Response Volley: ", json.toString());
+                        //  showProgress(false);
+                        try {
+                            if (json.getInt("success") == 1) {
+                                Log.e("succsess", "yaaaaaaaaaay");
+
+                            } else {
+                                Log.e("GetScheinID", "Failed succsess != 1");
+
+                                Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+                            }
+                            Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            mContext.startActivity(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e("GetScheinID", "Something went wrong w/ the json");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError response) {
+                        Log.e("eror_Response: ", response.toString());
+                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        mContext.startActivity(i);
+
+                    }
+                });
+
+                queue.add(jsObjRequest);
+
+            }
             pDialog.dismiss();
 
         }

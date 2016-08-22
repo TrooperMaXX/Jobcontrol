@@ -159,9 +159,10 @@ private String mSeriennummer;
                         bundle.putString("TicketID", args.getString("value_id"));
                         bundle.putString("Standort", args.getString("value_standort"));
                         bundle.putString("Error", args.getString("value_error"));
+                        bundle.putString("email", args.getString("value_email"));
                     } else {
                         bundle.putString("AuaNr", "");
-
+                        bundle.putString("email", "");
                         bundle.putString("Standort", "");
                         bundle.putString("Error", Error.getText().toString());
                         bundle.putString("Name",  editTextAnsprechpartner.getText().toString());

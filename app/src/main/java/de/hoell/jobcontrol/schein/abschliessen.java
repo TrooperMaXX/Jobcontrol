@@ -121,6 +121,7 @@ public class abschliessen extends Fragment {
 
             Ger.setText(bundle.getString("Ger"));
             Srn.setText(DBSchein.getString("srn"));
+            Email.setText(DBSchein.getString("email"));
             String ges="Zähler("+(DBZaehler.getInt("z1")+DBZaehler.getInt("z2"))+")";
             Zaehler.setText(ges);
             sw.setText(String.valueOf(DBZaehler.getInt("z1")));
@@ -552,10 +553,10 @@ public class abschliessen extends Fragment {
             fab_save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(Email.length()>3){
+                   /* if(Email.length()>3){
 
 
-                    if (issign && Klarname.length()>3 ){
+                    if (issign && Klarname.length()>3 ){*/
                         CheckBox Checkboxpruefen = (CheckBox)rootView.findViewById(R.id.checkBoxPruefen);
                         Log.i("save","klickedd");
                         //bundle.putInt("pruefen",Checkboxpruefen.isChecked() ? 1 : 0);
@@ -563,7 +564,7 @@ public class abschliessen extends Fragment {
                         //bundle.putString("bemerkung", String.valueOf(Bemerkung.getText()));
 
                         DBManager.UpdateSchein(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()),String.valueOf(Email.getText()));
-                        DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image);
+                        DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image,false);
 
 
 
@@ -571,13 +572,13 @@ public class abschliessen extends Fragment {
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
 
-                    }else{
+                    /*}else{
                         Toast.makeText(context, "Bitte Schein unterschreiben lassen", Toast.LENGTH_SHORT).show();
                     }
 
                 }else {
                         Toast.makeText(context, "Bitte eMail eintragen lassen", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }
             });
 
@@ -597,7 +598,7 @@ public class abschliessen extends Fragment {
                             //bundle.putString("bemerkung", String.valueOf(Bemerkung.getText()));
 
                             DBManager.UpdateSchein(context,bundle.getInt("ScheinId"),String.valueOf(Bemerkung.getText()),String.valueOf(Email.getText()));
-                            DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image);
+                            DBManager.InsterUnterschrift(context,bundle.getInt("ScheinId"),String.valueOf(Klarname.getText()),myBase64Image,true);
 
                             try {
 

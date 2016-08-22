@@ -292,7 +292,9 @@ public class SessionManager {
         String android_id = Settings.Secure.getString(_context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
-        return android_id +"-"+pref.getInt(KEY_ID, 0);
+        Long tsLong = System.currentTimeMillis()/1000;
+
+        return android_id +"-"+tsLong+"-"+pref.getInt(KEY_ID, 0);
 
     }
 }

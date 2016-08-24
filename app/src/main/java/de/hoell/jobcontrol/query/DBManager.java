@@ -193,21 +193,21 @@ public class DBManager extends SQLiteOpenHelper {
 
     public DBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Log.d("DATABASE_CREATE", ART_CREATE);
+//        Log.d("DATABASE_CREATE", ART_CREATE);
         this.getWritableDatabase().execSQL(ART_CREATE);
-        Log.d("DATABASE_CREATE", GER_CREATE);
+//        Log.d("DATABASE_CREATE", GER_CREATE);
         this.getWritableDatabase().execSQL(GER_CREATE);
-        Log.d("DATABASE_CREATE", LOHN_CREATE);
+//        Log.d("DATABASE_CREATE", LOHN_CREATE);
         this.getWritableDatabase().execSQL(LOHN_CREATE);
-        Log.d("DATABASE_CREATE", POSITIONEN_CREATE);
+//        Log.d("DATABASE_CREATE", POSITIONEN_CREATE);
         this.getWritableDatabase().execSQL(POSITIONEN_CREATE);
-        Log.d("DATABASE_CREATE", ZAEHLER_CREATE);
+//        Log.d("DATABASE_CREATE", ZAEHLER_CREATE);
         this.getWritableDatabase().execSQL(ZAEHLER_CREATE);
-        Log.d("DATABASE_CREATE", VDE_CREATE);
+//        Log.d("DATABASE_CREATE", VDE_CREATE);
         this.getWritableDatabase().execSQL(VDE_CREATE);
-        Log.d("DATABASE_CREATE", UNTERSCHRIFT_CREATE);
+//        Log.d("DATABASE_CREATE", UNTERSCHRIFT_CREATE);
         this.getWritableDatabase().execSQL(UNTERSCHRIFT_CREATE);
-        Log.d("DATABASE_CREATE", SCHEIN_CREATE);
+//        Log.d("DATABASE_CREATE", SCHEIN_CREATE);
         this.getWritableDatabase().execSQL(SCHEIN_CREATE);
         this.close();
 
@@ -245,6 +245,8 @@ public class DBManager extends SQLiteOpenHelper {
         sdb.execSQL("DROP TABLE " + TABLE_UNTERSCHRIFT);*/
 
     }
+
+
 
     public static void UpdateSchein(Context mContext, int ScheinId, String bemerkung,String email){
 
@@ -787,7 +789,7 @@ public class DBManager extends SQLiteOpenHelper {
             //dismiss the dialog after the file was downloaded
             //mCSV.delete();
             Log.i("erfolgreich", "fillScheinDB");
-           /* //TODO: Daten an den Server übertragen wenn scheinid !=0
+           /*
             if (scheinid !=0){
                 Log.d("fillScheinDB","daten sollen übertragen werden mit id: "+scheinid);
                new UebertrageDaten(mContext,scheinid).execute();
@@ -863,7 +865,7 @@ public class DBManager extends SQLiteOpenHelper {
             while (scheinresult.moveToNext()) {
                 row=new JSONObject();
                 for (int c=0; c<scheinresult.getColumnCount();c++){
-                    Log.d("getColumnName",scheinresult.getColumnName(c)+ " " + scheinresult.getString(c));
+//                    Log.d("getColumnName",scheinresult.getColumnName(c)+ " " + scheinresult.getString(c));
                     try {
                         row.put(scheinresult.getColumnName(c),scheinresult.getString(c));
                     } catch (JSONException e) {
@@ -902,7 +904,7 @@ public class DBManager extends SQLiteOpenHelper {
             while (posresult.moveToNext()) {
                 prow=new JSONObject();
                 for (int c=0; c<posresult.getColumnCount();c++){
-                    Log.d("getColumnName",posresult.getColumnName(c)+ " " + posresult.getString(c));
+//                    Log.d("getColumnName",posresult.getColumnName(c)+ " " + posresult.getString(c));
                     try {
                         prow.put(posresult.getColumnName(c),posresult.getString(c));
                     } catch (JSONException e) {
@@ -937,7 +939,7 @@ public class DBManager extends SQLiteOpenHelper {
             while (zaehlerresult.moveToNext()) {
                 zrow=new JSONObject();
                 for (int c=0; c<zaehlerresult.getColumnCount();c++){
-                    Log.d("getColumnName",zaehlerresult.getColumnName(c)+ " " + zaehlerresult.getString(c));
+//                    Log.d("getColumnName",zaehlerresult.getColumnName(c)+ " " + zaehlerresult.getString(c));
                     try {
                         zrow.put(zaehlerresult.getColumnName(c),zaehlerresult.getString(c));
                     } catch (JSONException e) {
@@ -969,7 +971,7 @@ public class DBManager extends SQLiteOpenHelper {
             while (vderesult.moveToNext()) {
                 vrow=new JSONObject();
                 for (int c=0; c<vderesult.getColumnCount();c++){
-                    Log.d("getColumnName",vderesult.getColumnName(c)+ " " + vderesult.getString(c));
+//                    Log.d("getColumnName",vderesult.getColumnName(c)+ " " + vderesult.getString(c));
                     try {
                         vrow.put(vderesult.getColumnName(c),vderesult.getString(c));
                     } catch (JSONException e) {
@@ -1034,7 +1036,7 @@ public class DBManager extends SQLiteOpenHelper {
 
         Log.v("postdata",postparams.toString());
 
-
+final String tnr=ticketnr;
 
 
             CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
@@ -1047,6 +1049,63 @@ public class DBManager extends SQLiteOpenHelper {
                         if (json.getInt("success")==1) {
 
                             Log.d("übertragung", "succsess wub wub");
+
+                            if (mAbschliessen && !tnr.equals("")){
+
+                                RequestQueue queue = MyVolley.getRequestQueue();
+                                final String index = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+                                Map<String, String> postparams = new HashMap<String, String>();
+                                postparams.put("tag", "savedetails");
+                                postparams.put("user", new SessionManager(mContext).getUser());
+                                postparams.put("status", "15");
+                                postparams.put("id", tnr);
+                                postparams.put("xml", String.valueOf(mId));
+
+                                Log.d("Volley Params: ", postparams.toString());
+                                Log.i("volley", postparams.toString());
+
+
+                                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, index, postparams, new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(JSONObject json) {
+                                        Log.d("Response Volley: ", json.toString());
+                                        //  showProgress(false);
+                                        try {
+                                            if (json.getInt("success") == 1) {
+                                                Log.e("succsess", "yaaaaaaaaaay");
+
+                                            } else {
+                                                Log.e("GetScheinID", "Failed succsess != 1");
+
+                                                Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+                                            }
+                                            Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            mContext.startActivity(i);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Log.e("GetScheinID", "Something went wrong w/ the json");
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError response) {
+                                        Log.e("eror_Response: ", response.toString());
+                                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        mContext.startActivity(i);
+
+                                    }
+                                });
+
+                                queue.add(jsObjRequest);
+
+                            }
                             /*SQLiteDatabase sdb = new DBManager(mContext).getWritableDatabase();
                             sdb.beginTransaction();
                             String abfrage= "UPDATE "+TABLE_SCHEIN+" SET uebertragen='1' WHERE scheinid = '"+mId+"' AND uebertragen = '0';"+
@@ -1162,62 +1221,7 @@ public class DBManager extends SQLiteOpenHelper {
         protected void onPostExecute(String ticketnr) {
 
             Log.d("erfolgreich", "ÜbertrageScheinDB");
-            if (mAbschliessen && !ticketnr.equals("")){
 
-                RequestQueue queue = MyVolley.getRequestQueue();
-                final String index = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                Map<String, String> postparams = new HashMap<String, String>();
-                postparams.put("tag", "savedetails");
-                postparams.put("user", new SessionManager(mContext).getUser());
-                postparams.put("status", "15");
-                postparams.put("id", ticketnr);
-                postparams.put("xml", String.valueOf(mId));
-
-                Log.d("Volley Params: ", postparams.toString());
-                Log.i("volley", postparams.toString());
-
-
-                CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, index, postparams, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject json) {
-                        Log.d("Response Volley: ", json.toString());
-                        //  showProgress(false);
-                        try {
-                            if (json.getInt("success") == 1) {
-                                Log.e("succsess", "yaaaaaaaaaay");
-
-                            } else {
-                                Log.e("GetScheinID", "Failed succsess != 1");
-
-                                Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
-
-
-                            }
-                            Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            mContext.startActivity(i);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e("GetScheinID", "Something went wrong w/ the json");
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError response) {
-                        Log.e("eror_Response: ", response.toString());
-                        Intent i = new Intent(Jobcontrol.getAppCtx(), MainActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        mContext.startActivity(i);
-
-                    }
-                });
-
-                queue.add(jsObjRequest);
-
-            }
             pDialog.dismiss();
 
         }
@@ -1250,12 +1254,13 @@ public class DBManager extends SQLiteOpenHelper {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(mContext);
+           /* pDialog = new ProgressDialog(mContext);
             pDialog.setMessage("Synce Schein");
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.setIndeterminate(true);
-            pDialog.setCancelable(false);
-            pDialog.show();
+            pDialog.setCancelable(false);*/
+            // ausgeschaltet weils mich nervt :D
+            //pDialog.show();
 
         }
 
@@ -1548,7 +1553,7 @@ public class DBManager extends SQLiteOpenHelper {
             Log.i("erfolgreich", "sync");
 
 
-            pDialog.dismiss();
+            //pDialog.dismiss();
 
         }
 
@@ -1556,8 +1561,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     public static Map<String, String> GetSchein(Context mContext, int mId){
 
-
-
+        new DBManager(mContext);
 
         Map<String, String> postparams = new HashMap<String, String>();
 
@@ -1579,7 +1583,7 @@ public class DBManager extends SQLiteOpenHelper {
         while (scheinresult.moveToNext()) {
             row=new JSONObject();
             for (int c=0; c<scheinresult.getColumnCount();c++){
-                Log.d("getColumnName",scheinresult.getColumnName(c)+ " " + scheinresult.getString(c));
+                //Log.d("getColumnName",scheinresult.getColumnName(c)+ " " + scheinresult.getString(c));
                 try {
                     row.put(scheinresult.getColumnName(c),scheinresult.getString(c));
                 } catch (JSONException e) {
@@ -1613,7 +1617,7 @@ public class DBManager extends SQLiteOpenHelper {
         while (posresult.moveToNext()) {
             prow=new JSONObject();
             for (int c=0; c<posresult.getColumnCount();c++){
-                Log.d("getColumnName",posresult.getColumnName(c)+ " " + posresult.getString(c));
+//                Log.d("getColumnName",posresult.getColumnName(c)+ " " + posresult.getString(c));
                 try {
                     prow.put(posresult.getColumnName(c),posresult.getString(c));
                 } catch (JSONException e) {
@@ -1646,7 +1650,7 @@ public class DBManager extends SQLiteOpenHelper {
         while (arbeitresult.moveToNext()) {
             arow=new JSONObject();
             for (int c=0; c<arbeitresult.getColumnCount();c++){
-                Log.d("getColumnName",arbeitresult.getColumnName(c)+ " " + arbeitresult.getString(c));
+//                Log.d("getColumnName",arbeitresult.getColumnName(c)+ " " + arbeitresult.getString(c));
                 try {
                     arow.put(arbeitresult.getColumnName(c),arbeitresult.getString(c));
                 } catch (JSONException e) {
@@ -1681,7 +1685,7 @@ public class DBManager extends SQLiteOpenHelper {
         while (zaehlerresult.moveToNext()) {
             zrow=new JSONObject();
             for (int c=0; c<zaehlerresult.getColumnCount();c++){
-                Log.d("getColumnName",zaehlerresult.getColumnName(c)+ " " + zaehlerresult.getString(c));
+//                Log.d("getColumnName",zaehlerresult.getColumnName(c)+ " " + zaehlerresult.getString(c));
                 try {
                     zrow.put(zaehlerresult.getColumnName(c),zaehlerresult.getString(c));
                 } catch (JSONException e) {
@@ -1713,7 +1717,7 @@ public class DBManager extends SQLiteOpenHelper {
         while (vderesult.moveToNext()) {
             vrow=new JSONObject();
             for (int c=0; c<vderesult.getColumnCount();c++){
-                Log.d("getColumnName",vderesult.getColumnName(c)+ " " + vderesult.getString(c));
+//                Log.d("getColumnName",vderesult.getColumnName(c)+ " " + vderesult.getString(c));
                 try {
                     vrow.put(vderesult.getColumnName(c),vderesult.getString(c));
                 } catch (JSONException e) {

@@ -56,6 +56,7 @@ public class arbeit extends Fragment {
 
         DBManager dbManager = new DBManager(context);
         SQLiteDatabase db = dbManager.getReadableDatabase();
+        db.beginTransaction();
         String query = "SELECT " + DBManager.COLUMN_BEZEICHNUNG +
                 " FROM " +
                 DBManager.TABLE_LOHNART + ";";
@@ -75,6 +76,9 @@ public class arbeit extends Fragment {
             i++;
         }
         result.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
 
 
         /** AW Picker **/
@@ -189,6 +193,7 @@ public class arbeit extends Fragment {
 
         DBManager dbManager = new DBManager(context);
         SQLiteDatabase db = dbManager.getReadableDatabase();
+        db.beginTransaction();
         String query = "SELECT " + DBManager.COLUMN_LOHNARTNR +
                 " FROM " +
                 DBManager.TABLE_LOHNART +
@@ -209,6 +214,9 @@ public class arbeit extends Fragment {
             i++;
         }
         lohnresult.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
 
         String Date = String.valueOf(String.valueOf(Datum.getDayOfMonth())+"-"+String.valueOf(Datum.getMonth()+1)+"-"+Datum.getYear());
         Log.e("DATUM!!!", Date);
@@ -227,6 +235,7 @@ public class arbeit extends Fragment {
         Log.e("NextBundle",""+next);
         return next;
     }
+
     private void getArbeitDialog() {
         View mView = View.inflate(context, R.layout.dialog_arbeit, null);
         mArbeit = ((EditText) mView.findViewById(R.id.getarbeit));

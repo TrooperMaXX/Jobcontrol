@@ -453,6 +453,8 @@ private static final String TAG_SUCCESS = "success";
         if (id == R.id.action_arbeitsschein) {
             TextView textViewSerienummer =  (TextView) findViewById(R.id.textViewContentSerienummer);
             String Serienummer = textViewSerienummer.getText().toString();
+            if (!Serienummer.equals(99) && !Serienummer.equals("-")){
+
 
             TextView textViewAuftragsnr =  (TextView) findViewById(R.id.textViewContentAuftragsnr);
             String Auftragsnr = textViewAuftragsnr.getText().toString();
@@ -475,7 +477,10 @@ private static final String TAG_SUCCESS = "success";
             i.putExtra("value_email", email);
             i.putExtra("value_id", ID);
             startActivity(i);
+            }
 
+        }else {
+            Toast.makeText(Jobcontrol.getAppCtx(), "Ungültige Seriennummer Bitte manuellen Schein ausfüllen", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

@@ -141,9 +141,11 @@
     <string name="zaehler">zähler</string>
     <string name="bemerkung">Bemerkung</string>
     <string name="getarbeit">Ausgeführte Arbeit</string>
+    <string name="posaendern">Position ändern</string>
     <string name="zaehpruefen">Bitte Zähler prüfen</string>
     <string name="save">Speichern</string>
     <string name="cancel">Abbrechen</string>
+    <string name="delete">Löschen</string>
     <string name="geterror">Beauftragte Dienstleistung</string>
     <string name="dropScheinDB">DROP ScheinDB</string>
 

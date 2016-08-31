@@ -32,7 +32,6 @@ import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.adapter.ExpandableHeightListView;
 import de.hoell.jobcontrol.adapter.SpecialAdapter;
 import de.hoell.jobcontrol.query.CustomRequest;
-import de.hoell.jobcontrol.query.DBManager;
 import de.hoell.jobcontrol.query.MyVolley;
 
 /**
@@ -152,7 +151,7 @@ public class pruefen extends Fragment {
                             try {
                                 if (json.getInt("success")==1) {
                                     Log.e("succsess","yaaaaaaaaaay");
-                                    new DBManager.FillScheinDB(context,args,json.getInt("ScheinId")).execute();
+                                    //new DBManager.FillScheinDB(context,args,json.getInt("ScheinId")).execute();
                                     //TODO: FillSchein mit schein id
 
                                     abschliessen nextFragment = new abschliessen();
@@ -187,7 +186,7 @@ public class pruefen extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError response) {
                             Log.e("eror_Response: ", response.toString());
-                            new DBManager.FillScheinDB(context,args,0).execute();
+                            //new DBManager.FillScheinDB(context,args,0).execute();
                             //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
 
                         }

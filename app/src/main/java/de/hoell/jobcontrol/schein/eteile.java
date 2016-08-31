@@ -26,6 +26,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import de.hoell.jobcontrol.R;
 import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.session.SessionManager;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -55,9 +56,8 @@ public class eteile extends Fragment {
 
 
         context = rootView.getContext();
-        Bundle args=getArguments();
+        final Bundle args=getArguments();
        teilepos =args.getInt("TeilePos");
-        final  Bundle next_args=args;
 
         if(teilepos==0){
             Kleinteile = (CheckBox) rootView.findViewById(R.id.checkBoxKleinteile);
@@ -149,23 +149,19 @@ public class eteile extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Bundle next = addValues(next_args, rootView, String.valueOf(teilepos));
+                Bundle next = addValues(args, rootView);
                 Log.e("final next", "" + next);
+                SessionManager session=new SessionManager(context);
                 if(next.getBoolean("Kleinteile")){
                     teilepos++;
-                    next.putString("Anz" + teilepos, "1");
-                    next.putString("TeileNr" + teilepos, "919001100");
-                    next.putString("ArtNr" + teilepos, "919001100");
-                    next.putString("Bez" + teilepos, "Kleinteile/Reinigungsmateriel");
-                    next.putInt("TeilePos", teilepos);
+                    //*********************Syncid wird bei kleinteilen und entsorgung durch einen festen string ersetzt damit nur eine Pos pro Schein existiert*********************//
+                    DBManager.InsterTeile(context,args.getInt("ScheinId"),"919001100", session.getTechNum(),1, "Kleinteile/Reinigungsmateriel",0,"kleinteile-"+args.getInt("ScheinId"));
+
                 }
                 if(next.getBoolean("Entsorgung")){
                     teilepos++;
-                    next.putString("Anz" + teilepos, "1");
-                    next.putString("TeileNr" + teilepos, "919001201");
-                    next.putString("ArtNr" + teilepos, "919001201");
-                    next.putString("Bez" + teilepos, "Entsorgung");
-                    next.putInt("TeilePos", teilepos);
+                    DBManager.InsterTeile(context,args.getInt("ScheinId"),"919001201", session.getTechNum(),1, "Entsorgung",0,"entsorgung-"+args.getInt("ScheinId"));
+
                 }
                 vde nextFragment = new vde();
 
@@ -189,7 +185,7 @@ public class eteile extends Fragment {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle next = addValues(next_args, rootView, String.valueOf(teilepos));
+                Bundle next = addValues(args, rootView);
 
                 eteile nextFragment = new eteile();
 
@@ -216,21 +212,20 @@ public class eteile extends Fragment {
         return rootView;
     }
 
-    private Bundle addValues(Bundle next_args, View rootView,String Position) {
-        Bundle next= new Bundle(next_args);
+    private Bundle addValues(Bundle args, View rootView) {
 
         NumberPicker numberPickerAnz = (NumberPicker) rootView.findViewById(R.id.numberPickerAnzahl);
 
 
-        String Anzahl =String.valueOf(numberPickerAnz.getValue());
+        int Anzahl =numberPickerAnz.getValue();
 
-        String TeileNr = String.valueOf(editTextTeileNr.getText());
         String Bezeichnung =String.valueOf(editTextBezeichnung.getText());
 
         if (Bezeichnung.trim().length()>2){
 
         DBManager dbManager = new DBManager(context);
         SQLiteDatabase db = dbManager.getReadableDatabase();
+        db.beginTransaction();
         String query = "SELECT " + DBManager.COLUMN_EAN +","+DBManager.COLUMN_ARTNR +
                 " FROM " +
                 DBManager.TABLE_ARTSTAMM +
@@ -251,24 +246,35 @@ public class eteile extends Fragment {
             i++;
         }
             result.close();
-        System.out.println("länge " + values.length);
-        if (values.length > 0) {
-            next.putString("TeileNr" + Position, values[0]);
-            next.putString("ArtNr" + Position, artnr[0]);
-        }
-        next.putString("Bez" + Position, Bezeichnung);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
 
-        next.putString("Anz" + Position, Anzahl);
+        System.out.println("länge " + values.length);
+            SessionManager session =new SessionManager(context);
+        if (values.length > 0) {
+
+            DBManager.InsterTeile(context,args.getInt("ScheinId"),artnr[0], session.getTechNum(),Anzahl, Bezeichnung,0,session.getID());
+
+          /*  next.putString("TeileNr" + Position, values[0]);
+            next.putString("ArtNr" + Position, artnr[0]);
+            next.putString("Bez" + Position, Bezeichnung);
+            next.putString("Anz" + Position, Anzahl);*/
+
+        }
+
 
         }
         if (teilepos==0) {
-            next.putBoolean("Kleinteile", Kleinteile.isChecked());
-            next.putBoolean("Entsorgung",Entsorgung.isChecked());
+            args.putBoolean("Kleinteile", Kleinteile.isChecked());
+            args.putBoolean("Entsorgung",Entsorgung.isChecked());
         }
 
 
-        Log.e("NextBundle", "" + next);
-        return next;
+        Log.e("NextBundle", "" + args);
+        editTextTeileNr.setText("");
+        editTextBezeichnung.setText("");
+        return args;
     }
 
 

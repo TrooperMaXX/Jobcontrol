@@ -22,8 +22,22 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.R;
+import de.hoell.jobcontrol.query.CustomRequest;
 import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.query.MyVolley;
 import de.hoell.jobcontrol.session.SessionManager;
 
 /**
@@ -33,6 +47,7 @@ public class arbeit extends Fragment {
     private Context context;
     public EditText mArbeit;
     public TextView Arbeit;
+
     public arbeit() {
     }
 
@@ -52,7 +67,57 @@ public class arbeit extends Fragment {
 
 
         context = rootView.getContext();
-        Bundle args=getArguments();
+        final Bundle args=getArguments();
+
+        RequestQueue queue = MyVolley.getRequestQueue();
+        String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
+
+        Map<String, String> postparams = new HashMap<String, String>();
+        postparams.put("tag", "scheinid");
+        postparams.put("srn", args.getString("Srn"));
+        postparams.put("ticketnr", args.getString("TicketID"));
+
+        Log.i("volley",postparams.toString());
+
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject json) {
+                Log.d("Response Volley: ", json.toString());
+                //  showProgress(false);
+                try {
+                    if (json.getInt("success")==1) {
+                        Log.e("succsess","yaaaaaaaaaay");
+                        args.putInt("ScheinId",json.getInt("ScheinId"));
+                        DBManager.InsertSchein(context,args.getInt("ScheinId"), args.getString("Srn"), args.getString("TicketID"),args.getString("Name"),args.getString("Error"),args.getString("email"),"");
+
+                    } else {
+                        Log.e("GetScheinID","Failed succsess != 1");
+
+                        Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+
+
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("GetScheinID","Something went wrong w/ the json");
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError response) {
+                Log.e("eror_Response: ", response.toString());
+                Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+                //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
+
+            }
+        });
+
+        queue.add(jsObjRequest);
+
+
 
         DBManager dbManager = new DBManager(context);
         SQLiteDatabase db = dbManager.getReadableDatabase();
@@ -119,15 +184,14 @@ public class arbeit extends Fragment {
         String mSeriennummer =args.getString("Srn");
         final   int pos =args.getInt("Pos");
         Log.e("args", mSeriennummer + "lol " + args);
-        final  Bundle next_args=args;
+
 
         FloatingActionButton fab_next = (FloatingActionButton) rootView.findViewById(R.id.fab_next);
         fab_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Bundle next= addValues(next_args,rootView,String.valueOf(pos));
-                Log.e("final next", ""+next );
+                addValues(args,rootView);
 
                 eteile nextFragment = new eteile();
 
@@ -138,7 +202,7 @@ public class arbeit extends Fragment {
                 transaction.replace(R.id.frame_container, nextFragment);
                 transaction.addToBackStack(null);
 
-                nextFragment.setArguments(next);
+                nextFragment.setArguments(args);
                 // Commit the transaction
                 transaction.commit();
 
@@ -152,7 +216,7 @@ public class arbeit extends Fragment {
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle next= addValues(next_args,rootView,String.valueOf(pos));
+                addValues(args,rootView);
 
                 arbeit nextFragment = new arbeit();
 
@@ -162,8 +226,8 @@ public class arbeit extends Fragment {
                 // and add the transaction to the back stack so the user can navigate back
                 transaction.replace(R.id.frame_container, nextFragment);
                 transaction.addToBackStack(null);
-                next.putInt("Pos", pos + 1);
-                nextFragment.setArguments(next);
+
+                nextFragment.setArguments(args);
                 // Commit the transaction
                 transaction.commit();
                 Toast.makeText(context, "add", Toast.LENGTH_SHORT).show();
@@ -179,8 +243,8 @@ public class arbeit extends Fragment {
         return rootView;
     }
 
-    private Bundle addValues(Bundle next_args, View rootView,String Position) {
-        Bundle next= new Bundle(next_args);
+    private void addValues(Bundle next_args, View rootView) {
+
         DatePicker Datum = (DatePicker) rootView.findViewById(R.id.datePickerArbeit);
         NumberPicker Aw = (NumberPicker) rootView.findViewById(R.id.numberPickerAw);
         NumberPicker Weg = (NumberPicker) rootView.findViewById(R.id.numberPickerWeg);
@@ -225,15 +289,15 @@ public class arbeit extends Fragment {
         String TechNr = String.valueOf(TechnikerNr.getText());
         String ARBEIT =String.valueOf(Arbeit.getText());
         String LohnArtNr =String.valueOf(lohnartnr[0]);
-
-        next.putString("AW"+Position,AW);
+        DBManager.InsterArbeit(context,next_args.getInt("ScheinId"),LohnArtNr,Date,TechNr,AW,WEG,ARBEIT,0,new SessionManager(context).getID());
+       /* next.putString("AW"+Position,AW);
         next.putString("WEG"+Position,WEG);
         next.putString("TechNr"+Position,TechNr);
         next.putString("Arbeit"+Position,ARBEIT);
         next.putString("Datum"+Position, Date);
         next.putString("LohnArtNr"+Position, LohnArtNr);
         Log.e("NextBundle",""+next);
-        return next;
+        return next;*/
     }
 
     private void getArbeitDialog() {

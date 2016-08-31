@@ -20,22 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import de.hoell.jobcontrol.Jobcontrol;
 import de.hoell.jobcontrol.R;
-import de.hoell.jobcontrol.query.CustomRequest;
 import de.hoell.jobcontrol.query.DBManager;
-import de.hoell.jobcontrol.query.MyVolley;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -65,14 +51,14 @@ public class zaehler extends Fragment {
 
         context = rootView.getContext();
 
-        final Bundle next_args = getArguments();
+        final Bundle args = getArguments();
 
 
         editTextFarbe = (EditText) rootView.findViewById(R.id.editTextFarb);
         editTextSw = (EditText) rootView.findViewById(R.id.editTextSw);
         textViewGesamt = (TextView) rootView.findViewById(R.id.textViewGesamt);
 
-        if (next_args.getInt("zAnz") < 2) {
+        if (args.getInt("zAnz") < 2) {
             TextView textViewFarb = (TextView) rootView.findViewById(R.id.textViewFarbe);
             textViewFarb.setVisibility(View.GONE);
             editTextFarbe.setVisibility(View.GONE);
@@ -129,6 +115,7 @@ public class zaehler extends Fragment {
         {
             @Override
             public void onClick(View v) {
+
                 int Farb,Sw;
                 try {
                     Farb=Integer.parseInt(String.valueOf(editTextFarbe.getText()));
@@ -144,75 +131,26 @@ public class zaehler extends Fragment {
                 }
 
 
-                if (Sw >= next_args.getInt("z2") && Farb >= next_args.getInt("z2")) {
+                if (Sw >= args.getInt("z1") && Farb >= args.getInt("z2")) {
 
+                    DBManager.InsterZaehler(context,args.getInt("ScheinId"),Sw,Farb);
+                     /*next.putString("Farb", Farb);
+                     next.putString("Ges", Ges);
+                     next.putString("Sw", Sw);*/
 
-                    final Bundle next = addValues(next_args);
-                    Log.e("final next", "" + next);
+                    abschliessen nextFragment = new abschliessen();
 
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction.replace(R.id.frame_container, nextFragment);
+                    transaction.addToBackStack(null);
 
-                    RequestQueue queue = MyVolley.getRequestQueue();
-                    String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                    Map<String, String> postparams = new HashMap<String, String>();
-                    postparams.put("tag", "scheinid");
-                    postparams.put("srn", next.getString("Srn"));
-                    postparams.put("ticketnr", next.getString("TicketID"));
-
-                    Log.i("volley",postparams.toString());
-
-                    CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
-
-                        @Override
-                        public void onResponse(JSONObject json) {
-                            Log.d("Response Volley: ", json.toString());
-                            //  showProgress(false);
-                            try {
-                                if (json.getInt("success")==1) {
-                                    Log.e("succsess","yaaaaaaaaaay");
-                                    new DBManager.FillScheinDB(context,next,json.getInt("ScheinId")).execute();
-                                    //TODO: FillSchein mit schein id
-
-                                    abschliessen nextFragment = new abschliessen();
-
-                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                                    // Replace whatever is in the fragment_container view with this fragment,
-                                    // and add the transaction to the back stack so the user can navigate back
-                                    transaction.replace(R.id.frame_container, nextFragment);
-                                    transaction.addToBackStack(null);
-
-                                    next.putInt("ScheinId",json.getInt("ScheinId"));
-                                    nextFragment.setArguments(next);
-                                    //nextFragment.setArguments(next);
-                                    // Commit the transaction
-                                    transaction.commit();
-                                } else {
-                                    Log.e("GetScheinID","Failed succsess != 1");
-
-                                    Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
-
-
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.e("GetScheinID","Something went wrong w/ the json");
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError response) {
-                            Log.e("eror_Response: ", response.toString());
-                            new DBManager.FillScheinDB(context,next,0).execute();
-                            //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
-
-                        }
-                    });
-
-                    queue.add(jsObjRequest);
+                    nextFragment.setArguments(args);
+                    //nextFragment.setArguments(next);
+                    // Commit the transaction
+                    transaction.commit();
 
                     Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();
                 } else {
@@ -221,8 +159,8 @@ public class zaehler extends Fragment {
                     TextView mOldFarb = (TextView) mView.findViewById(R.id.textViewOldFarb);
                     final EditText mNewSw = (EditText) mView.findViewById(R.id.editTextNewSw);
                     final EditText mNewFarb = (EditText) mView.findViewById(R.id.editTextNewFarbe);
-                    mOldSw.setText(String.valueOf(next_args.getInt("z1")));
-                    mOldFarb.setText(String.valueOf(next_args.getInt("z2")));
+                    mOldSw.setText(String.valueOf(args.getInt("z1")));
+                    mOldFarb.setText(String.valueOf(args.getInt("z2")));
                     mNewSw.setText(String.valueOf(editTextSw.getText()));
                     mNewFarb.setText(String.valueOf(editTextFarbe.getText()));
                     final InputMethodManager mInputMethodManager = (InputMethodManager) context
@@ -233,82 +171,48 @@ public class zaehler extends Fragment {
                     mBuilder.setTitle(getString(R.string.zaehpruefen));
                     mBuilder.setPositiveButton(getString(R.string.save), new Dialog.OnClickListener() {
                         public void onClick(DialogInterface mDialogInterface, int mWhich) {
-                            final Bundle next = new Bundle(next_args);
 
 
-                            String Farb = String.valueOf(mNewFarb.getText());
-                            String Sw = String.valueOf(mNewSw.getText());
-                            String Ges = String.valueOf(Integer.parseInt(String.valueOf(mNewFarb.getText()))+Integer.parseInt(String.valueOf(mNewSw.getText())));
 
+                            int Farb,Sw;
+                            try {
+                                Farb=Integer.parseInt(String.valueOf(mNewFarb.getText()));
+
+                            } catch (NumberFormatException e) {
+                                Farb=0;
+                            }
+                            try {
+                                Sw=Integer.parseInt(String.valueOf(mNewSw.getText()));
+
+                            } catch (NumberFormatException e) {
+                                Sw=0;
+                            }
+
+                            DBManager.InsterZaehler(context,args.getInt("ScheinId"),Sw,Farb);
+
+                            /*String Ges = String.valueOf(Integer.parseInt(String.valueOf(mNewFarb.getText()))+Integer.parseInt(String.valueOf(mNewSw.getText())));
                             next.putString("Farb", Farb);
                             next.putString("Ges", Ges);
-                            next.putString("Sw", Sw);
+                            next.putString("Sw", Sw);*/
 
-                            Log.e("NextBundle", "" + next);
-
-
-                            RequestQueue queue = MyVolley.getRequestQueue();
-                            String url = "https://hoell.syno-ds.de:55443/job/android/index.php";
-
-                            Map<String, String> postparams = new HashMap<String, String>();
-                            postparams.put("tag", "scheinid");
-                            postparams.put("srn", next.getString("Srn"));
-                            postparams.put("ticketnr", next.getString("TicketID"));
-
-                            Log.i("volley",postparams.toString());
-
-                            CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, url, postparams, new Response.Listener<JSONObject>() {
-
-                                @Override
-                                public void onResponse(JSONObject json) {
-                                    Log.d("Response Volley: ", json.toString());
-                                    //  showProgress(false);
-                                    try {
-                                        if (json.getInt("success")==1) {
-                                            Log.e("succsess","yaaaaaaaaaay");
-                                            new DBManager.FillScheinDB(context,next,json.getInt("ScheinId")).execute();
-                                            //TODO: FillSchein mit schein id
-
-                                            abschliessen nextFragment = new abschliessen();
-
-                                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                                            // Replace whatever is in the fragment_container view with this fragment,
-                                            // and add the transaction to the back stack so the user can navigate back
-                                            transaction.replace(R.id.frame_container, nextFragment);
-                                            transaction.addToBackStack(null);
-
-                                            next.putInt("ScheinId",json.getInt("ScheinId"));
-                                            nextFragment.setArguments(next);
-                                            //nextFragment.setArguments(next);
-                                            // Commit the transaction
-                                            transaction.commit();
-                                        } else {
-                                            Log.e("GetScheinID","Failed succsess != 1");
-
-                                            Toast.makeText(Jobcontrol.getAppCtx(), "keine schein id bekommen", Toast.LENGTH_LONG).show();
+                            Log.e("LastBundle", "" + args);
 
 
 
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        Log.e("GetScheinID","Something went wrong w/ the json");
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError response) {
-                                    Log.e("eror_Response: ", response.toString());
-                                    new DBManager.FillScheinDB(context,next,0).execute();
-                                    //TODO: FIllschein mit scheinid 0 und spater nochmal versuchen
-
-                                }
-                            });
-
-                            queue.add(jsObjRequest);
                             Toast.makeText(context, "next", Toast.LENGTH_SHORT).show();
+                            abschliessen nextFragment = new abschliessen();
+
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                            // Replace whatever is in the fragment_container view with this fragment,
+                            // and add the transaction to the back stack so the user can navigate back
+                            transaction.replace(R.id.frame_container, nextFragment);
+                            transaction.addToBackStack(null);
+
+                            nextFragment.setArguments(args);
+                            //nextFragment.setArguments(next);
+                            // Commit the transaction
+                            transaction.commit();
                         }
                     });
 
@@ -338,34 +242,7 @@ public class zaehler extends Fragment {
         return rootView;
     }
 
-    private Bundle addValues(Bundle next_args) {
-        Bundle next = new Bundle(next_args);
 
-
-        int Farb,Sw;
-        try {
-            Farb=Integer.parseInt(String.valueOf(editTextFarbe.getText()));
-
-        } catch (NumberFormatException e) {
-            Farb=0;
-        }
-        try {
-            Sw=Integer.parseInt(String.valueOf(editTextSw.getText()));
-
-        } catch (NumberFormatException e) {
-            Sw=0;
-        }
-
-        String Ges = String.valueOf(textViewGesamt.getText());
-
-        next.putString("Farb", Farb+"");
-        next.putString("Ges", Ges);
-        next.putString("Sw", Sw+"");
-
-
-        Log.e("NextBundle", "" + next);
-        return next;
-    }
 
 }
 

@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hoell.jobcontrol.R;
+import de.hoell.jobcontrol.query.DBManager;
+import de.hoell.jobcontrol.session.SessionManager;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -71,17 +73,20 @@ public class vde extends Fragment {
                 }else if(!RPE.getText().toString().isEmpty()&&!RISO.getText().toString().isEmpty()&&!ILEAK.getText().toString().isEmpty()){
 
                     args.putBoolean("VDE", VDE.isChecked());
-                    args.putString("RPE", RPE.getText().toString());
+                    DBManager.InsterVDE(context,args.getInt("ScheinId"),RPE.getText().toString(),RISO.getText().toString(),ILEAK.getText().toString());
+                   /* args.putString("RPE", RPE.getText().toString());
                     args.putString("RISO",RISO.getText().toString());
-                    args.putString("ILEAK", ILEAK.getText().toString());
+                    args.putString("ILEAK", ILEAK.getText().toString());*/
 
                     int teilepos=args.getInt("TeilePos");
                     teilepos++;
-                    args.putString("Anz" + teilepos, "1");
+                    SessionManager session = new SessionManager(context);
+                    DBManager.InsterTeile(context,args.getInt("ScheinId"),"912562212", session.getTechNum(),1, "VDE geprüft",0,session.getID());
+                   /* args.putString("Anz" + teilepos, "1");
                     args.putString("TeileNr" + teilepos, "912562212");
                     args.putString("ArtNr" + teilepos, "912562212");
                     args.putString("Bez" + teilepos, "VDE geprüft");
-                    args.putInt("TeilePos", teilepos);
+                    args.putInt("TeilePos", teilepos);*/
                 }else{
                     for(EditText edit : editTextList){
                         if(TextUtils.isEmpty(edit.getText())){
@@ -98,7 +103,7 @@ public class vde extends Fragment {
                 if(args.getInt("zAnz")>0) {
                      nextFragment = new zaehler();
                 }else{
-                     nextFragment = new pruefen();
+                     nextFragment = new abschliessen();
                 }
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 

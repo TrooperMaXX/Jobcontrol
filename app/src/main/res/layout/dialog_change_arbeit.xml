@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/layout"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginTop="0dip"
+        android:scrollbarStyle="outsideInset"
+        android:fillViewport="true">
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--SW-->
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Datum"
+            android:id="@+id/textViewChangeDate"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Datum"
+            android:id="@+id/textViewChangeDatum"
+            android:layout_gravity="center_horizontal"
+
+            />
+
+
+    </TableRow>
+
+    <!--FARBE-->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Techniker"
+            android:id="@+id/textViewChangeTech"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17 "
+            android:id="@+id/editTextChangeTechNr"
+            android:layout_gravity="center_horizontal"
+            android:inputType="number"
+            />
+
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aw"
+            android:id="@+id/textViewChangeAW"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:id="@+id/editTextChangeAw"
+            android:layout_gravity="center_horizontal"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weg"
+            android:id="@+id/textViewChangeWeg"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:id="@+id/editTextChangeWeg"
+            android:layout_gravity="center_horizontal"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Arbeit"
+            android:id="@+id/textViewChangeText"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Roillen getauscht"
+            android:id="@+id/editTextChangeText"
+            android:layout_gravity="center_horizontal" />
+    </TableRow>
+
+
+        </TableLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>
